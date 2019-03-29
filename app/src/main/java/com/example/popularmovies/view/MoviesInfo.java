@@ -2,11 +2,10 @@ package com.example.popularmovies.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +27,6 @@ public class MoviesInfo extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("More Information");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         movieTitle = findViewById(R.id.tvMovieTitle);
         movieSynopsis =findViewById(R.id.tvPlotsynopsis);
         movieRating =findViewById(R.id.tvMovieRating);
@@ -49,11 +47,10 @@ public class MoviesInfo extends AppCompatActivity {
                     .into(movieImage);
 
             getSupportActionBar().setTitle(movie.getTitle());
-
             movieTitle.setText(movie.getTitle());
-            movieSynopsis.setText(movie.getOverview());
-            movieRating.setText(Double.toString(movie.getVoteAverage()));
-            movieReleaseDate.setText(movie.getReleaseDate());
+            movieSynopsis.setText("Synopsis:\n"+movie.getOverview());
+            movieRating.setText("Rating: "+Double.toString(movie.getVoteAverage()));
+            movieReleaseDate.setText("Release Date: "+ movie.getReleaseDate());
         }
     }
 

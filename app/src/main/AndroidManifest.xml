@@ -14,11 +14,7 @@
         <activity
             android:name=".view.MoviesInfo"
             android:label="@string/title_activity_movies_info"
-            android:parentActivityName=".view.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.popularmovies.view.MainActivity" />
         </activity>
         <activity android:name=".view.MainActivity">
             <intent-filter>

@@ -2,8 +2,9 @@ package com.example.popularmovies.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import com.bumptech.glide.Glide;
 import com.example.popularmovies.R;
 import com.example.popularmovies.model.Movie;
 import com.example.popularmovies.view.MoviesInfo;
+import com.varunest.sparkbutton.SparkButton;
+import com.varunest.sparkbutton.SparkButtonBuilder;
 
 import java.util.ArrayList;
 
@@ -60,6 +63,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
             movieTitle=itemView.findViewById(R.id.tvTitle);
             rating=itemView.findViewById(R.id.tvRating);
             movieImage=itemView.findViewById(R.id.ivMovie);
+            SparkButton sparkButton=new SparkButtonBuilder(context)
+                    .setSecondaryColor(ContextCompat.getColor(context,R.color.heart_secondary_color))
+                    .setActiveImage(R.drawable.ic_heart_on)
+                    .setInactiveImage(R.drawable.ic_heart_off)
+                    .setActiveImage(ContextCompat.getColor(context,R.color.heart_primary_color)).build();
+            sparkButton=itemView.findViewById(R.id.heart_button);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
