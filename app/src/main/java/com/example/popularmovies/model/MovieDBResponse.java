@@ -18,7 +18,7 @@ public class MovieDBResponse implements Parcelable
     @SerializedName("total_pages")
     @Expose
     private Integer totalPages;
-    @SerializedName("movies")
+    @SerializedName("results")
     @Expose
     private List<Movie> movies = null;
     public final static Parcelable.Creator<MovieDBResponse> CREATOR = new Creator<MovieDBResponse>() {
