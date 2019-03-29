@@ -1,6 +1,7 @@
 package com.example.popularmovies.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.popularmovies.R;
 import com.example.popularmovies.model.Movie;
+import com.example.popularmovies.view.MoviesInfo;
 
 import java.util.ArrayList;
 
@@ -53,11 +55,23 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         private TextView movieTitle,rating;
         private ImageView movieImage;
 
-        public MoviesViewHolder(@NonNull View itemView) {
+        public MoviesViewHolder(@NonNull final View itemView) {
             super(itemView);
             movieTitle=itemView.findViewById(R.id.tvTitle);
             rating=itemView.findViewById(R.id.tvRating);
             movieImage=itemView.findViewById(R.id.ivMovie);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position=getAdapterPosition();
+                    if(position!=RecyclerView.NO_POSITION) {
+                        Movie movie = movies.get(position);
+                        Intent i = new Intent(context, MoviesInfo.class);
+                        i.putExtra("movie", movie);
+                        context.startActivity(i);
+                    }
+                }
+            });
         }
     }
 }
