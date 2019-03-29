@@ -13,17 +13,13 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "favourite_movies")
 public class Movie implements Parcelable
 {
 
-    @ColumnInfo(name = "vote_count")
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
 
-    @ColumnInfo(name = "id")
-    @PrimaryKey(autoGenerate = true)
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -32,12 +28,10 @@ public class Movie implements Parcelable
     @Expose
     private Boolean video;
 
-    @ColumnInfo(name = "vote_average")
     @SerializedName("vote_average")
     @Expose
     private Double voteAverage;
 
-    @ColumnInfo(name = "title")
     @SerializedName("title")
     @Expose
     private String title;
@@ -47,7 +41,6 @@ public class Movie implements Parcelable
     @Expose
     private Double popularity;
 
-    @ColumnInfo(name = "poster_path")
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
@@ -77,12 +70,10 @@ public class Movie implements Parcelable
     @Expose
     private Boolean adult;
 
-    @ColumnInfo(name = "overview")
     @SerializedName("overview")
     @Expose
     private String overview;
 
-    @ColumnInfo(name = "release_date")
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
@@ -119,7 +110,6 @@ public class Movie implements Parcelable
         this.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
     }
 
-    @Ignore
     public Movie() {
     }
 

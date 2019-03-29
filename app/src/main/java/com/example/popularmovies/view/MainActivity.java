@@ -17,6 +17,7 @@ import com.example.popularmovies.R;
 import com.example.popularmovies.adapter.MoviesAdapter;
 import com.example.popularmovies.model.Movie;
 import com.example.popularmovies.model.MovieDBResponse;
+import com.example.popularmovies.repository.Repository;
 import com.example.popularmovies.service.MovieDataService;
 import com.example.popularmovies.service.RetrofitInstance;
 
@@ -31,11 +32,12 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Movie> movies=new ArrayList<>();
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
-
+    private Repository repository;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        repository=new Repository(getApplication());
         getData();
         swipeRefreshLayout=findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.DKGRAY, Color.RED,Color.GREEN,Color.MAGENTA,Color.BLACK,Color.CYAN);
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showOnRecyclerView() {
         recyclerView=findViewById(R.id.recycler_view);
-        MoviesAdapter moviesAdapter= new MoviesAdapter(MainActivity.this,movies);
+        MoviesAdapter moviesAdapter= new MoviesAdapter(MainActivity.this,movies,repository);
         if(this.getResources().getConfiguration().orientation==Configuration.ORIENTATION_PORTRAIT)
         {
             recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this,2));

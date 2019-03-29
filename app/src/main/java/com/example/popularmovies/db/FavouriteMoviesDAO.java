@@ -1,10 +1,7 @@
-package com.example.popularmovies.adapter.db;
-
-import android.view.LayoutInflater;
+package com.example.popularmovies.db;
 
 import com.example.popularmovies.model.Movie;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.room.Dao;
@@ -16,11 +13,11 @@ import androidx.room.Query;
 public interface FavouriteMoviesDAO {
 
     @Insert
-    void insertFMovie(Movie movie);
+    void insertFMovie(FavouriteMoviesEntity movie);
 
     @Delete
-    void deleteFMovie(Movie movie);
+    void deleteFMovie(FavouriteMoviesEntity movie);
 
     @Query("select * from favourite_movies")
-    List<Movie> getAllFMovies();
+    List<FavouriteMoviesEntity> getAllFMovies();
 }

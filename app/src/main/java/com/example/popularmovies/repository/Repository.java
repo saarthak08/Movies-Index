@@ -2,14 +2,15 @@ package com.example.popularmovies.repository;
 
 import android.app.Application;
 
-import com.example.popularmovies.adapter.db.Database;
-import com.example.popularmovies.adapter.db.FavouriteMoviesDAO;
+import com.example.popularmovies.db.Database;
+import com.example.popularmovies.db.FavouriteMoviesDAO;
+import com.example.popularmovies.db.FavouriteMoviesEntity;
 import com.example.popularmovies.model.Movie;
 
 import java.util.List;
 
 public class Repository {
-    private List<Movie> movieList;
+    private List<FavouriteMoviesEntity> movieList;
     private FavouriteMoviesDAO favouriteMoviesDAO;
     public Repository(Application application)
     {
@@ -17,19 +18,19 @@ public class Repository {
         favouriteMoviesDAO=database.getFDAO();
     }
 
-    public List<Movie> getAllFMovies()
+    public List<FavouriteMoviesEntity> getAllFMovies()
     {
         movieList=favouriteMoviesDAO.getAllFMovies();
         return movieList;
     }
 
-    public void AddMovie()
+    public void AddMovie(Movie movie)
     {
-
+            new AddFMovie(favouriteMoviesDAO).execute(movie);
     }
 
-    public void DeleteMovie()
+    public void DeleteMovie(Movie movie)
     {
-
+            new DeleteFMovie(favouriteMoviesDAO).execute(movie);
     }
 }

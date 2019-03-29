@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.popularmovies.R;
 import com.example.popularmovies.model.Movie;
+import com.example.popularmovies.repository.Repository;
 import com.example.popularmovies.view.MoviesInfo;
 import com.varunest.sparkbutton.SparkButton;
 import com.varunest.sparkbutton.SparkButtonBuilder;
@@ -23,10 +24,12 @@ import java.util.ArrayList;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
     private Context context;
     private ArrayList<Movie> movies;
+    private Repository repository;
 
-    public MoviesAdapter(Context context, ArrayList<Movie> movies) {
+    public MoviesAdapter(Context context, ArrayList<Movie> movies,Repository repository) {
         this.context = context;
         this.movies = movies;
+        this.repository=repository;
     }
 
     @NonNull
@@ -79,6 +82,28 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
                         i.putExtra("movie", movie);
                         context.startActivity(i);
                     }
+                }
+            });
+            final SparkButton finalSparkButton = sparkButton;
+            sparkButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(finalSparkButton.isChecked())
+                    {
+                        int position=getAdapterPosition();
+                        if(position!=RecyclerView.NO_POSITION) {
+                            Movie movie = movies.get(position);
+                                repository.AddMovie(movie);
+                        }
+                    }
+                    else{
+                        int position=getAdapterPosition();
+                        if(position!=RecyclerView.NO_POSITION) {
+                            Movie movie = movies.get(position);
+                            repository.DeleteMovie(movie);
+                        }
+                    }
+
                 }
             });
         }
