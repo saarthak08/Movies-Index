@@ -9,7 +9,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@androidx.room.Database(entities = FavouriteMoviesEntity.class,version = 1)
+@androidx.room.Database(entities = Movie.class,version = 1)
 public abstract class Database extends RoomDatabase {
     public abstract FavouriteMoviesDAO getFDAO();
     private static Database instance;

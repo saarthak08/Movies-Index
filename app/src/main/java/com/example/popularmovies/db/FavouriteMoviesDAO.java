@@ -9,15 +9,17 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import static androidx.room.OnConflictStrategy.REPLACE;
+
 @Dao
 public interface FavouriteMoviesDAO {
 
-    @Insert
-    void insertFMovie(FavouriteMoviesEntity movie);
+    @Insert(onConflict = REPLACE)
+    void insertFMovie(Movie movie);
 
     @Delete
-    void deleteFMovie(FavouriteMoviesEntity movie);
+    void deleteFMovie(Movie movie);
 
     @Query("select * from favourite_movies")
-    List<FavouriteMoviesEntity> getAllFMovies();
+    List<Movie> getAllFMovies();
 }

@@ -3,7 +3,6 @@ package com.example.popularmovies.repository;
 import android.os.AsyncTask;
 
 import com.example.popularmovies.db.FavouriteMoviesDAO;
-import com.example.popularmovies.db.FavouriteMoviesEntity;
 import com.example.popularmovies.model.Movie;
 
 public class AddFMovie extends AsyncTask<Movie,Void,Void> {
@@ -15,13 +14,13 @@ public class AddFMovie extends AsyncTask<Movie,Void,Void> {
 
     @Override
     protected Void doInBackground(Movie... movies) {
-        FavouriteMoviesEntity favouriteMoviesEntity=new FavouriteMoviesEntity();
+        /*FavouriteMoviesEntity favouriteMoviesEntity=new FavouriteMoviesEntity();
         favouriteMoviesEntity.setTitle(movies[0].getTitle());
         favouriteMoviesEntity.setOverview(movies[0].getOverview());
         favouriteMoviesEntity.setPosterPath(movies[0].getPosterPath());
         favouriteMoviesEntity.setVoteAverage(movies[0].getVoteAverage());
-        favouriteMoviesEntity.setId(movies[0].getId());
-        favouriteMoviesDAO.insertFMovie(favouriteMoviesEntity);
+        favouriteMoviesEntity.setId(movies[0].getId());*/
+        favouriteMoviesDAO.insertFMovie(movies[0]);
         return null;
     }
 }

@@ -8,78 +8,94 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+@Entity(tableName = "favourite_movies")
 public class Movie implements Parcelable
 {
 
+    @ColumnInfo(name = "vote_count")
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
 
+    @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true)
     @SerializedName("id")
     @Expose
     private Integer id;
 
+    @ColumnInfo(name = "video")
     @SerializedName("video")
     @Expose
     private Boolean video;
 
+    @ColumnInfo(name = "vote_average")
     @SerializedName("vote_average")
     @Expose
     private Double voteAverage;
 
+    @ColumnInfo(name = "title")
     @SerializedName("title")
     @Expose
     private String title;
 
-
+    @ColumnInfo(name = "popularity")
     @SerializedName("popularity")
     @Expose
     private Double popularity;
 
+    @ColumnInfo(name = "poster_path")
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
 
 
+    @ColumnInfo(name = "original_language")
     @SerializedName("original_language")
     @Expose
     private String originalLanguage;
 
-
+    @ColumnInfo(name = "original_title")
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
 
 
+    @Ignore
     @SerializedName("genre_ids")
     @Expose
     private List<Integer> genreIds = new ArrayList<>();
 
 
+    @ColumnInfo(name = "backdrop_path")
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
 
-
+    @ColumnInfo(name = "adult")
     @SerializedName("adult")
     @Expose
     private Boolean adult;
 
+    @ColumnInfo(name = "overview")
     @SerializedName("overview")
     @Expose
     private String overview;
 
+    @ColumnInfo(name = "release_date")
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
+
+    @Ignore
     public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
 
-
+        @Ignore
         @SuppressWarnings({
                 "unchecked"
         })
@@ -87,12 +103,14 @@ public class Movie implements Parcelable
             return new Movie(in);
         }
 
+        @Ignore
         public Movie[] newArray(int size) {
             return (new Movie[size]);
         }
 
     };
 
+    @Ignore
     protected Movie(Parcel in) {
         this.voteCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -110,7 +128,24 @@ public class Movie implements Parcelable
         this.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
     }
 
+    @Ignore
     public Movie() {
+    }
+
+    public Movie(Integer voteCount, Integer id, Boolean video, Double voteAverage, String title, Double popularity, String posterPath, String originalLanguage, String originalTitle, String backdropPath, Boolean adult, String overview, String releaseDate) {
+        this.voteCount = voteCount;
+        this.id = id;
+        this.video = video;
+        this.voteAverage = voteAverage;
+        this.title = title;
+        this.popularity = popularity;
+        this.posterPath = posterPath;
+        this.originalLanguage = originalLanguage;
+        this.originalTitle = originalTitle;
+        this.backdropPath = backdropPath;
+        this.adult = adult;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
     }
 
     public Integer getVoteCount() {
@@ -185,10 +220,12 @@ public class Movie implements Parcelable
         this.originalTitle = originalTitle;
     }
 
+    @Ignore
     public List<Integer> getGenreIds() {
         return genreIds;
     }
 
+    @Ignore
     public void setGenreIds(List<Integer> genreIds) {
         this.genreIds = genreIds;
     }
@@ -225,6 +262,7 @@ public class Movie implements Parcelable
         this.releaseDate = releaseDate;
     }
 
+    @Ignore
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(voteCount);
         dest.writeValue(id);
@@ -242,6 +280,7 @@ public class Movie implements Parcelable
         dest.writeValue(releaseDate);
     }
 
+    @Ignore
     public int describeContents() {
         return 0;
     }

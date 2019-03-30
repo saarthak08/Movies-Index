@@ -4,13 +4,12 @@ import android.app.Application;
 
 import com.example.popularmovies.db.Database;
 import com.example.popularmovies.db.FavouriteMoviesDAO;
-import com.example.popularmovies.db.FavouriteMoviesEntity;
 import com.example.popularmovies.model.Movie;
 
 import java.util.List;
 
 public class Repository {
-    private List<FavouriteMoviesEntity> movieList;
+    private List<Movie> movieList;
     private FavouriteMoviesDAO favouriteMoviesDAO;
     public Repository(Application application)
     {
@@ -18,7 +17,7 @@ public class Repository {
         favouriteMoviesDAO=database.getFDAO();
     }
 
-    public List<FavouriteMoviesEntity> getAllFMovies()
+    public List<Movie> getAllFMovies()
     {
         movieList=favouriteMoviesDAO.getAllFMovies();
         return movieList;
