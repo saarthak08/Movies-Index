@@ -6,11 +6,11 @@
 
 ## *Features:*
 - Search for popular movies.
-- Filter movies.
+- Filter movies on the basis of several factors such as most rated etc.
 - Mark a movie as favourite.
 - Search for TV-Shows.
-- Filter TV-Shows.
-- Mark a TV as favourite.
+- Filter TV-Shows on the basis of several factors.
+- Mark a TV-Show as favourite.
 
 
 
