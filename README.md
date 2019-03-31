@@ -5,10 +5,12 @@
 
 
 ## *Features:*
-- Filter movies on the basis of several factors such as popularity, most rated etc.
-- Mark a movie as favourite.
-- Filter TV-Shows on the basis of several factors such as popularity, most rated etc.
-- Mark a TV-Show as favourite.
+- Get Information about movies like Rating, Synopsis, Trailers etc.
+- Filter movies on the basis of factors such as popularity, most rated etc.
+- Mark a movie as favourite & review it separately.
+- Get Information about TV-Shows like Rating, Synopsis, Trailers etc.
+- Filter TV-Shows on the basis of factors such as popularity, most rated etc.
+- Mark a TV-Show as favourite & review it separately.
 
 
 
