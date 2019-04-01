@@ -3,9 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swiperefreshF"
+    <ScrollView
+        android:id="@+id/scrolleViewF"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorBackground"
@@ -14,7 +13,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvF"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </ScrollView>
 </layout>

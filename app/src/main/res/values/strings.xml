@@ -3,4 +3,11 @@
     <string name="title_activity_movies_info">MoviesInfo</string>
     <string name="mark_as_favourite">Favourite</string>
     <string name="favourite_movies">Favourite Movies</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
 </resources>

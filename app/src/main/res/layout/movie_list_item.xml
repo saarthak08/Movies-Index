@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:src="@drawable/loading"
-                app:imageUrl="@{`https://image.tmdb.org/t/p/w500`+ movie.posterPath}"
+                bind:imageUrl="@{`https://image.tmdb.org/t/p/w500`+ movie.posterPath}"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitXY"
                 tools:ignore="contentDescription" />
