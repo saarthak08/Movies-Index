@@ -25,5 +25,7 @@ public interface FavouriteMoviesDAO {
     LiveData<List<Movie>> getAllFMovies();
 
     @Query("select * from favourite_movies where title==:title")
-    LiveData<Movie> getMovie(String title);
+    Movie getMovie(String title);
+
+
 }

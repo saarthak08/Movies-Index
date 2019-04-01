@@ -1,13 +1,11 @@
 package com.example.popularmovies;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Handler;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,20 +14,19 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.popularmovies.adapter.MoviesAdapter;
 import com.example.popularmovies.databinding.ActivityMainBinding;
 import com.example.popularmovies.model.Movie;
 import com.example.popularmovies.model.MovieDBResponse;
-import com.example.popularmovies.repository.Repository;
 import com.example.popularmovies.service.MovieDataService;
 import com.example.popularmovies.service.RetrofitInstance;
-import com.example.popularmovies.viewmodel.MainActivityViewModel;
+import com.example.popularmovies.viewmodel.MainViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,13 +37,13 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Movie> movieList=new ArrayList<>();
     private RecyclerView recyclerView;
     private ActivityMainBinding activityMainBinding;
-    private MainActivityViewModel viewModel;
+    private MainViewModel viewModel;
     private SwipeRefreshLayout swipeRefreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        viewModel= ViewModelProviders.of(MainActivity.this).get(MainActivityViewModel.class);
+        viewModel= ViewModelProviders.of(MainActivity.this).get(MainViewModel.class);
         activityMainBinding= DataBindingUtil.setContentView(MainActivity.this,R.layout.activity_main);
         getSupportActionBar().setTitle("Popular Movies");
         getData();
@@ -72,10 +69,11 @@ public class MainActivity extends AppCompatActivity {
                 if(movieDBResponse!=null&&movieDBResponse.getMovies()!=null)
                 {
                     movieList=(ArrayList<Movie>)movieDBResponse.getMovies();
-                    for(Movie m:movieList)
+                  /*  for(Movie m:movieList)
                     {
                         viewModel.AddMovie(m);
-                    }
+                    }*/
+                    //movieList.get(1).setF_enabled(true);
                     showOnRecyclerView();
                 }
             }
@@ -107,5 +105,23 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         moviesAdapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_movies,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id=item.getItemId();
+        switch (id){
+            case R.id.fmv:{
+                Intent intent=new Intent(MainActivity.this,FavouriteMovies.class);
+                startActivity(intent);
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

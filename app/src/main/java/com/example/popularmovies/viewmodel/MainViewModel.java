@@ -15,15 +15,15 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-public class MainActivityViewModel  extends AndroidViewModel {
+public class MainViewModel extends AndroidViewModel {
     private Repository repository;
 
-    public MainActivityViewModel(@NonNull Application application) {
+    public MainViewModel(@NonNull Application application) {
         super(application);
         repository=new Repository(application);
     }
 
-    public LiveData<Movie> getMovie(String id)
+    public Movie getMovie(String id)
     {
         return repository.getMovie(id);
     }

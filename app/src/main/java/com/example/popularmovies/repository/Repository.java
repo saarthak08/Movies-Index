@@ -9,6 +9,7 @@ import com.example.popularmovies.model.Movie;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import androidx.lifecycle.LiveData;
 
@@ -26,7 +27,7 @@ public class Repository {
         return favouriteMoviesDAO.getAllFMovies();
     }
 
-    public LiveData<Movie> getMovie(String id)
+    public Movie getMovie(String id)
     {
         return favouriteMoviesDAO.getMovie(id);
     }
@@ -40,4 +41,5 @@ public class Repository {
     {
             new DeleteFMovie(favouriteMoviesDAO).execute(movie);
     }
+
 }

@@ -17,7 +17,7 @@ public abstract class Database extends RoomDatabase {
     {
         if(instance ==null)
         {
-            instance= Room.databaseBuilder(context.getApplicationContext(),Database.class,"TMDB").addCallback(callback).fallbackToDestructiveMigration()
+            instance= Room.databaseBuilder(context.getApplicationContext(),Database.class,"TMDB").addCallback(callback).allowMainThreadQueries().fallbackToDestructiveMigration()
                     .build();
         }
         return instance;

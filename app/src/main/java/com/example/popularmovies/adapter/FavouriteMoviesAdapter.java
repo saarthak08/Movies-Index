@@ -21,11 +21,11 @@ import com.example.popularmovies.MoviesInfo;
 
 import java.util.ArrayList;
 
-public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
+public class FavouriteMoviesAdapter extends RecyclerView.Adapter<FavouriteMoviesAdapter.FMoviesViewHolder> {
     private Context context;
     private ArrayList<Movie> movies;
 
-    public MoviesAdapter(Context context, ArrayList<Movie> movies) {
+    public FavouriteMoviesAdapter(Context context, ArrayList<Movie> movies) {
         this.context = context;
         this.movies = movies;
     }
@@ -41,14 +41,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
     @NonNull
     @Override
-    public MoviesViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public FMoviesViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         MovieListItemBinding movieListItemBinding = DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()),
                 R.layout.movie_list_item, viewGroup, false);
-        return new MoviesViewHolder(movieListItemBinding);
+        return new FMoviesViewHolder(movieListItemBinding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MoviesViewHolder moviesViewHolder, int i) {
+    public void onBindViewHolder(@NonNull FMoviesViewHolder moviesViewHolder, int i) {
         Movie movie = movies.get(i);
         moviesViewHolder.movieListItemBinding.setMovie(movie);
     }
@@ -59,10 +59,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         return movies.size();
     }
 
-    class MoviesViewHolder extends RecyclerView.ViewHolder {
+    class FMoviesViewHolder extends RecyclerView.ViewHolder {
         private MovieListItemBinding movieListItemBinding;
 
-        public MoviesViewHolder(@NonNull final MovieListItemBinding movieListItemBinding) {
+        public FMoviesViewHolder(@NonNull final MovieListItemBinding movieListItemBinding) {
             super(movieListItemBinding.getRoot());
             this.movieListItemBinding = movieListItemBinding;
             movieListItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
@@ -73,6 +73,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
                         Movie movie = movies.get(position);
                         Intent i = new Intent(context, MoviesInfo.class);
                         i.putExtra("movie", movie);
+                        i.putExtra("boolean",movie.getF_enabled());
                         context.startActivity(i);
                     }
                 }

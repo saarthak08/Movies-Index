@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.View;
+import android.widget.CheckBox;
 
 import com.example.popularmovies.BR;
 import com.google.gson.annotations.Expose;
@@ -97,9 +99,6 @@ public class Movie extends BaseObservable implements Parcelable
     @Expose
     private String releaseDate;
 
-    @Expose(serialize = false, deserialize = false)
-    @ColumnInfo(name = "f_enabled")
-    private boolean f_enabled;
 
     @Ignore
     public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -141,7 +140,7 @@ public class Movie extends BaseObservable implements Parcelable
     public Movie() {
     }
 
-    public Movie(Integer voteCount,Boolean f_enabled, Integer id, Boolean video, Double voteAverage, String title, Double popularity, String posterPath, String originalLanguage, String originalTitle, String backdropPath, Boolean adult, String overview, String releaseDate) {
+    public Movie(Integer voteCount, Integer id, Boolean video, Double voteAverage, String title, Double popularity, String posterPath, String originalLanguage, String originalTitle, String backdropPath, Boolean adult, String overview, String releaseDate) {
         this.voteCount = voteCount;
         this.id = id;
         this.video = video;
@@ -155,18 +154,7 @@ public class Movie extends BaseObservable implements Parcelable
         this.adult = adult;
         this.overview = overview;
         this.releaseDate = releaseDate;
-        this.f_enabled=f_enabled;
 
-    }
-
-    @Bindable
-    public boolean getF_enabled() {
-        return f_enabled;
-    }
-
-    public void setF_enabled(boolean f_enabled) {
-        this.f_enabled = f_enabled;
-        notifyPropertyChanged(BR.f_enabled);
     }
 
     @Bindable
