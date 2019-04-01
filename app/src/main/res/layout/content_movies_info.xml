@@ -1,79 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#BD9C78"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.popularmovies.view.MoviesInfo"
-    tools:showIn="@layout/activity_movies_info">
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="contentMovie"
+            type="com.example.popularmovies.model.Movie">
 
-    <LinearLayout
-        android:id="@+id/ad"
+        </variable>
+    </data>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="#77A1CC"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="com.example.popularmovies.MoviesInfo"
+        tools:ignore="PrivateResource"
+        tools:showIn="@layout/activity_movies_info">
 
-        <ScrollView
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ad"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:showIn="@layout/activity_movies_info">
+            android:orientation="vertical">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <TextView
+                android:id="@+id/tvMovieTitle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="3dp"
+                android:padding="16dp"
+                android:text="@{`Original Title:\n`+contentMovie.title}"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_constraintLeft_creator="1"
+                tools:layout_constraintTop_creator="1" />
 
+            <TextView
+                android:id="@+id/tvMovieRating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{`Rating: `+contentMovie.voteAverage}"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:padding="16dp"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvMovieTitle"
+                tools:layout_constraintTop_creator="1" />
 
-                <TextView
-                    android:id="@+id/tvMovieTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="3dp"
-                    android:padding="16dp"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_constraintLeft_creator="1"
-                    tools:layout_constraintTop_creator="1" />
+            <TextView
+                android:id="@+id/tvReleaseDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{`Release Date: `+contentMovie.releaseDate}"
+                android:layout_marginLeft="10dp"
+                android:padding="16dp"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvMovieRating" />
 
-                <TextView
-                    android:id="@+id/tvMovieRating"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:padding="16dp"
-                    android:textSize="20sp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvMovieTitle"
-                    tools:layout_constraintTop_creator="1" />
+            <TextView
+                android:id="@+id/tvPlotsynopsis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{`Overview:\n`+ contentMovie.overview}"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:padding="16dp"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
-                    android:id="@+id/tvReleaseDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:padding="16dp"
-                    android:textSize="20sp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvMovieRating" />
-
-                <TextView
-                    android:id="@+id/tvPlotsynopsis"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:padding="16dp"
-                    android:textSize="20sp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </ScrollView>
-
-    </LinearLayout>
-
-</RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

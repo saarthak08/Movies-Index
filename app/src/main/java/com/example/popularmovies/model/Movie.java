@@ -5,17 +5,22 @@ import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.popularmovies.BR;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.InverseBindingAdapter;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "favourite_movies")
-public class Movie implements Parcelable
+public class Movie extends BaseObservable implements Parcelable
 {
 
     @ColumnInfo(name = "vote_count")
@@ -92,6 +97,10 @@ public class Movie implements Parcelable
     @Expose
     private String releaseDate;
 
+    @Expose(serialize = false, deserialize = false)
+    @ColumnInfo(name = "f_enabled")
+    private boolean f_enabled;
+
     @Ignore
     public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
 
@@ -132,7 +141,7 @@ public class Movie implements Parcelable
     public Movie() {
     }
 
-    public Movie(Integer voteCount, Integer id, Boolean video, Double voteAverage, String title, Double popularity, String posterPath, String originalLanguage, String originalTitle, String backdropPath, Boolean adult, String overview, String releaseDate) {
+    public Movie(Integer voteCount,Boolean f_enabled, Integer id, Boolean video, Double voteAverage, String title, Double popularity, String posterPath, String originalLanguage, String originalTitle, String backdropPath, Boolean adult, String overview, String releaseDate) {
         this.voteCount = voteCount;
         this.id = id;
         this.video = video;
@@ -146,78 +155,109 @@ public class Movie implements Parcelable
         this.adult = adult;
         this.overview = overview;
         this.releaseDate = releaseDate;
+        this.f_enabled=f_enabled;
+
     }
 
+    @Bindable
+    public boolean getF_enabled() {
+        return f_enabled;
+    }
+
+    public void setF_enabled(boolean f_enabled) {
+        this.f_enabled = f_enabled;
+        notifyPropertyChanged(BR.f_enabled);
+    }
+
+    @Bindable
     public Integer getVoteCount() {
         return voteCount;
     }
 
     public void setVoteCount(Integer voteCount) {
         this.voteCount = voteCount;
+        notifyPropertyChanged(BR.voteCount);
     }
 
+    @Bindable
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+        notifyPropertyChanged(BR.id);
     }
 
+    @Bindable
     public Boolean getVideo() {
         return video;
     }
 
     public void setVideo(Boolean video) {
         this.video = video;
+        notifyPropertyChanged(BR.video);
     }
 
+    @Bindable
     public Double getVoteAverage() {
         return voteAverage;
     }
 
     public void setVoteAverage(Double voteAverage) {
         this.voteAverage = voteAverage;
+
+        notifyPropertyChanged(BR.voteAverage);
     }
 
+    @Bindable
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
+        notifyPropertyChanged(BR.title);
     }
 
+    @Bindable
     public Double getPopularity() {
         return popularity;
     }
 
     public void setPopularity(Double popularity) {
         this.popularity = popularity;
+        notifyPropertyChanged(BR.popularity);
     }
 
+    @Bindable
     public String getPosterPath() {
         return posterPath;
     }
 
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
+        notifyPropertyChanged(BR.posterPath);
     }
 
+    @Bindable
     public String getOriginalLanguage() {
         return originalLanguage;
     }
 
     public void setOriginalLanguage(String originalLanguage) {
         this.originalLanguage = originalLanguage;
+        notifyPropertyChanged(BR.originalLanguage);
     }
 
+    @Bindable
     public String getOriginalTitle() {
         return originalTitle;
     }
 
     public void setOriginalTitle(String originalTitle) {
         this.originalTitle = originalTitle;
+        notifyPropertyChanged(BR.originalTitle);
     }
 
     @Ignore
@@ -230,36 +270,44 @@ public class Movie implements Parcelable
         this.genreIds = genreIds;
     }
 
+    @Bindable
     public String getBackdropPath() {
         return backdropPath;
     }
 
     public void setBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
+        notifyPropertyChanged(BR.backdropPath);
     }
 
+    @Bindable
     public Boolean getAdult() {
         return adult;
     }
 
     public void setAdult(Boolean adult) {
         this.adult = adult;
+        notifyPropertyChanged(BR.adult);
     }
 
+    @Bindable
     public String getOverview() {
         return overview;
     }
 
     public void setOverview(String overview) {
         this.overview = overview;
+        notifyPropertyChanged(BR.overview);
     }
 
+    @Bindable
     public String getReleaseDate() {
         return releaseDate;
     }
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+        notifyPropertyChanged(BR.releaseDate);
     }
 
     @Ignore

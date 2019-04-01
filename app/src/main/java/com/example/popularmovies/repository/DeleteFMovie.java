@@ -14,12 +14,6 @@ public class DeleteFMovie extends AsyncTask<Movie, Void,Void> {
 
     @Override
     protected Void doInBackground(Movie... movies) {
-        /*FavouriteMoviesEntity favouriteMoviesEntity=new FavouriteMoviesEntity();
-        favouriteMoviesEntity.setTitle(movies[0].getTitle());
-        favouriteMoviesEntity.setOverview(movies[0].getOverview());
-        favouriteMoviesEntity.setPosterPath(movies[0].getPosterPath());
-        favouriteMoviesEntity.setVoteAverage(movies[0].getVoteAverage());
-        favouriteMoviesEntity.setId(movies[0].getId());*/
         favouriteMoviesDAO.deleteFMovie(movies[0]);
         return null;
     }

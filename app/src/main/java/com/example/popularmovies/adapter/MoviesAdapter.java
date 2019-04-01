@@ -4,18 +4,29 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.databinding.Bindable;
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Ignore;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.popularmovies.MainActivity;
 import com.example.popularmovies.R;
+import com.example.popularmovies.databinding.MovieListItemBinding;
 import com.example.popularmovies.model.Movie;
 import com.example.popularmovies.repository.Repository;
-import com.example.popularmovies.view.MoviesInfo;
+import com.example.popularmovies.MoviesInfo;
+import com.example.popularmovies.viewmodel.MainActivityViewModel;
 import com.varunest.sparkbutton.SparkButton;
 import com.varunest.sparkbutton.SparkButtonBuilder;
 
@@ -24,86 +35,57 @@ import java.util.ArrayList;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
     private Context context;
     private ArrayList<Movie> movies;
-    private Repository repository;
 
-    public MoviesAdapter(Context context, ArrayList<Movie> movies,Repository repository) {
+    public MoviesAdapter(Context context, ArrayList<Movie> movies) {
         this.context = context;
         this.movies = movies;
-        this.repository=repository;
     }
+
+    @BindingAdapter({"bind:imageUrl"})
+    public static void loadImage(ImageView view, String url) {
+        Glide.with(view.getContext())
+                .load(url)
+                .placeholder(R.drawable.loading)
+                .into(view);
+    }
+
 
     @NonNull
     @Override
     public MoviesViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_list_item,viewGroup,false);
-        return new MoviesViewHolder(view);
+        MovieListItemBinding movieListItemBinding = DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()),
+                R.layout.movie_list_item, viewGroup, false);
+        return new MoviesViewHolder(movieListItemBinding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MoviesViewHolder moviesViewHolder, int i) {
-        moviesViewHolder.movieTitle.setText(movies.get(i).getTitle());
-        moviesViewHolder.rating.setText(Double.toString(movies.get(i).getVoteAverage()));
-        String imagePath="https://image.tmdb.org/t/p/w500"+movies.get(i).getPosterPath();
-
-        Glide.with(context)
-                .load(imagePath)
-                .placeholder(R.drawable.loading)
-                .into(moviesViewHolder.movieImage);
-
+        Movie movie = movies.get(i);
+        moviesViewHolder.movieListItemBinding.setMovie(movie);
     }
+
 
     @Override
     public int getItemCount() {
         return movies.size();
     }
 
-    class MoviesViewHolder extends RecyclerView.ViewHolder{
-        private TextView movieTitle,rating;
-        private ImageView movieImage;
+    class MoviesViewHolder extends RecyclerView.ViewHolder {
+        private MovieListItemBinding movieListItemBinding;
 
-        public MoviesViewHolder(@NonNull final View itemView) {
-            super(itemView);
-            movieTitle=itemView.findViewById(R.id.tvTitle);
-            rating=itemView.findViewById(R.id.tvRating);
-            movieImage=itemView.findViewById(R.id.ivMovie);
-            SparkButton sparkButton=new SparkButtonBuilder(context)
-                    .setSecondaryColor(ContextCompat.getColor(context,R.color.heart_secondary_color))
-                    .setActiveImage(R.drawable.ic_heart_on)
-                    .setInactiveImage(R.drawable.ic_heart_off)
-                    .setActiveImage(ContextCompat.getColor(context,R.color.heart_primary_color)).build();
-            sparkButton=itemView.findViewById(R.id.heart_button);
-            itemView.setOnClickListener(new View.OnClickListener() {
+        public MoviesViewHolder(@NonNull final MovieListItemBinding movieListItemBinding) {
+            super(movieListItemBinding.getRoot());
+            this.movieListItemBinding = movieListItemBinding;
+            movieListItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position=getAdapterPosition();
-                    if(position!=RecyclerView.NO_POSITION) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
                         Movie movie = movies.get(position);
                         Intent i = new Intent(context, MoviesInfo.class);
                         i.putExtra("movie", movie);
                         context.startActivity(i);
                     }
-                }
-            });
-            final SparkButton finalSparkButton = sparkButton;
-            sparkButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(finalSparkButton.isChecked())
-                    {
-                        int position=getAdapterPosition();
-                        if(position!=RecyclerView.NO_POSITION) {
-                            Movie movie = movies.get(position);
-                                repository.AddMovie(movie);
-                        }
-                    }
-                    else{
-                        int position=getAdapterPosition();
-                        if(position!=RecyclerView.NO_POSITION) {
-                            Movie movie = movies.get(position);
-                            repository.DeleteMovie(movie);
-                        }
-                    }
-
                 }
             });
         }

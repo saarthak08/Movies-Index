@@ -7,25 +7,33 @@ import com.example.popularmovies.db.FavouriteMoviesDAO;
 import com.example.popularmovies.model.Movie;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import androidx.lifecycle.LiveData;
 
 public class Repository {
-    private List<Movie> movieList;
     private FavouriteMoviesDAO favouriteMoviesDAO;
     public Repository(Application application)
     {
         Database database=Database.getInstance(application);
         favouriteMoviesDAO=database.getFDAO();
+
     }
 
-    public List<Movie> getAllFMovies()
+    public LiveData<List<Movie>> getAllFMovies()
     {
-        movieList=favouriteMoviesDAO.getAllFMovies();
-        return movieList;
+        return favouriteMoviesDAO.getAllFMovies();
     }
 
+    public LiveData<Movie> getMovie(String id)
+    {
+        return favouriteMoviesDAO.getMovie(id);
+    }
     public void AddMovie(Movie movie)
     {
-            new AddFMovie(favouriteMoviesDAO).execute(movie);
+
+        new AddFMovie(favouriteMoviesDAO).execute(movie);
     }
 
     public void DeleteMovie(Movie movie)

@@ -1,8 +1,14 @@
-package com.example.popularmovies.view;
+package com.example.popularmovies;
 
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Handler;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,18 +16,20 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.widget.Toast;
 
-import com.example.popularmovies.BuildConfig;
-import com.example.popularmovies.R;
 import com.example.popularmovies.adapter.MoviesAdapter;
+import com.example.popularmovies.databinding.ActivityMainBinding;
 import com.example.popularmovies.model.Movie;
 import com.example.popularmovies.model.MovieDBResponse;
 import com.example.popularmovies.repository.Repository;
 import com.example.popularmovies.service.MovieDataService;
 import com.example.popularmovies.service.RetrofitInstance;
+import com.example.popularmovies.viewmodel.MainActivityViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,17 +37,20 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private String ApiKey= BuildConfig.ApiKey;
-    ArrayList<Movie> movies=new ArrayList<>();
+    ArrayList<Movie> movieList=new ArrayList<>();
     private RecyclerView recyclerView;
+    private ActivityMainBinding activityMainBinding;
+    private MainActivityViewModel viewModel;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private Repository repository;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        repository=new Repository(getApplication());
+        viewModel= ViewModelProviders.of(MainActivity.this).get(MainActivityViewModel.class);
+        activityMainBinding= DataBindingUtil.setContentView(MainActivity.this,R.layout.activity_main);
+        getSupportActionBar().setTitle("Popular Movies");
         getData();
-        swipeRefreshLayout=findViewById(R.id.swiperefresh);
+        swipeRefreshLayout=activityMainBinding.swiperefresh;
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.DKGRAY, Color.RED,Color.GREEN,Color.MAGENTA,Color.BLACK,Color.CYAN);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -60,14 +71,18 @@ public class MainActivity extends AppCompatActivity {
                 MovieDBResponse movieDBResponse=response.body();
                 if(movieDBResponse!=null&&movieDBResponse.getMovies()!=null)
                 {
-                    movies=(ArrayList<Movie>)movieDBResponse.getMovies();
+                    movieList=(ArrayList<Movie>)movieDBResponse.getMovies();
+                    for(Movie m:movieList)
+                    {
+                        viewModel.AddMovie(m);
+                    }
                     showOnRecyclerView();
                 }
             }
 
             @Override
             public void onFailure(Call<MovieDBResponse> call, Throwable t) {
-                Toast.makeText(MainActivity.this,"Error!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"Error!"+ t.getMessage().trim(),Toast.LENGTH_SHORT).show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -80,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showOnRecyclerView() {
-        recyclerView=findViewById(R.id.recycler_view);
-        MoviesAdapter moviesAdapter= new MoviesAdapter(MainActivity.this,movies,repository);
+        recyclerView=activityMainBinding.rv;
+        MoviesAdapter moviesAdapter= new MoviesAdapter(MainActivity.this,movieList);
         if(this.getResources().getConfiguration().orientation==Configuration.ORIENTATION_PORTRAIT)
         {
             recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this,2));
