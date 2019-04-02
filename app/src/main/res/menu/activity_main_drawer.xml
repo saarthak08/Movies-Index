@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/group1">
+        <item
+            android:id="@+id/popmovies"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/popular_movies" />
+        <item
+            android:id="@+id/favmovies"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/favourite_movies" />
+    </group>
+
+    <item android:title="@string/tv_shows">
+        <menu>
+            <item
+                android:id="@+id/poptvshows"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/popular_tv_shows" />
+            <item
+                android:id="@+id/favtvshows"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/favourite_tv_shows" />
+        </menu>
+    </item>
+
+</menu>

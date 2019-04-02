@@ -1,6 +1,7 @@
 package com.example.popularmovies;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,16 +37,14 @@ public class MoviesInfo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies_info);
+        Toolbar toolbar=findViewById(R.id.toolbar);
         mainViewModel= ViewModelProviders.of(MoviesInfo.this).get(MainViewModel.class);
         activityMoviesInfoBinding= DataBindingUtil.setContentView(MoviesInfo.this,R.layout.activity_movies_info);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         Intent i=getIntent();
         if(i.hasExtra("movie")) {
             movie = i.getParcelableExtra("movie");
             bool=i.getBooleanExtra("boolean",false);
             Toast.makeText(getApplicationContext(), "Swipe Image Up for more information!", Toast.LENGTH_LONG).show();
-            getSupportActionBar().setTitle(movie.getTitle());
             if(mainViewModel.getMovie(movie.getTitle())!=null)
             {
                 activityMoviesInfoBinding.secondaryLayout.sparkButton.setChecked(true);
