@@ -7,7 +7,7 @@
         android:id="@+id/group1">
         <item
             android:id="@+id/popmovies"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/popular_movies" />
         <item
             android:id="@+id/favmovies"
@@ -19,11 +19,11 @@
         <menu>
             <item
                 android:id="@+id/poptvshows"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/ic_menu_send"
                 android:title="@string/popular_tv_shows" />
             <item
                 android:id="@+id/favtvshows"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_menu_gallery"
                 android:title="@string/favourite_tv_shows" />
         </menu>
     </item>
