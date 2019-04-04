@@ -1,18 +1,16 @@
 package com.example.popularmovies;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.example.popularmovies.fragments.FavouriteMovies;
-import com.example.popularmovies.fragments.PopularMovies;
+import com.example.popularmovies.fragments.Movies;
 import com.example.popularmovies.model.Movie;
 import com.example.popularmovies.model.MovieDBResponse;
 import com.example.popularmovies.service.MovieDataService;
 import com.example.popularmovies.service.RetrofitInstance;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import android.os.Handler;
-import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -21,14 +19,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -36,19 +34,27 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    ProgressBar progressBar;
-    private String ApiKey= BuildConfig.ApiKey;
+    public static ProgressBar progressBar;
     public static ArrayList<Movie> movieList=new ArrayList<>();
     public boolean doubleBackToExitPressedOnce=false;
-    FragmentTransaction fragmentTransaction;
+    public static int category=0;
+    private NavigationView navigationView;
+    public static FragmentTransaction fragmentTransaction;
+    public static Movies movies=new Movies();
+    public static FragmentManager fragmentManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        if(BuildConfig.ApiKey.isEmpty())
+        {
+            Toast.makeText(MainActivity.this,"Please get the API key first",Toast.LENGTH_SHORT).show();
+        }
+        fragmentManager=getSupportFragmentManager();
+        navigationView= (NavigationView) findViewById(R.id.nav_view);
         progressBar=findViewById(R.id.progressBar);
-        fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer =findViewById(R.id.drawer_layout);
@@ -60,25 +66,43 @@ public class MainActivity extends AppCompatActivity
         progressBar.animate().alpha(1).setDuration(500);
         progressBar.setIndeterminate(true);
         navigationView.getMenu().getItem(0).setChecked(true);
-        getData();
+        getData(category,MainActivity.this);
     }
 
-    private void getData() {
+        public static void getData(int a, final Context context) {
         final MovieDataService movieDataService= RetrofitInstance.getService();
-        Call<MovieDBResponse> call=movieDataService.getPopularMovies(ApiKey);
+        String ApiKey= BuildConfig.ApiKey;
+        Call<MovieDBResponse> call;
+        if(a==0) {
+            call= movieDataService.getPopularMovies(ApiKey);
+        }else {
+            call = movieDataService.getTopRatedMovies(ApiKey);
+        }
         call.enqueue(new Callback<MovieDBResponse>() {
             @Override
             public void onResponse(Call<MovieDBResponse> call, Response<MovieDBResponse> response) {
                 MovieDBResponse movieDBResponse = response.body();
                 if (movieDBResponse != null && movieDBResponse.getMovies() != null) {
                     movieList = (ArrayList<Movie>) movieDBResponse.getMovies();
-                    progressBar.setIndeterminate(false);
-                    fragmentTransaction.add(R.id.frame_layout,new PopularMovies()).commitAllowingStateLoss();
-                }
+                    if(progressBar!=null) {
+                        progressBar.setIndeterminate(false);
+                    }
+                        if(fragmentManager.getFragments().isEmpty()) {
+                            fragmentTransaction=fragmentManager.beginTransaction();
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.add(R.id.frame_layout, movies).commitAllowingStateLoss();
+                        }
+                        else
+                        {
+                            fragmentTransaction=fragmentManager.beginTransaction();
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.replace(R.id.frame_layout,movies).commit();
+                        }
+              }
             }
             @Override
             public void onFailure(Call<MovieDBResponse> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Error!" + t.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error!" + t.getMessage().trim(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -113,7 +137,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.popmovies) {
             FragmentTransaction fragmentTransaction1;
             fragmentTransaction1=getSupportFragmentManager().beginTransaction();
-            fragmentTransaction1.replace(R.id.frame_layout,new PopularMovies()).commitAllowingStateLoss();
+            fragmentTransaction1.replace(R.id.frame_layout,new Movies()).commitAllowingStateLoss();
         } else if (id == R.id.favmovies) {
             FragmentTransaction fragmentTransaction1;
             fragmentTransaction1=getSupportFragmentManager().beginTransaction();

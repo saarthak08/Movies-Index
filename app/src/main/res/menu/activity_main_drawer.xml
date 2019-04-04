@@ -8,7 +8,7 @@
         <item
             android:id="@+id/popmovies"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/popular_movies" />
+            android:title="@string/movies" />
         <item
             android:id="@+id/favmovies"
             android:icon="@drawable/ic_menu_gallery"
@@ -20,7 +20,7 @@
             <item
                 android:id="@+id/poptvshows"
                 android:icon="@drawable/ic_menu_send"
-                android:title="@string/popular_tv_shows" />
+                android:title="@string/tv_shows" />
             <item
                 android:id="@+id/favtvshows"
                 android:icon="@drawable/ic_menu_gallery"

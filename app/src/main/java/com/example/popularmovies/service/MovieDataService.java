@@ -11,4 +11,7 @@ public interface MovieDataService {
 
     @GET("movie/popular")
     Call<MovieDBResponse> getPopularMovies(@Query("api_key")String apiKey);
+
+    @GET("movie/top_rated")
+    Call<MovieDBResponse> getTopRatedMovies(@Query("api_key")String apiKey);
 }

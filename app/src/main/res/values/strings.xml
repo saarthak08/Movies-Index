@@ -12,8 +12,25 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_main">Movies &amp; TV-Shows</string>
     <string name="popular_movies">Popular Movies</string>
-    <string name="tv_shows">TV-Shows</string>
     <string name="popular_tv_shows">Popular TV-Shows</string>
     <string name="favourite_tv_shows">Favourite TV-Shows</string>
-    <string name="created_by_n_saarthak_gupta">Created By:\nSaarthak Gupta</string>
+    <string name="created_by_n_saarthak_gupta">Created By:\n\t\t\tSaarthak Gupta</string>
+    <string name="movies">Movies</string>
+    <string name="tv_shows">TV-Shows</string>
+    <string name="filter_search">Filter Search</string>
+    <string name="categories">Categories</string>
+
+    <string-array name="categories">
+        <item>Popular Movies</item>
+        <item>Top Rated Movies</item>
+        <item>Certifications</item>
+        <item>Genres</item>
+        <item>Sorted by Average Rating</item>
+        <item>Sorted by Number of Votes</item>
+
+    </string-array>
+
 </resources>
+
+
+
