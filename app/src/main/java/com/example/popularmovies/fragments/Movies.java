@@ -179,11 +179,18 @@ public class Movies extends Fragment {
         });
         gridLayoutManager=new GridLayoutManager(getContext(),2);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-                    return 1;
-                }
-        });
+           @Override
+           public int getSpanSize(int position) {
+               switch(moviesAdapter.getItemViewType(position)){
+                   case 0:
+                       return 1;
+                   case 1:
+                       return 2;
+                   default:
+                       return -1;
+               }
+           }
+       });
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(moviesAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -191,7 +198,7 @@ public class Movies extends Fragment {
         paginationScrollListener = new PaginationScrollListener(gridLayoutManager) {
            @Override
            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-               if ((page + 1) <= MainActivity.totalPages) {
+               if((page + 1)< MainActivity.totalPages) {
                    loadMore(MainActivity.category,page + 1);
                }
            }
@@ -202,24 +209,24 @@ public class Movies extends Fragment {
     public void loadMore(int a, final int pages)
     {
         final MovieDataService movieDataService= RetrofitInstance.getService();
-        String ApiKey= BuildConfig.ApiKey;
+        String ApiKey=BuildConfig.ApiKey;
         Call<MovieDBResponse> call;
         if(a==0) {
-            call= movieDataService.getPopularMovies(ApiKey,pages);
+            call=movieDataService.getPopularMovies(ApiKey,pages);
         }else {
-            call = movieDataService.getTopRatedMovies(ApiKey,pages);
+            call=movieDataService.getTopRatedMovies(ApiKey,pages);
         }
         call.enqueue(new Callback<MovieDBResponse>() {
             @Override
             public void onResponse(Call<MovieDBResponse> call, Response<MovieDBResponse> response) {
                 MovieDBResponse movieDBResponse = response.body();
-                if (movieDBResponse != null && movieDBResponse.getMovies() != null) {
-                    if (pages == 1) {
-                        movieList = (ArrayList<Movie>) response.body().getMovies();
+                if (movieDBResponse != null&&movieDBResponse.getMovies()!=null) {
+                    if(pages==1) {
+                        movieList=(ArrayList<Movie>) response.body().getMovies();
                         totalPages = response.body().getTotalPages();
                         recyclerView.setAdapter(moviesAdapter);
                     } else {
-                        ArrayList<Movie> movies = (ArrayList<Movie>) response.body().getMovies();
+                        ArrayList<Movie> movies=(ArrayList<Movie>)response.body().getMovies();
                         for (Movie movie : movies) {
                             movieList.add(movie);
                             moviesAdapter.notifyItemInserted(movieList.size() - 1);
