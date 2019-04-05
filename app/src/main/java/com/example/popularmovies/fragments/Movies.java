@@ -82,6 +82,8 @@ public class Movies extends Fragment {
     private int totalPages;
     private int totalPagesGenre;
     private ArrayList<Discover> discovers=new ArrayList<>();
+    public static int genreid=MainActivity.genreid;
+
 
 
 
@@ -128,17 +130,22 @@ public class Movies extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        String[] listItems = getResources().getStringArray(R.array.categories);
-        selectedItem=MainActivity.category;
-       new AlertDialog.Builder(getContext()).setSingleChoiceItems(listItems, selectedItem, new DialogInterface.OnClickListener() {
+        String[] a=new String[MainActivity.genresLists.size()];
+        for (int i=0;i<MainActivity.genresLists.size();i++)
+        {
+            a[i]=MainActivity.genresLists.get(i).getName();
+        }
+        selectedItem=MainActivity.selected;
+       new AlertDialog.Builder(getContext()).setSingleChoiceItems(a, selectedItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                 /*   MainActivity.category=which;
-                    MainActivity.getDataFirst(which,getContext());
-                    for(int i=0;i<=getActivity().getSupportFragmentManager().getBackStackEntryCount();i++) {
-                        getActivity().getSupportFragmentManager().popBackStack();
-                    }
-                    dialog.dismiss();*/
+                genreid=MainActivity.genresLists.get(which).getId();
+                MainActivity.getFirstGenreData(genreid,getContext());
+                selectedItem=which;
+                dialog.dismiss();
+                for(int i=0;i<=getActivity().getSupportFragmentManager().getBackStackEntryCount();i++) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
 
             }
         }).show();
@@ -169,7 +176,8 @@ public class Movies extends Fragment {
         }
         else if(MainActivity.drawer==2)
        {
-           getActivity().setTitle("Discover By Genres");
+           getActivity().setTitle("Genre: "+MainActivity.genresLists.get(MainActivity.selected).getName());
+
        }
         context=getContext();
         movieList= MainActivity.movieList;

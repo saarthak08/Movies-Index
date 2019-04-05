@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     public static int totalPagesGenres;
     public static int drawer=0;
     public static int genreid;
+    public static int selected;
     public static ArrayList<Discover> discovers;
     public static ArrayList<GenresList> genresLists;
 
@@ -203,8 +204,10 @@ public class MainActivity extends AppCompatActivity
                     new MaterialDialog.Builder(MainActivity.this).title("Choose A Category").items(a).itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                         @Override
                         public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+
+                            selected=which;
                             genreid=genresLists.get(which).getId();
-                            getFirstGenreData(genreid);
+                            getFirstGenreData(genreid,MainActivity.this);
                             return false;
                         }
                     }).canceledOnTouchOutside(false).cancelable(false).show();
@@ -218,7 +221,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void getFirstGenreData(int genreid){
+    public static void getFirstGenreData(int genreid, final Context context){
         final MovieDataService movieDataService= RetrofitInstance.getService();
         String ApiKey= BuildConfig.ApiKey;
         Call<DiscoverDBResponse> call;
@@ -242,7 +245,7 @@ public class MainActivity extends AppCompatActivity
             }
             @Override
             public void onFailure(Call<DiscoverDBResponse> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Error!" + t.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error!" + t.getMessage().trim(), Toast.LENGTH_SHORT).show();
             }
         });
     }
