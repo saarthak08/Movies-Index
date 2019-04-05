@@ -6,14 +6,15 @@
     <group android:checkableBehavior="single"
         android:id="@+id/group1">
         <item
-            android:id="@+id/popmovies"
+            android:id="@+id/movies"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/tmdb_movies" />
+            android:title="@string/app_name" />
         <item
             android:id="@+id/favmovies"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/favourite_movies" />
     </group>
 
-        </menu>
+</menu>
+
 

@@ -22,15 +22,19 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import android.view.MenuItem;
+import android.widget.Adapter;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -42,9 +46,7 @@ public class MainActivity extends AppCompatActivity
     public static FragmentTransaction fragmentTransaction;
     public static Movies movies=new Movies();
     public static FragmentManager fragmentManager;
-    public static int pageIndex;
     public static int totalPages;
-    public static int currentPage;
 
 
     @Override
@@ -69,17 +71,16 @@ public class MainActivity extends AppCompatActivity
         progressBar.animate().alpha(1).setDuration(500);
         progressBar.setIndeterminate(true);
         navigationView.getMenu().getItem(0).setChecked(true);
-        getData(category,MainActivity.this);
+        getDataFirst(category,MainActivity.this);
     }
-
-        public static void getData(int a, final Context context) {
+        public static void getDataFirst(int a, final Context context) {
         final MovieDataService movieDataService= RetrofitInstance.getService();
         String ApiKey= BuildConfig.ApiKey;
         Call<MovieDBResponse> call;
         if(a==0) {
-            call= movieDataService.getPopularMovies(ApiKey,pageIndex);
+            call= movieDataService.getPopularMovies(ApiKey,1);
         }else {
-            call = movieDataService.getTopRatedMovies(ApiKey,pageIndex);
+            call = movieDataService.getTopRatedMovies(ApiKey,1);
         }
         call.enqueue(new Callback<MovieDBResponse>() {
             @Override
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity
                         {
                             fragmentTransaction=fragmentManager.beginTransaction();
                             fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.replace(R.id.frame_layout,movies).commit();
+                            fragmentTransaction.replace(R.id.frame_layout,movies).commitAllowingStateLoss();
                         }
               }
             }
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.popmovies) {
+        if (id == R.id.movies) {
             FragmentTransaction fragmentTransaction1;
             fragmentTransaction1=getSupportFragmentManager().beginTransaction();
             fragmentTransaction1.replace(R.id.frame_layout,new Movies()).commitAllowingStateLoss();
@@ -146,11 +147,6 @@ public class MainActivity extends AppCompatActivity
             FragmentTransaction fragmentTransaction1;
             fragmentTransaction1=getSupportFragmentManager().beginTransaction();
             fragmentTransaction1.replace(R.id.frame_layout,new FavouriteMovies()).commit();
-
-        } else if (id == R.id.poptvshows) {
-
-        } else if (id == R.id.favtvshows) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

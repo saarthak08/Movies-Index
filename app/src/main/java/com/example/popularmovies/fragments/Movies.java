@@ -22,6 +22,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -31,12 +34,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.example.popularmovies.BuildConfig;
 import com.example.popularmovies.MainActivity;
 import com.example.popularmovies.R;
 import com.example.popularmovies.adapter.MoviesAdapter;
 import com.example.popularmovies.databinding.FragmentMoviesBinding;
 import com.example.popularmovies.model.Movie;
+import com.example.popularmovies.model.MovieDBResponse;
+import com.example.popularmovies.service.MovieDataService;
+import com.example.popularmovies.service.RetrofitInstance;
 import com.example.popularmovies.utils.PaginationScrollListener;
 import com.example.popularmovies.viewmodel.MainViewModel;
 
@@ -58,18 +66,18 @@ public class Movies extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    ArrayList<Movie> movieList=new ArrayList<>();
+    private ArrayList<Movie> movieList=new ArrayList<>();
     private RecyclerView recyclerView;
+    private MoviesAdapter moviesAdapter;
     private Context context;
     private MainViewModel viewModel;
-    public static SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private FragmentMoviesBinding fragmentMoviesBinding;
     private int selectedItem=0;
-    public static int pageIndex;
     private PaginationScrollListener paginationScrollListener;
-    public static ProgressBar progressBar;
-    public static boolean isLoading=false;
-    public static boolean isLastPage=false;
+    GridLayoutManager gridLayoutManager;
+    private int totalPages;
+
 
 
     public Movies()
@@ -119,7 +127,7 @@ public class Movies extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                     MainActivity.category=which;
-                    MainActivity.getData(which,getContext());
+                    MainActivity.getDataFirst(which,getContext());
                     for(int i=0;i<=getActivity().getSupportFragmentManager().getBackStackEntryCount();i++) {
                         getActivity().getSupportFragmentManager().popBackStack();
                     }
@@ -156,23 +164,75 @@ public class Movies extends Fragment {
         context=getContext();
         movieList= MainActivity.movieList;
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.DKGRAY, Color.RED,Color.GREEN,Color.MAGENTA,Color.BLACK,Color.CYAN);
-        MoviesAdapter moviesAdapter= new MoviesAdapter(context,movieList);
+        moviesAdapter= new MoviesAdapter(context,movieList);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,new Movies()).commitAllowingStateLoss();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,new Movies()).commitAllowingStateLoss();
+
+                    }
+                },4000);
             }
         });
-        if(context.getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT)
-        {
-            recyclerView.setLayoutManager(new GridLayoutManager(context,2));
-        }
-        else
-        {recyclerView.setLayoutManager((new GridLayoutManager(context,4)));}
+        gridLayoutManager=new GridLayoutManager(getContext(),2);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return 1;
+                }
+        });
+        recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(moviesAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         moviesAdapter.notifyDataSetChanged();
+        paginationScrollListener = new PaginationScrollListener(gridLayoutManager) {
+           @Override
+           public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+               if ((page + 1) <= MainActivity.totalPages) {
+                   loadMore(MainActivity.category,page + 1);
+               }
+           }
+       };
+       recyclerView.addOnScrollListener(paginationScrollListener);
+    }
 
+    public void loadMore(int a, final int pages)
+    {
+        final MovieDataService movieDataService= RetrofitInstance.getService();
+        String ApiKey= BuildConfig.ApiKey;
+        Call<MovieDBResponse> call;
+        if(a==0) {
+            call= movieDataService.getPopularMovies(ApiKey,pages);
+        }else {
+            call = movieDataService.getTopRatedMovies(ApiKey,pages);
+        }
+        call.enqueue(new Callback<MovieDBResponse>() {
+            @Override
+            public void onResponse(Call<MovieDBResponse> call, Response<MovieDBResponse> response) {
+                MovieDBResponse movieDBResponse = response.body();
+                if (movieDBResponse != null && movieDBResponse.getMovies() != null) {
+                    if (pages == 1) {
+                        movieList = (ArrayList<Movie>) response.body().getMovies();
+                        totalPages = response.body().getTotalPages();
+                        recyclerView.setAdapter(moviesAdapter);
+                    } else {
+                        ArrayList<Movie> movies = (ArrayList<Movie>) response.body().getMovies();
+                        for (Movie movie : movies) {
+                            movieList.add(movie);
+                            moviesAdapter.notifyItemInserted(movieList.size() - 1);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieDBResponse> call, Throwable t) {
+
+            }
+        });
     }
 
 }
