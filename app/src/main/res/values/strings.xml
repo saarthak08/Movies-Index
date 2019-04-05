@@ -17,17 +17,7 @@
     <string name="tmdb_movies">TMDb Movies</string>
     <string name="top_rated_movies">Top Rated Movies</string>
     <string name="genres">Filter By Genres</string>
-    <string name="certifications">Filter By Certifications</string>
-
-    <string-array name="categories">
-        <item>Popular Movies</item>
-        <item>Top Rated Movies</item>
-        <item>Certifications</item>
-        <item>Genres</item>
-        <item>Sorted by Average Rating</item>
-        <item>Sorted by Number of Votes</item>
-
-    </string-array>
+    <string name="search_any_movie">Search Any Movie</string>
 
 </resources>
 

@@ -28,7 +28,8 @@ android {
         }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro -keep class android.support.v7.widget.SearchView { *; }\n' +
+                    ''
             buildConfigField 'String', "ApiKey", PopularMovies_APIKEY
             resValue 'string', "api_key", PopularMovies_APIKEY
         }

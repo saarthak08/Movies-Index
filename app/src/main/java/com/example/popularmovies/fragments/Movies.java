@@ -179,6 +179,10 @@ public class Movies extends Fragment {
            getActivity().setTitle("Genre: "+MainActivity.genresLists.get(MainActivity.selected).getName());
 
        }
+       else if(MainActivity.drawer==3)
+       {
+           getActivity().setTitle("Search Results: "+MainActivity.queryM);
+       }
         context=getContext();
         movieList= MainActivity.movieList;
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.DKGRAY, Color.RED,Color.GREEN,Color.MAGENTA,Color.BLACK,Color.CYAN);
@@ -189,8 +193,9 @@ public class Movies extends Fragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,new Movies()).commitAllowingStateLoss();
-
+                        if(getActivity().getSupportFragmentManager()!=null) {
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new Movies()).commitAllowingStateLoss();
+                        }
                     }
                 },4000);
             }

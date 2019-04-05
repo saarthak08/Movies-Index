@@ -1,8 +1,8 @@
 package com.example.popularmovies;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.popularmovies.fragments.FavouriteMovies;
 import com.example.popularmovies.fragments.Movies;
@@ -14,37 +14,34 @@ import com.example.popularmovies.model.Movie;
 import com.example.popularmovies.model.MovieDBResponse;
 import com.example.popularmovies.service.MovieDataService;
 import com.example.popularmovies.service.RetrofitInstance;
-
 import android.os.Handler;
-
 import com.example.popularmovies.utils.DiscoverToMovie;
 import com.google.android.material.navigation.NavigationView;
-
+import androidx.appcompat.widget.SearchView;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
     public static ProgressBar progressBar;
     public static ArrayList<Movie> movieList=new ArrayList<>();
     public boolean doubleBackToExitPressedOnce=false;
@@ -57,15 +54,100 @@ public class MainActivity extends AppCompatActivity
     public static int totalPagesGenres;
     public static int drawer=0;
     public static int genreid;
+    private ArrayAdapter<String> arrayAdapter;
     public static int selected;
     public static ArrayList<Discover> discovers;
     public static ArrayList<GenresList> genresLists;
+    public SearchView searchView;
+    public ArrayAdapter<String> adapter;
+    public static ArrayList<Discover> search;
+    public static ArrayList<Movie> moviesearch;
+    public static String queryM;
+    String[] fruits = {"Apple", "Banana", "Cherry", "Date", "Grape", "Kiwi", "Mango", "Pear"};
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_view,menu);
+        MenuItem menuItem = menu.findItem(R.id.app_bar_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        search(searchView);
+        return true;
+    }
+
+    public void search(final SearchView searchView)
+    {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                for(int i=0;i<=getSupportFragmentManager().getBackStackEntryCount();i++) {
+                    getSupportFragmentManager().popBackStack();
+                }
+                final MovieDataService movieDataService = RetrofitInstance.getService();
+                String ApiKey = BuildConfig.ApiKey;
+                Call<DiscoverDBResponse> call;
+                queryM=query;
+                drawer=3;
+                call = movieDataService.search(ApiKey,false,query);
+                call.enqueue(new Callback<DiscoverDBResponse>() {
+                    @Override
+                    public void onResponse(Call<DiscoverDBResponse> call, Response<DiscoverDBResponse> response) {
+                        DiscoverDBResponse discoverDBResponse = response.body();
+                        if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
+                            discovers = (ArrayList<Discover>) discoverDBResponse.getResults();
+                            totalPagesGenres = discoverDBResponse.getTotalPages();
+                            DiscoverToMovie discoverToMovie = new DiscoverToMovie(discovers);
+                            movieList = discoverToMovie.getMovies();
+                            if (progressBar != null) {
+                                progressBar.setIndeterminate(false);
+                            }
+                            fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.add(R.id.frame_layout, movies).commitAllowingStateLoss();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DiscoverDBResponse> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, "Error!" + t.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                final MovieDataService movieDataService= RetrofitInstance.getService();
+                String ApiKey= BuildConfig.ApiKey;
+                Call<DiscoverDBResponse> call;
+                call=movieDataService.search(ApiKey,false,newText);
+                call.enqueue(new Callback<DiscoverDBResponse>() {
+                    @Override
+                    public void onResponse(Call<DiscoverDBResponse> call, Response<DiscoverDBResponse> response) {
+                        DiscoverDBResponse discoverDBResponse=response.body();
+                        if(discoverDBResponse!=null&&discoverDBResponse.getResults()!=null)
+                        {
+                            search= (ArrayList<Discover>) discoverDBResponse.getResults();
+                            DiscoverToMovie discoverToMovie=new DiscoverToMovie(search);
+                            moviesearch=discoverToMovie.getMovies();
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DiscoverDBResponse> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, "Error!" + t.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                return true;
+            }
+        });
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        adapter=new ArrayAdapter<>(MainActivity.this,R.layout.search_list,fruits);
         if(BuildConfig.ApiKey.isEmpty())
         {
             Toast.makeText(MainActivity.this,"Please get the API key first",Toast.LENGTH_SHORT).show();
@@ -155,13 +237,14 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.movies) {
             drawer=0;
-            FragmentTransaction fragmentTransaction1;
-            fragmentTransaction1=getSupportFragmentManager().beginTransaction();
-            fragmentTransaction1.replace(R.id.frame_layout,new Movies()).commitAllowingStateLoss();
+            for(int i=0;i<=getSupportFragmentManager().getBackStackEntryCount();i++) {
+                getSupportFragmentManager().popBackStack();
+            }
+            getDataFirst(drawer,MainActivity.this);
         } else if (id == R.id.favmovies) {
             FragmentTransaction fragmentTransaction1;
             fragmentTransaction1=getSupportFragmentManager().beginTransaction();
-            fragmentTransaction1.replace(R.id.frame_layout,new FavouriteMovies()).commit();
+            fragmentTransaction1.replace(R.id.frame_layout,new FavouriteMovies()).commitAllowingStateLoss();
         }
         else if (id == R.id.toprated) {
             drawer=1;
@@ -249,4 +332,5 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
 }

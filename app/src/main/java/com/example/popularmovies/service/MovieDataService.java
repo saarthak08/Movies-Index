@@ -21,4 +21,7 @@ public interface MovieDataService {
 
     @GET("discover/movie")
     Call<DiscoverDBResponse> discover(@Query("api_key")String apiKey, @Query("with_genres")String genres, @Query("include_adult")Boolean adult, @Query("include_video")Boolean video, @Query("page")int pageIndex);
+
+    @GET("search/movie")
+    Call<DiscoverDBResponse> search(@Query("api_key")String apiKey, @Query("include_adult")Boolean adult,@Query("query")String query);
 }
