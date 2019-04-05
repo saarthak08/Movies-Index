@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     public static Movies movies=new Movies();
     public static FragmentManager fragmentManager;
     public static int totalPages;
+    public static int drawer=0;
 
 
     @Override
@@ -140,6 +141,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.movies) {
+            drawer=0;
+            getDataFirst(drawer,MainActivity.this);
+            for(int i=0;i<=getSupportFragmentManager().getBackStackEntryCount();i++) {
+                getSupportFragmentManager().popBackStack();
+            }
             FragmentTransaction fragmentTransaction1;
             fragmentTransaction1=getSupportFragmentManager().beginTransaction();
             fragmentTransaction1.replace(R.id.frame_layout,new Movies()).commitAllowingStateLoss();
@@ -147,6 +153,27 @@ public class MainActivity extends AppCompatActivity
             FragmentTransaction fragmentTransaction1;
             fragmentTransaction1=getSupportFragmentManager().beginTransaction();
             fragmentTransaction1.replace(R.id.frame_layout,new FavouriteMovies()).commit();
+        }
+        else if (id == R.id.toprated) {
+            drawer=1;
+            getDataFirst(drawer,MainActivity.this);
+            for(int i=0;i<=getSupportFragmentManager().getBackStackEntryCount();i++) {
+                getSupportFragmentManager().popBackStack();
+            }
+        }
+        else if (id == R.id.genres) {
+            drawer=2;
+            getDataFirst(drawer,MainActivity.this);
+            for(int i=0;i<=getSupportFragmentManager().getBackStackEntryCount();i++) {
+                getSupportFragmentManager().popBackStack();
+            }
+        }
+        else if (id == R.id.topvotedmovies) {
+            drawer=3;
+            getDataFirst(drawer,MainActivity.this);
+            for(int i=0;i<=getSupportFragmentManager().getBackStackEntryCount();i++) {
+                getSupportFragmentManager().popBackStack();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

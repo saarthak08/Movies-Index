@@ -8,10 +8,22 @@
         <item
             android:id="@+id/movies"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/app_name" />
+            android:title="@string/popular_movies" />
+        <item
+            android:id="@+id/toprated"
+            android:icon="@drawable/ic_menu_send"
+            android:title="@string/top_rated_movies"/>
+        <item
+            android:id="@+id/genres"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/genres"/>
+        <item
+            android:id="@+id/topvotedmovies"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/top_voted_movies"/>
         <item
             android:id="@+id/favmovies"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_heart_on"
             android:title="@string/favourite_movies" />
     </group>
 

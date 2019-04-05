@@ -107,13 +107,15 @@ public class Movies extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        if(MainActivity.drawer==2) {
+            setHasOptionsMenu(true);
+        }
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-    @Override
+   @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment,menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -126,18 +128,17 @@ public class Movies extends Fragment {
        new AlertDialog.Builder(getContext()).setSingleChoiceItems(listItems, selectedItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                    MainActivity.category=which;
+                 /*   MainActivity.category=which;
                     MainActivity.getDataFirst(which,getContext());
                     for(int i=0;i<=getActivity().getSupportFragmentManager().getBackStackEntryCount();i++) {
                         getActivity().getSupportFragmentManager().popBackStack();
                     }
-                    dialog.dismiss();
+                    dialog.dismiss();*/
 
             }
         }).show();
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -154,10 +155,10 @@ public class Movies extends Fragment {
         viewModel= ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         recyclerView=fragmentMoviesBinding.rv2;
        swipeRefreshLayout=fragmentMoviesBinding.swiperefresh2;
-       if(MainActivity.category==0) {
+       if(MainActivity.drawer==0) {
             getActivity().setTitle("Popular Movies");
         }
-        else if(MainActivity.category==1)
+        else if(MainActivity.drawer==1)
         {
             getActivity().setTitle("Top Rated Movies");
         }

@@ -15,6 +15,9 @@
     <string name="categories">Categories</string>
     <string name="my_movies">My Movies</string>
     <string name="tmdb_movies">TMDb Movies</string>
+    <string name="top_rated_movies">Top Rated Movies</string>
+    <string name="genres">Genres</string>
+    <string name="top_voted_movies">Top Voted Movies</string>
 
     <string-array name="categories">
         <item>Popular Movies</item>
