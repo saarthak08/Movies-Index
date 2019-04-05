@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import com.example.popularmovies.R;
 import com.example.popularmovies.adapter.MoviesAdapter;
 import com.example.popularmovies.databinding.FragmentFavouriteMoviesBinding;
 import com.example.popularmovies.model.Movie;
+import com.example.popularmovies.utils.PaginationScrollListener;
 import com.example.popularmovies.viewmodel.MainViewModel;
 
 import java.util.ArrayList;
@@ -39,6 +41,8 @@ public class FavouriteMovies extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+
     private MainViewModel viewModel;
     private ArrayList<Movie> movie;
     private Context context;

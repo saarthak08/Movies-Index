@@ -1,6 +1,7 @@
 package com.example.popularmovies.fragments;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,6 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -28,12 +30,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.popularmovies.MainActivity;
 import com.example.popularmovies.R;
 import com.example.popularmovies.adapter.MoviesAdapter;
 import com.example.popularmovies.databinding.FragmentMoviesBinding;
 import com.example.popularmovies.model.Movie;
+import com.example.popularmovies.utils.PaginationScrollListener;
 import com.example.popularmovies.viewmodel.MainViewModel;
 
 import java.util.ArrayList;
@@ -61,6 +65,12 @@ public class Movies extends Fragment {
     public static SwipeRefreshLayout swipeRefreshLayout;
     private FragmentMoviesBinding fragmentMoviesBinding;
     private int selectedItem=0;
+    public static int pageIndex;
+    private PaginationScrollListener paginationScrollListener;
+    public static ProgressBar progressBar;
+    public static boolean isLoading=false;
+    public static boolean isLastPage=false;
+
 
     public Movies()
     {
@@ -129,6 +139,7 @@ public class Movies extends Fragment {
         return view;
     }
 
+   @SuppressLint("WrongConstant")
    @Override
     public void onViewCreated(@NonNull View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

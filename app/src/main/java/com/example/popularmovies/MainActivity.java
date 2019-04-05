@@ -42,6 +42,9 @@ public class MainActivity extends AppCompatActivity
     public static FragmentTransaction fragmentTransaction;
     public static Movies movies=new Movies();
     public static FragmentManager fragmentManager;
+    public static int pageIndex;
+    public static int totalPages;
+    public static int currentPage;
 
 
     @Override
@@ -74,9 +77,9 @@ public class MainActivity extends AppCompatActivity
         String ApiKey= BuildConfig.ApiKey;
         Call<MovieDBResponse> call;
         if(a==0) {
-            call= movieDataService.getPopularMovies(ApiKey);
+            call= movieDataService.getPopularMovies(ApiKey,pageIndex);
         }else {
-            call = movieDataService.getTopRatedMovies(ApiKey);
+            call = movieDataService.getTopRatedMovies(ApiKey,pageIndex);
         }
         call.enqueue(new Callback<MovieDBResponse>() {
             @Override
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity
                 MovieDBResponse movieDBResponse = response.body();
                 if (movieDBResponse != null && movieDBResponse.getMovies() != null) {
                     movieList = (ArrayList<Movie>) movieDBResponse.getMovies();
+                    totalPages=movieDBResponse.getTotalPages();
                     if(progressBar!=null) {
                         progressBar.setIndeterminate(false);
                     }
