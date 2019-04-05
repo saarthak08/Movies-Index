@@ -107,9 +107,7 @@ public class Movies extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(MainActivity.drawer==2) {
-            setHasOptionsMenu(true);
-        }
+            //setHasOptionsMenu(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -125,18 +123,6 @@ public class Movies extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         String[] listItems = getResources().getStringArray(R.array.categories);
         selectedItem=MainActivity.category;
-       new AlertDialog.Builder(getContext()).setSingleChoiceItems(listItems, selectedItem, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                 /*   MainActivity.category=which;
-                    MainActivity.getDataFirst(which,getContext());
-                    for(int i=0;i<=getActivity().getSupportFragmentManager().getBackStackEntryCount();i++) {
-                        getActivity().getSupportFragmentManager().popBackStack();
-                    }
-                    dialog.dismiss();*/
-
-            }
-        }).show();
         return super.onOptionsItemSelected(item);
     }
 

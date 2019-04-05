@@ -3,8 +3,11 @@ package com.example.popularmovies;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.popularmovies.fragments.FavouriteMovies;
 import com.example.popularmovies.fragments.Movies;
+import com.example.popularmovies.model.GenresList;
+import com.example.popularmovies.model.GenresListDBResponse;
 import com.example.popularmovies.model.Movie;
 import com.example.popularmovies.model.MovieDBResponse;
 import com.example.popularmovies.service.MovieDataService;
@@ -28,6 +31,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Adapter;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -48,6 +52,8 @@ public class MainActivity extends AppCompatActivity
     public static FragmentManager fragmentManager;
     public static int totalPages;
     public static int drawer=0;
+    public static int genreid;
+    public static ArrayList<GenresList> genresLists;
 
 
     @Override
@@ -83,6 +89,7 @@ public class MainActivity extends AppCompatActivity
         }else {
             call = movieDataService.getTopRatedMovies(ApiKey,1);
         }
+
         call.enqueue(new Callback<MovieDBResponse>() {
             @Override
             public void onResponse(Call<MovieDBResponse> call, Response<MovieDBResponse> response) {
@@ -142,10 +149,6 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.movies) {
             drawer=0;
-            getDataFirst(drawer,MainActivity.this);
-            for(int i=0;i<=getSupportFragmentManager().getBackStackEntryCount();i++) {
-                getSupportFragmentManager().popBackStack();
-            }
             FragmentTransaction fragmentTransaction1;
             fragmentTransaction1=getSupportFragmentManager().beginTransaction();
             fragmentTransaction1.replace(R.id.frame_layout,new Movies()).commitAllowingStateLoss();
@@ -156,28 +159,61 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.toprated) {
             drawer=1;
-            getDataFirst(drawer,MainActivity.this);
             for(int i=0;i<=getSupportFragmentManager().getBackStackEntryCount();i++) {
                 getSupportFragmentManager().popBackStack();
             }
+            getDataFirst(drawer,MainActivity.this);
         }
         else if (id == R.id.genres) {
             drawer=2;
-            getDataFirst(drawer,MainActivity.this);
             for(int i=0;i<=getSupportFragmentManager().getBackStackEntryCount();i++) {
                 getSupportFragmentManager().popBackStack();
             }
-        }
-        else if (id == R.id.topvotedmovies) {
-            drawer=3;
-            getDataFirst(drawer,MainActivity.this);
-            for(int i=0;i<=getSupportFragmentManager().getBackStackEntryCount();i++) {
-                getSupportFragmentManager().popBackStack();
-            }
+            getGenresList();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void getGenresList()
+    {
+        final MovieDataService movieDataService= RetrofitInstance.getService();
+        String ApiKey= BuildConfig.ApiKey;
+        Call<GenresListDBResponse> call;
+        call= movieDataService.getGenresList(ApiKey);
+        call.enqueue(new Callback<GenresListDBResponse>() {
+            @Override
+            public void onResponse(Call<GenresListDBResponse> call, Response<GenresListDBResponse> response) {
+                GenresListDBResponse genresListDBResponse=response.body();
+                if(genresListDBResponse!=null&&genresListDBResponse.getGenresLists()!=null)
+                {
+                    genresLists=(ArrayList<GenresList>) genresListDBResponse.getGenresLists();
+                    String[] a=new String[genresLists.size()];
+                    for (int i=0;i<genresLists.size();i++)
+                    {
+                        a[i]=genresLists.get(i).getName();
+                    }
+                    new MaterialDialog.Builder(MainActivity.this).title("Choose A Category").items(a).itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                        @Override
+                        public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                            genreid=genresLists.get(which).getId();
+                            getFirstGenreData();
+                            return false;
+                        }
+                    }).canceledOnTouchOutside(false).cancelable(false).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GenresListDBResponse> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Error!" + t.getMessage().trim(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getFirstGenreData(){
+
     }
 }
