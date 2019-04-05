@@ -41,10 +41,13 @@ import com.example.popularmovies.MainActivity;
 import com.example.popularmovies.R;
 import com.example.popularmovies.adapter.MoviesAdapter;
 import com.example.popularmovies.databinding.FragmentMoviesBinding;
+import com.example.popularmovies.model.Discover;
+import com.example.popularmovies.model.DiscoverDBResponse;
 import com.example.popularmovies.model.Movie;
 import com.example.popularmovies.model.MovieDBResponse;
 import com.example.popularmovies.service.MovieDataService;
 import com.example.popularmovies.service.RetrofitInstance;
+import com.example.popularmovies.utils.DiscoverToMovie;
 import com.example.popularmovies.utils.PaginationScrollListener;
 import com.example.popularmovies.viewmodel.MainViewModel;
 
@@ -77,6 +80,8 @@ public class Movies extends Fragment {
     private PaginationScrollListener paginationScrollListener;
     GridLayoutManager gridLayoutManager;
     private int totalPages;
+    private int totalPagesGenre;
+    private ArrayList<Discover> discovers=new ArrayList<>();
 
 
 
@@ -107,7 +112,9 @@ public class Movies extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-            //setHasOptionsMenu(true);
+        if(MainActivity.drawer==2) {
+            setHasOptionsMenu(true);
+        }
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -123,6 +130,18 @@ public class Movies extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         String[] listItems = getResources().getStringArray(R.array.categories);
         selectedItem=MainActivity.category;
+       new AlertDialog.Builder(getContext()).setSingleChoiceItems(listItems, selectedItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                 /*   MainActivity.category=which;
+                    MainActivity.getDataFirst(which,getContext());
+                    for(int i=0;i<=getActivity().getSupportFragmentManager().getBackStackEntryCount();i++) {
+                        getActivity().getSupportFragmentManager().popBackStack();
+                    }
+                    dialog.dismiss();*/
+
+            }
+        }).show();
         return super.onOptionsItemSelected(item);
     }
 
@@ -148,6 +167,10 @@ public class Movies extends Fragment {
         {
             getActivity().setTitle("Top Rated Movies");
         }
+        else if(MainActivity.drawer==2)
+       {
+           getActivity().setTitle("Discover By Genres");
+       }
         context=getContext();
         movieList= MainActivity.movieList;
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.DKGRAY, Color.RED,Color.GREEN,Color.MAGENTA,Color.BLACK,Color.CYAN);
@@ -185,8 +208,14 @@ public class Movies extends Fragment {
         paginationScrollListener = new PaginationScrollListener(gridLayoutManager) {
            @Override
            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-               if((page + 1)< MainActivity.totalPages) {
-                   loadMore(MainActivity.category,page + 1);
+               if (MainActivity.drawer != 2) {
+                   if ((page + 1) < MainActivity.totalPages) {
+                       loadMore(MainActivity.category, page + 1);
+                   }
+               } else {
+                   if ((page + 1) < MainActivity.totalPagesGenres) {
+                       loadMoreGenres(page + 1);
+                   }
                }
            }
        };
@@ -224,9 +253,44 @@ public class Movies extends Fragment {
 
             @Override
             public void onFailure(Call<MovieDBResponse> call, Throwable t) {
+                Toast.makeText(getActivity(), "Error!" + t.getMessage().trim(), Toast.LENGTH_SHORT).show();
 
             }
         });
     }
 
+    public void loadMoreGenres(final int pages)
+    {
+        final MovieDataService movieDataService= RetrofitInstance.getService();
+        String ApiKey= BuildConfig.ApiKey;
+        Call<DiscoverDBResponse> call;
+        call=movieDataService.discover(ApiKey,Integer.toString(MainActivity.genreid),false,false,1);
+        call.enqueue(new Callback<DiscoverDBResponse>() {
+            @Override
+            public void onResponse(Call<DiscoverDBResponse> call, Response<DiscoverDBResponse> response) {
+                DiscoverDBResponse discoverDBResponse = response.body();
+                if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
+                    if(pages==1) {
+                        discovers=(ArrayList<Discover>) response.body().getResults();
+                        totalPagesGenre = response.body().getTotalPages();
+                        recyclerView.setAdapter(moviesAdapter);
+                    } else {
+                        ArrayList<Discover> discovers =(ArrayList<Discover>)response.body().getResults();
+                        DiscoverToMovie discoverToMovie= new DiscoverToMovie(discovers);
+                        ArrayList<Movie> movies=discoverToMovie.getMovies();
+                        for (Movie movie : movies) {
+                            movieList.add(movie);
+                            moviesAdapter.notifyItemInserted(movieList.size() - 1);
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<DiscoverDBResponse> call, Throwable t) {
+                Toast.makeText(getActivity(), "Error!" + t.getMessage().trim(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }
+

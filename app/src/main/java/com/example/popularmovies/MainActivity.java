@@ -6,6 +6,8 @@ import android.os.Bundle;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.popularmovies.fragments.FavouriteMovies;
 import com.example.popularmovies.fragments.Movies;
+import com.example.popularmovies.model.Discover;
+import com.example.popularmovies.model.DiscoverDBResponse;
 import com.example.popularmovies.model.GenresList;
 import com.example.popularmovies.model.GenresListDBResponse;
 import com.example.popularmovies.model.Movie;
@@ -15,6 +17,7 @@ import com.example.popularmovies.service.RetrofitInstance;
 
 import android.os.Handler;
 
+import com.example.popularmovies.utils.DiscoverToMovie;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.view.GravityCompat;
@@ -51,8 +54,10 @@ public class MainActivity extends AppCompatActivity
     public static Movies movies=new Movies();
     public static FragmentManager fragmentManager;
     public static int totalPages;
+    public static int totalPagesGenres;
     public static int drawer=0;
     public static int genreid;
+    public static ArrayList<Discover> discovers;
     public static ArrayList<GenresList> genresLists;
 
 
@@ -199,7 +204,7 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
                             genreid=genresLists.get(which).getId();
-                            getFirstGenreData();
+                            getFirstGenreData(genreid);
                             return false;
                         }
                     }).canceledOnTouchOutside(false).cancelable(false).show();
@@ -213,7 +218,32 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void getFirstGenreData(){
-
+    private void getFirstGenreData(int genreid){
+        final MovieDataService movieDataService= RetrofitInstance.getService();
+        String ApiKey= BuildConfig.ApiKey;
+        Call<DiscoverDBResponse> call;
+        call=movieDataService.discover(ApiKey,Integer.toString(genreid),false,false,1);
+        call.enqueue(new Callback<DiscoverDBResponse>() {
+            @Override
+            public void onResponse(Call<DiscoverDBResponse> call, Response<DiscoverDBResponse> response) {
+               DiscoverDBResponse discoverDBResponse = response.body();
+                if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
+                    discovers = (ArrayList<Discover>) discoverDBResponse.getResults();
+                    totalPagesGenres = discoverDBResponse.getTotalPages();
+                    DiscoverToMovie discoverToMovie=new DiscoverToMovie(discovers);
+                    movieList=discoverToMovie.getMovies();
+                    if (progressBar != null) {
+                        progressBar.setIndeterminate(false);
+                    }
+                        fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.add(R.id.frame_layout, movies).commitAllowingStateLoss();
+                }
+            }
+            @Override
+            public void onFailure(Call<DiscoverDBResponse> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Error!" + t.getMessage().trim(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
