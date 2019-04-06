@@ -1,12 +1,14 @@
 package com.example.popularmovies.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.popularmovies.MoviesInfo;
 import com.example.popularmovies.R;
 import com.example.popularmovies.fragments.Movies;
 import com.example.popularmovies.model.Movie;
@@ -21,11 +23,13 @@ public class SearchAdapter extends CursorAdapter {
     private LayoutInflater mLayoutInflater;
     private Context mContext;
     private SearchView searchView;
+    private ArrayList<Movie> movies;
     public SearchAdapter(Context context, Cursor c, boolean autoRequery, SearchView searchView, ArrayList<Movie> movies) {
         super(context, c, autoRequery);
         mContext = context;
         this.searchView = searchView;
         mLayoutInflater = LayoutInflater.from(context);
+        this.movies=movies;
     }
 
     @Override
@@ -35,10 +39,20 @@ public class SearchAdapter extends CursorAdapter {
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, Context context, final Cursor cursor) {
         String title=cursor.getString(cursor.getColumnIndex("text"));
         TextView textView=view.findViewById(R.id.textView2);
         textView.setText(title);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String id=cursor.getString(cursor.getColumnIndex("_id"));
+                Movie movie=movies.get(Integer.parseInt(id));
+                Intent i = new Intent(mContext, MoviesInfo.class);
+                i.putExtra("movie", movie);
+                mContext.startActivity(i);
+            }
+        });
 
     }
 }

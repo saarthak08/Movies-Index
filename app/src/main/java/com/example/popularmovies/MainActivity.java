@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity
                             selected=which;
                             genreid=genresLists.get(which).getId();
                             getFirstGenreData(genreid,MainActivity.this);
-                            return false;
+                            return true;
                         }
                     }).canceledOnTouchOutside(false).cancelable(false).show();
                 }
