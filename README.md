@@ -20,6 +20,8 @@
 - [Material Dialogs](https://github.com/afollestad/material-dialogs)
 - [Room](https://developer.android.com/topic/libraries/architecture/room)
 - [SparkButton](https://github.com/varunest/SparkButton)
+- [Data Binding (Android Architectural Components)](https://developer.android.com/topic/libraries/data-binding)
+- [Live Data (Android Architectural Components)](https://developer.android.com/topic/libraries/architecture/livedata)
 
 
 ## *Note:*
