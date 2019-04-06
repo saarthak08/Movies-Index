@@ -114,7 +114,7 @@ public class Movies extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(MainActivity.drawer==2) {
+       /* if(MainActivity.drawer==2) {
             setHasOptionsMenu(true);
         }
         else
@@ -124,7 +124,7 @@ public class Movies extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        }*/
     }
    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
