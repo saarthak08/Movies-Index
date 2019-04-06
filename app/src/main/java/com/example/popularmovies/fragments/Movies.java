@@ -117,6 +117,10 @@ public class Movies extends Fragment {
         if(MainActivity.drawer==2) {
             setHasOptionsMenu(true);
         }
+        else
+        {
+            setHasOptionsMenu(false);
+        }
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
