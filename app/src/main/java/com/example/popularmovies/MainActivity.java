@@ -1,9 +1,12 @@
 package com.example.popularmovies;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.popularmovies.adapter.SearchAdapter;
 import com.example.popularmovies.fragments.FavouriteMovies;
 import com.example.popularmovies.fragments.Movies;
 import com.example.popularmovies.model.Discover;
@@ -20,6 +23,7 @@ import com.google.android.material.navigation.NavigationView;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuItemCompat;
+import androidx.cursoradapter.widget.CursorAdapter;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +37,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -63,7 +66,6 @@ public class MainActivity extends AppCompatActivity
     public static ArrayList<Discover> search;
     public static ArrayList<Movie> moviesearch;
     public static String queryM;
-    String[] fruits = {"Apple", "Banana", "Cherry", "Date", "Grape", "Kiwi", "Mango", "Pear"};
 
 
     @Override
@@ -116,7 +118,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onQueryTextChange(final String newText) {
                 final MovieDataService movieDataService= RetrofitInstance.getService();
                 String ApiKey= BuildConfig.ApiKey;
                 Call<DiscoverDBResponse> call;
@@ -130,6 +132,23 @@ public class MainActivity extends AppCompatActivity
                             search= (ArrayList<Discover>) discoverDBResponse.getResults();
                             DiscoverToMovie discoverToMovie=new DiscoverToMovie(search);
                             moviesearch=discoverToMovie.getMovies();
+                            String a[]=new String[moviesearch.size()];
+                            for(int i=0;i<a.length;i++)
+                            {
+                                a[i]=moviesearch.get(i).getTitle();
+                            }
+                            ArrayAdapter<String>  Adapter = new ArrayAdapter<String>(MainActivity.this,R.layout.search_list, a);
+                            String[] columnNames = {"_id","text"};
+                            MatrixCursor cursor = new MatrixCursor(columnNames);
+                            String[] temp = new String[2];
+                            int id = 0;
+                            for(String item : a){
+                                temp[0] = Integer.toString(id++);
+                                temp[1] = item;
+                                cursor.addRow(temp);
+                            }
+                            SearchAdapter searchAdapter=new SearchAdapter(MainActivity.this,cursor,true,searchView,moviesearch);
+                            searchView.setSuggestionsAdapter(searchAdapter);
 
                         }
                     }
@@ -147,7 +166,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        adapter=new ArrayAdapter<>(MainActivity.this,R.layout.search_list,fruits);
         if(BuildConfig.ApiKey.isEmpty())
         {
             Toast.makeText(MainActivity.this,"Please get the API key first",Toast.LENGTH_SHORT).show();
