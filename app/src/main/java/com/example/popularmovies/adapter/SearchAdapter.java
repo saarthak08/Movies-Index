@@ -39,15 +39,27 @@ public class SearchAdapter extends CursorAdapter {
     }
 
     @Override
-    public void bindView(View view, Context context, final Cursor cursor) {
+    public View getView(int position, View convertview, ViewGroup arg2) {
+        if (convertview == null) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            convertview = inflater.inflate(R.layout.search_list,
+                    null);
+        }
+        convertview.setTag(position);
+        return super.getView(position, convertview, arg2);
+    }
+
+    @Override
+    public void bindView(final View view, Context context, final Cursor cursor) {
         String title=cursor.getString(cursor.getColumnIndex("text"));
         TextView textView=view.findViewById(R.id.textView2);
         textView.setText(title);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String id=cursor.getString(cursor.getColumnIndex("_id"));
-                Movie movie=movies.get(Integer.parseInt(id));
+                //String id=cursor.getString(cursor.getColumnIndex("_id"));
+                int id=(Integer) view.getTag();//here is the position
+                Movie movie=movies.get(id);
                 Intent i = new Intent(mContext, MoviesInfo.class);
                 i.putExtra("movie", movie);
                 mContext.startActivity(i);
