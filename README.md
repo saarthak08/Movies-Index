@@ -14,7 +14,7 @@
 
 
 
-## *Libraies Used:*
+## *Libraries Used:*
 - [Glide](https://github.com/bumptech/glide)
 - [Retrofit](https://github.com/square/retrofit)
 - [Material Dialogs](https://github.com/afollestad/material-dialogs)
