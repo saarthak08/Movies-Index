@@ -16,6 +16,7 @@ import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.InverseBindingAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -321,4 +322,28 @@ public class Movie extends BaseObservable implements Parcelable
         return 0;
     }
 
+    public static final DiffUtil.ItemCallback<Movie> callback=new DiffUtil.ItemCallback<Movie>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Movie oldItem, @NonNull Movie newItem) {
+            return oldItem.id.equals(newItem.id);
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Movie oldItem, @NonNull Movie newItem) {
+            return oldItem.adult == newItem.adult &&
+                    oldItem.video == newItem.video &&
+                    oldItem.backdropPath.equals(newItem.backdropPath) &&
+                    oldItem.genreIds == newItem.genreIds &&
+                    oldItem.id.equals(newItem.id) &&
+                    oldItem.originalLanguage.equals(newItem.originalLanguage) &&
+                    oldItem.originalTitle.equals(newItem.originalTitle) &&
+                    oldItem.overview.equals(newItem.overview) &&
+                    oldItem.popularity.equals(newItem.popularity) &&
+                    oldItem.posterPath.equals(newItem.posterPath) &&
+                    oldItem.releaseDate.equals(newItem.releaseDate) &&
+                    oldItem.title.equals(newItem.title) &&
+                    oldItem.voteAverage.equals(newItem.voteAverage) &&
+                    oldItem.voteCount.equals(newItem.voteCount);
+        }
+    };
 }
