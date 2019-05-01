@@ -159,9 +159,9 @@ public class Movies extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         fragmentMoviesBinding= DataBindingUtil.inflate(inflater,R.layout.fragment_movies,container,false);
-        return fragmentMoviesBinding.getRoot();
+        View view=fragmentMoviesBinding.getRoot();
+        return view;
     }
 
    @SuppressLint("WrongConstant")
@@ -194,8 +194,12 @@ public class Movies extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new Movies()).commitAllowingStateLoss();
-
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                            swipeRefreshLayout.setRefreshing(false);
+                    }
+                },4000);
             }
         });
         gridLayoutManager=new GridLayoutManager(getContext(),2);
