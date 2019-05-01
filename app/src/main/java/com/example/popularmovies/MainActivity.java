@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity
 
     public static ProgressBar progressBar;
     public static ArrayList<Movie> movieList=new ArrayList<>();
-    public boolean doubleBackToExitPressedOnce=false;
     public static int category=0;
     private NavigationView navigationView;
     public static FragmentTransaction fragmentTransaction;
@@ -283,25 +282,21 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer =findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            if (doubleBackToExitPressedOnce) {
+        }
+        else {
+            int fragments = getSupportFragmentManager().getBackStackEntryCount();
+            if (fragments == 1) {
+                finish();
+            } else if (getFragmentManager().getBackStackEntryCount() > 1) {
+                getFragmentManager().popBackStack();
+            } else {
                 super.onBackPressed();
-                return;
             }
-            doubleBackToExitPressedOnce = true;
-            Toast.makeText(MainActivity.this,"Press \'BACK\' again to exit",Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    doubleBackToExitPressedOnce = false;
-                }
-            },2000);
         }
     }
-
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -317,6 +312,9 @@ public class MainActivity extends AppCompatActivity
             getDataFirstWithRx(drawer,MainActivity.this);
         } else if (id == R.id.favmovies) {
             FragmentTransaction fragmentTransaction1;
+            for(int i=0;i<=getSupportFragmentManager().getBackStackEntryCount();i++) {
+                getSupportFragmentManager().popBackStack();
+            }
             fragmentTransaction1=getSupportFragmentManager().beginTransaction();
             fragmentTransaction1.replace(R.id.frame_layout,new FavouriteMovies()).commitAllowingStateLoss();
         }
