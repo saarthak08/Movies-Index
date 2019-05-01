@@ -30,6 +30,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,6 +64,7 @@ public class MainActivity extends AppCompatActivity
     public static int drawer=0;
     public static int genreid;
     private ArrayAdapter<String> arrayAdapter;
+    private static Observable<MovieDBResponse> observable;
     public static int selected;
     public static ArrayList<Discover> discovers;
     public static ArrayList<GenresList> genresLists;
@@ -66,7 +73,7 @@ public class MainActivity extends AppCompatActivity
     public static ArrayList<Discover> search;
     public static ArrayList<Movie> moviesearch;
     public static String queryM;
-
+    private static CompositeDisposable compositeDisposable=new CompositeDisposable();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -184,9 +191,10 @@ public class MainActivity extends AppCompatActivity
         progressBar.animate().alpha(1).setDuration(500);
         progressBar.setIndeterminate(true);
         navigationView.getMenu().getItem(0).setChecked(true);
-        getDataFirst(category,MainActivity.this);
+        //getDataFirst(category,MainActivity.this);
+        getDataFirstWithRx(category,MainActivity.this);
     }
-        public static void getDataFirst(int a, final Context context) {
+       /* public static void getDataFirst(int a, final Context context) {
         final MovieDataService movieDataService= RetrofitInstance.getService();
         String ApiKey= BuildConfig.ApiKey;
         Call<MovieDBResponse> call;
@@ -224,6 +232,54 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(context, "Error!" + t.getMessage().trim(), Toast.LENGTH_SHORT).show();
             }
         });
+    }*/
+
+
+    public static void getDataFirstWithRx(int a, final Context context) {
+        final MovieDataService movieDataService= RetrofitInstance.getService();
+        String ApiKey= BuildConfig.ApiKey;
+
+        if(a==0) {
+            observable= movieDataService.getPopularMoviesWithRx(ApiKey,1);
+        }else {
+            observable = movieDataService.getTopRatedMoviesWithRx(ApiKey,1);
+        }
+        compositeDisposable.add(
+        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<MovieDBResponse>() {
+                    @Override
+                    public void onNext(MovieDBResponse movieDBResponse) {
+                        if (movieDBResponse != null && movieDBResponse.getMovies() != null) {
+                            movieList = (ArrayList<Movie>) movieDBResponse.getMovies();
+                            totalPages=movieDBResponse.getTotalPages();
+                            if(progressBar!=null) {
+                                progressBar.setIndeterminate(false);
+                            }
+                            if(fragmentManager.getFragments().isEmpty()) {
+                                fragmentTransaction=fragmentManager.beginTransaction();
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.add(R.id.frame_layout, movies).commitAllowingStateLoss();
+                            }
+                            else
+                            {
+                                fragmentTransaction=fragmentManager.beginTransaction();
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.replace(R.id.frame_layout,movies).commitAllowingStateLoss();
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(context, "Error!" + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+        }));
     }
     @Override
     public void onBackPressed() {
@@ -258,7 +314,7 @@ public class MainActivity extends AppCompatActivity
             for(int i=0;i<=getSupportFragmentManager().getBackStackEntryCount();i++) {
                 getSupportFragmentManager().popBackStack();
             }
-            getDataFirst(drawer,MainActivity.this);
+            getDataFirstWithRx(drawer,MainActivity.this);
         } else if (id == R.id.favmovies) {
             FragmentTransaction fragmentTransaction1;
             fragmentTransaction1=getSupportFragmentManager().beginTransaction();
@@ -269,7 +325,7 @@ public class MainActivity extends AppCompatActivity
             for(int i=0;i<=getSupportFragmentManager().getBackStackEntryCount();i++) {
                 getSupportFragmentManager().popBackStack();
             }
-            getDataFirst(drawer,MainActivity.this);
+            getDataFirstWithRx(drawer,MainActivity.this);
         }
         else if (id == R.id.genres) {
             drawer=2;
@@ -351,4 +407,9 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
+    }
 }

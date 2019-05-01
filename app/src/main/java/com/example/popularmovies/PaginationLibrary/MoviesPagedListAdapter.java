@@ -34,13 +34,6 @@ public class MoviesPagedListAdapter extends PagedListAdapter<Movie,RecyclerView.
         this.context = context;
     }
 
-    @BindingAdapter({"imageUrl"})
-    public static void loadImage(ImageView view, String url) {
-        Glide.with(view.getContext())
-                .load(url)
-                .placeholder(R.drawable.loading)
-                .into(view);
-    }
 
 
     @NonNull
