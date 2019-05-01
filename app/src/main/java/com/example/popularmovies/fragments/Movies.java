@@ -180,7 +180,9 @@ public class Movies extends Fragment {
         }
         else if(MainActivity.drawer==2)
        {
-           getActivity().setTitle("Genre: "+MainActivity.genresLists.get(MainActivity.selected).getName());
+          if(!MainActivity.genresLists.isEmpty()) {
+              getActivity().setTitle("Genre: " + MainActivity.genresLists.get(MainActivity.selected).getName());
+          }
 
        }
        else if(MainActivity.drawer==3)
