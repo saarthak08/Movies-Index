@@ -22,6 +22,7 @@
 - [SparkButton](https://github.com/varunest/SparkButton)
 - [Data Binding (Android Architectural Components)](https://developer.android.com/topic/libraries/data-binding)
 - [Live Data (Android Architectural Components)](https://developer.android.com/topic/libraries/architecture/livedata)
+- [RxJava](https://github.com/ReactiveX/RxJava)
 
 
 ## *Note:*
