@@ -17,6 +17,7 @@
 ## *Libraries Used:*
 - [Glide](https://github.com/bumptech/glide)
 - [Retrofit](https://github.com/square/retrofit)
+- [okhttp](https://github.com/square/okhttp)
 - [Material Dialogs](https://github.com/afollestad/material-dialogs)
 - [Room](https://developer.android.com/topic/libraries/architecture/room)
 - [SparkButton](https://github.com/varunest/SparkButton)
