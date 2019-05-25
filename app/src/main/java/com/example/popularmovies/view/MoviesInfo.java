@@ -30,13 +30,17 @@ public class MoviesInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies_info);
         Toolbar toolbar=findViewById(R.id.toolbar);
+        View parentlayout=findViewById(android.R.id.content);
         mainViewModel= ViewModelProviders.of(MoviesInfo.this).get(MainViewModel.class);
         activityMoviesInfoBinding= DataBindingUtil.setContentView(MoviesInfo.this,R.layout.activity_movies_info);
         Intent i=getIntent();
         if(i.hasExtra("movie")) {
             movie = i.getParcelableExtra("movie");
             bool=i.getBooleanExtra("boolean",false);
-            Toast.makeText(getApplicationContext(), "Swipe Image Up for more information!", Toast.LENGTH_LONG).show();
+            if(MainActivity.imageup<=2) {
+                Snackbar.make(parentlayout, "Swipe Image Up For More Information!", Snackbar.LENGTH_SHORT).show();
+                MainActivity.imageup++;
+            }
             if(mainViewModel.getMovie(movie.getTitle())!=null)
             {
                 activityMoviesInfoBinding.secondaryLayout.sparkButton.setChecked(true);

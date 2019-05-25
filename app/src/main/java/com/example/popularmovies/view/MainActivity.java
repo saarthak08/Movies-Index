@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity
     public static int totalPages;
     public static int totalPagesGenres;
     public static int drawer=0;
+    public static int imageup=0;
     public static int genreid;
     private static Observable<MovieDBResponse> observableMovie;
     private static Observable<DiscoverDBResponse> observableDB;
