@@ -2,7 +2,7 @@
 <layout>
 
 
-<ScrollView android:id="@+id/scrolleViewF4"
+<androidx.core.widget.NestedScrollView android:id="@+id/scrolleViewF4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
@@ -14,7 +14,7 @@
             android:id="@+id/rvF4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </layout>
 

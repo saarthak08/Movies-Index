@@ -1,6 +1,7 @@
 package com.example.popularmovies.view;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -43,11 +44,15 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SearchEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -77,6 +82,7 @@ public class MainActivity extends AppCompatActivity
     public static ArrayList<Discover> search;
     public static ArrayList<Movie> moviesearch;
     public static String queryM;
+    private MatrixCursor cursor;
     private static CompositeDisposable compositeDisposable=new CompositeDisposable();
 
     @Override
@@ -295,9 +301,77 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void search(final SearchView searchView)
+    public void search(final android.widget.SearchView searchView)
     {
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        compositeDisposable.add(
+        RxSearchView.queryTextChanges(searchView).debounce(300,TimeUnit.MILLISECONDS)
+                .map(new Function<CharSequence, String>() {
+                    @Override
+                    public String apply(CharSequence charSequence) throws Exception {
+                        return charSequence.toString().trim();
+                    }
+                })
+                .filter(new Predicate<String>() {
+                    @Override
+                    public boolean test(String s) throws Exception {
+                        return !s.isEmpty();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .distinctUntilChanged()
+                .switchMap(new Function<String, ObservableSource<DiscoverDBResponse>>() {
+
+                     @Override
+                    public ObservableSource<DiscoverDBResponse> apply(String charSequence) throws Exception {
+                         queryM=charSequence;
+                         final MovieDataService movieDataService = RetrofitInstance.getService();
+                    String ApiKey = BuildConfig.ApiKey;
+                    observableDB = movieDataService.search(ApiKey, false, charSequence);
+                    return observableDB;
+                  }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<DiscoverDBResponse>() {
+                    @Override
+                    public void onNext(DiscoverDBResponse discoverDBResponse) {
+                        if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
+                            search = (ArrayList<Discover>) discoverDBResponse.getResults();
+                            DiscoverToMovie discoverToMovie = new DiscoverToMovie(search);
+                            moviesearch = discoverToMovie.getMovies();
+                            String a[] = new String[moviesearch.size()];
+                            for (int i = 0; i < a.length; i++) {
+                                a[i] = moviesearch.get(i).getTitle();
+                            }
+                            ArrayAdapter<String> Adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.search_list, a);
+                            String[] columnNames = {"_id", "text"};
+                           cursor = new MatrixCursor(columnNames);
+                            String[] temp = new String[2];
+                            int id = 0;
+                            for (String item : a) {
+                                temp[0] = Integer.toString(id++);
+                                temp[1] = item;
+                                cursor.addRow(temp);
+
+                            }
+                            SearchAdapter searchAdapter = new SearchAdapter(MainActivity.this, cursor, true, searchView, moviesearch);
+                            searchView.setSuggestionsAdapter(searchAdapter);
+                        }
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d("SearchError",e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
+
+
+
+       /* searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(final String query) {
                 for (int i = 0; i <= getSupportFragmentManager().getBackStackEntryCount(); i++) {
@@ -350,57 +424,13 @@ public class MainActivity extends AppCompatActivity
                 }
                 return true;
             }
-
-            @Override
-            public boolean onQueryTextChange(final String newText) {
-                final MovieDataService movieDataService = RetrofitInstance.getService();
-                String ApiKey = BuildConfig.ApiKey;
-                observableDB = movieDataService.search(ApiKey, false, newText);
-                compositeDisposable.add(new DisposableObserver<DiscoverDBResponse>() {
-                    @Override
-                    public void onNext(DiscoverDBResponse discoverDBResponse) {
-                        if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
-                            search = (ArrayList<Discover>) discoverDBResponse.getResults();
-                            DiscoverToMovie discoverToMovie = new DiscoverToMovie(search);
-                            moviesearch = discoverToMovie.getMovies();
-                            String a[] = new String[moviesearch.size()];
-                            for (int i = 0; i < a.length; i++) {
-                                a[i] = moviesearch.get(i).getTitle();
-                            }
-                            ArrayAdapter<String> Adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.search_list, a);
-                            String[] columnNames = {"_id", "text"};
-                            MatrixCursor cursor = new MatrixCursor(columnNames);
-                            String[] temp = new String[2];
-                            int id = 0;
-                            for (String item : a) {
-                                temp[0] = Integer.toString(id++);
-                                temp[1] = item;
-                                cursor.addRow(temp);
-                            }
-                            SearchAdapter searchAdapter = new SearchAdapter(MainActivity.this, cursor, true, searchView, moviesearch);
-                            searchView.setSuggestionsAdapter(searchAdapter);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Toast.makeText(MainActivity.this, "Error!" + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-                return true;
-          }
-        });
+        });*/
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search_view,menu);
         MenuItem menuItem = menu.findItem(R.id.app_bar_search);
-        SearchView searchView = (SearchView) menuItem.getActionView();
+        android.widget.SearchView searchView = (android.widget.SearchView) menuItem.getActionView();
         search(searchView);
         return true;
     }
