@@ -65,8 +65,7 @@ public class Discover implements Parcelable
             return (new Discover[size]);
         }
 
-    }
-            ;
+    };
 
     protected Discover(Parcel in) {
         this.voteCount = ((Integer) in.readValue((Integer.class.getClassLoader())));

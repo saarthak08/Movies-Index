@@ -281,7 +281,7 @@ public class Movies extends Fragment {
         final MovieDataService movieDataService= RetrofitInstance.getService();
         String ApiKey= BuildConfig.ApiKey;
         Call<DiscoverDBResponse> call;
-        call=movieDataService.discover(ApiKey,Integer.toString(MainActivity.genreid),false,false,1);
+        call=movieDataService.discover(ApiKey,Integer.toString(MainActivity.genreid),false,false,pages);
         call.enqueue(new Callback<DiscoverDBResponse>() {
             @Override
             public void onResponse(Call<DiscoverDBResponse> call, Response<DiscoverDBResponse> response) {

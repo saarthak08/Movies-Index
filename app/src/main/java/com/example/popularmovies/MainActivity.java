@@ -343,6 +343,7 @@ public class MainActivity extends AppCompatActivity
         final MovieDataService movieDataService= RetrofitInstance.getService();
         String ApiKey= BuildConfig.ApiKey;
         Call<GenresListDBResponse> call;
+        drawer=2;
         call= movieDataService.getGenresList(ApiKey);
         call.enqueue(new Callback<GenresListDBResponse>() {
             @Override
