@@ -1,9 +1,8 @@
-package com.example.popularmovies.PaginationLibrary;
+package com.example.popularmovies.paginationlibrary;
 
 import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.NonNull;
-import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,18 +10,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.popularmovies.R;
 import com.example.popularmovies.databinding.MovieListItemBinding;
 import com.example.popularmovies.model.Movie;
-import com.example.popularmovies.MoviesInfo;
+import com.example.popularmovies.view.MoviesInfo;
 
-/* This class is the data source for the paging library for this project. But paging isn't implemented by this class in this project. Hence, this code isn't used in this project.
-   But it can be used as an alternative. */
+/* ******
+
+This class is the data source for the paging library for this project. But paging isn't implemented by this class in this project. Hence, this code isn't used in this project.
+   But it can be used as an alternative.
+
+******* */
 
 public class MoviesPagedListAdapter extends PagedListAdapter<Movie,RecyclerView.ViewHolder> {
     private Context context;

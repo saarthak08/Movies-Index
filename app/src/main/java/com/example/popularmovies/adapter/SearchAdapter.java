@@ -8,9 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.popularmovies.MoviesInfo;
+import com.example.popularmovies.view.MoviesInfo;
 import com.example.popularmovies.R;
-import com.example.popularmovies.fragments.Movies;
 import com.example.popularmovies.model.Movie;
 
 import java.util.ArrayList;

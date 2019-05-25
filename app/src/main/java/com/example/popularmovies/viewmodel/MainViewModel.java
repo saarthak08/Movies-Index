@@ -2,8 +2,8 @@ package com.example.popularmovies.viewmodel;
 
 import android.app.Application;
 
-import com.example.popularmovies.PaginationLibrary.DataSource;
-import com.example.popularmovies.PaginationLibrary.DataSourceFactory;
+import com.example.popularmovies.paginationlibrary.DataSource;
+import com.example.popularmovies.paginationlibrary.DataSourceFactory;
 import com.example.popularmovies.model.Movie;
 import com.example.popularmovies.repository.Repository;
 import com.example.popularmovies.service.MovieDataService;
@@ -11,13 +11,11 @@ import com.example.popularmovies.service.RetrofitInstance;
 
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 

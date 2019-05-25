@@ -12,13 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.popularmovies.R;
 import com.example.popularmovies.databinding.MovieListItemBinding;
 import com.example.popularmovies.model.Movie;
-import com.example.popularmovies.MoviesInfo;
+import com.example.popularmovies.view.MoviesInfo;
 
 import java.util.ArrayList;
 

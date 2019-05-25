@@ -1,4 +1,4 @@
-package com.example.popularmovies.PaginationLibrary;
+package com.example.popularmovies.paginationlibrary;
 
 import android.app.Application;
 import android.os.Build;
@@ -18,8 +18,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/* This class is the data source for the paging library for this project. But paging isn't implemented by this class in this project. Hence, this code isn't used in this project.
-   But it can be used as an alternative. */
+/* *****
+
+This class is the data source for the paging library for this project. But paging isn't implemented by this class in this project. Hence, this code isn't used in this project.
+   But it can be used as an alternative.
+
+
+*****    */
 
 public class DataSource extends PageKeyedDataSource<Long, Movie> {
     private MovieDataService movieDataService;
@@ -35,7 +40,7 @@ public class DataSource extends PageKeyedDataSource<Long, Movie> {
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Long> params, @NonNull final LoadInitialCallback<Long, Movie> callback) {
         movieDataService= RetrofitInstance.getService();
-        Call<MovieDBResponse> call=movieDataService.getPopularMovies(ApiKey,1);
+       /* Call<MovieDBResponse> call=movieDataService.getPopularMovies(ApiKey,1);
         call.enqueue(new Callback<MovieDBResponse>() {
             @Override
             public void onResponse(Call<MovieDBResponse> call, Response<MovieDBResponse> response) {
@@ -50,7 +55,7 @@ public class DataSource extends PageKeyedDataSource<Long, Movie> {
             public void onFailure(Call<MovieDBResponse> call, Throwable t) {
 
             }
-        });
+        });*/
 
     }
 
@@ -59,11 +64,10 @@ public class DataSource extends PageKeyedDataSource<Long, Movie> {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void loadAfter(@NonNull final LoadParams<Long> params, @NonNull final LoadCallback<Long, Movie> callback) {
         movieDataService= RetrofitInstance.getService();
-        Call<MovieDBResponse> call=movieDataService.getPopularMovies(ApiKey, Math.toIntExact(params.key));
+/*     Call<MovieDBResponse> call=movieDataService.getPopularMovies(ApiKey, Math.toIntExact(params.key));
         call.enqueue(new Callback<MovieDBResponse>() {
             @Override
             public void onResponse(Call<MovieDBResponse> call, Response<MovieDBResponse> response) {
@@ -79,7 +83,7 @@ public class DataSource extends PageKeyedDataSource<Long, Movie> {
             public void onFailure(Call<MovieDBResponse> call, Throwable t) {
 
             }
-        });
+        });*/
 
     }
 }

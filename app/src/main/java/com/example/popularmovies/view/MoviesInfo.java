@@ -1,24 +1,16 @@
-package com.example.popularmovies;
+package com.example.popularmovies.view;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.popularmovies.R;
 import com.example.popularmovies.databinding.ActivityMoviesInfoBinding;
 import com.example.popularmovies.model.Movie;

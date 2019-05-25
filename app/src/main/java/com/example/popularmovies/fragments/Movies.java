@@ -2,11 +2,9 @@ package com.example.popularmovies.fragments;
 
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -14,14 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,11 +34,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.popularmovies.BuildConfig;
-import com.example.popularmovies.MainActivity;
+import com.example.popularmovies.view.MainActivity;
 import com.example.popularmovies.R;
 import com.example.popularmovies.adapter.MoviesAdapter;
 import com.example.popularmovies.databinding.FragmentMoviesBinding;
@@ -73,12 +73,15 @@ public class Movies extends Fragment {
     private RecyclerView recyclerView;
     private MoviesAdapter moviesAdapter;
     private Context context;
+    private static Observable<MovieDBResponse> observableMovie;
+    private static Observable<DiscoverDBResponse> observableDB;
     private MainViewModel viewModel;
     private SwipeRefreshLayout swipeRefreshLayout;
     private FragmentMoviesBinding fragmentMoviesBinding;
     private int selectedItem=0;
     private PaginationScrollListener paginationScrollListener;
     GridLayoutManager gridLayoutManager;
+    private static CompositeDisposable compositeDisposable=new CompositeDisposable();
     private int totalPages;
     private int totalPagesGenre;
     private ArrayList<Discover> discovers=new ArrayList<>();
@@ -239,75 +242,93 @@ public class Movies extends Fragment {
        recyclerView.addOnScrollListener(paginationScrollListener);
     }
 
-    public void loadMore(int a, final int pages)
+    private void loadMore(int a, final int pages)
     {
         final MovieDataService movieDataService= RetrofitInstance.getService();
         String ApiKey=BuildConfig.ApiKey;
-        Call<MovieDBResponse> call;
         if(a==0) {
-            call=movieDataService.getPopularMovies(ApiKey,pages);
+            observableMovie=movieDataService.getPopularMoviesWithRx(ApiKey,pages);
         }else {
-            call=movieDataService.getTopRatedMovies(ApiKey,pages);
+            observableMovie=movieDataService.getTopRatedMoviesWithRx(ApiKey,pages);
         }
-        call.enqueue(new Callback<MovieDBResponse>() {
+        compositeDisposable.add(observableMovie.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(new DisposableObserver<MovieDBResponse>() {
             @Override
-            public void onResponse(Call<MovieDBResponse> call, Response<MovieDBResponse> response) {
-                MovieDBResponse movieDBResponse = response.body();
+            public void onNext(MovieDBResponse movieDBResponse) {
                 if (movieDBResponse != null&&movieDBResponse.getMovies()!=null) {
                     if(pages==1) {
-                        movieList=(ArrayList<Movie>) response.body().getMovies();
-                        totalPages = response.body().getTotalPages();
+                        movieList=(ArrayList<Movie>) movieDBResponse.getMovies();
+                        totalPages = movieDBResponse.getTotalPages();
                         recyclerView.setAdapter(moviesAdapter);
                     } else {
-                        ArrayList<Movie> movies=(ArrayList<Movie>)response.body().getMovies();
+                        ArrayList<Movie> movies=(ArrayList<Movie>)movieDBResponse.getMovies();
                         for (Movie movie : movies) {
                             movieList.add(movie);
                             moviesAdapter.notifyItemInserted(movieList.size() - 1);
                         }
                     }
                 }
+
             }
 
             @Override
-            public void onFailure(Call<MovieDBResponse> call, Throwable t) {
-                Toast.makeText(getActivity(), "Error!" + t.getMessage().trim(), Toast.LENGTH_SHORT).show();
+            public void onError(Throwable e) {
+                Toast.makeText(getActivity(), "Error!" + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
 
             }
-        });
+
+            @Override
+            public void onComplete() {
+
+            }
+        }));
     }
 
-    public void loadMoreGenres(final int pages)
+    private void loadMoreGenres(final int pages)
     {
         final MovieDataService movieDataService= RetrofitInstance.getService();
         String ApiKey= BuildConfig.ApiKey;
-        Call<DiscoverDBResponse> call;
-        call=movieDataService.discover(ApiKey,Integer.toString(MainActivity.genreid),false,false,pages);
-        call.enqueue(new Callback<DiscoverDBResponse>() {
-            @Override
-            public void onResponse(Call<DiscoverDBResponse> call, Response<DiscoverDBResponse> response) {
-                DiscoverDBResponse discoverDBResponse = response.body();
-                if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
-                    if(pages==1) {
-                        discovers=(ArrayList<Discover>) response.body().getResults();
-                        totalPagesGenre = response.body().getTotalPages();
-                        recyclerView.setAdapter(moviesAdapter);
-                    } else {
-                        ArrayList<Discover> discovers =(ArrayList<Discover>)response.body().getResults();
-                        DiscoverToMovie discoverToMovie= new DiscoverToMovie(discovers);
-                        ArrayList<Movie> movies=discoverToMovie.getMovies();
-                        for (Movie movie : movies) {
-                            movieList.add(movie);
-                            moviesAdapter.notifyItemInserted(movieList.size() - 1);
+        observableDB=movieDataService.discover(ApiKey,Integer.toString(MainActivity.genreid),false,false,pages);
+        compositeDisposable.add(
+                observableDB.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<DiscoverDBResponse>() {
+                    @Override
+                    public void onNext(DiscoverDBResponse discoverDBResponse) {
+                        if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
+                            if(pages==1) {
+                                discovers=(ArrayList<Discover>)discoverDBResponse.getResults();
+                                totalPagesGenre =discoverDBResponse.getTotalPages();
+                                recyclerView.setAdapter(moviesAdapter);
+                            } else {
+                                ArrayList<Discover> discovers =(ArrayList<Discover>)discoverDBResponse.getResults();
+                                DiscoverToMovie discoverToMovie= new DiscoverToMovie(discovers);
+                                ArrayList<Movie> movies=discoverToMovie.getMovies();
+                                for (Movie movie : movies) {
+                                    movieList.add(movie);
+                                    moviesAdapter.notifyItemInserted(movieList.size() - 1);
+                                }
+                            }
                         }
                     }
-                }
-            }
-            @Override
-            public void onFailure(Call<DiscoverDBResponse> call, Throwable t) {
-                Toast.makeText(getActivity(), "Error!" + t.getMessage().trim(), Toast.LENGTH_SHORT).show();
-            }
-        });
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(getActivity(), "Error!" + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        );
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
+    }
 }
 
