@@ -1,7 +1,6 @@
 package com.example.popularmovies.view;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -48,11 +47,9 @@ import retrofit2.Response;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SearchEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -301,10 +298,9 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void search(final android.widget.SearchView searchView)
-    {
-        compositeDisposable.add(
-        RxSearchView.queryTextChanges(searchView).debounce(300,TimeUnit.MILLISECONDS)
+    public void search(final SearchView searchView) {
+       /* compositeDisposable.add(
+        RxSearchView.queryTextChanges(searchView).debounce(400,TimeUnit.MILLISECONDS)
                 .map(new Function<CharSequence, String>() {
                     @Override
                     public String apply(CharSequence charSequence) throws Exception {
@@ -367,70 +363,115 @@ public class MainActivity extends AppCompatActivity
                     public void onComplete() {
 
                     }
-                }));
+                }));*/
 
+       searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+           @Override
+           public boolean onQueryTextSubmit(String query) {
+               for (int i = 0; i <= getSupportFragmentManager().getBackStackEntryCount(); i++) {
+                   getSupportFragmentManager().popBackStack();
+               }
+               if (!query.isEmpty()) {
+                   searchView.setQuery("",false);
+                   searchView.clearFocus();
+                   searchView.setIconified(true);
+                   final MovieDataService movieDataService = RetrofitInstance.getService();
+                   final String ApiKey = BuildConfig.ApiKey;
+                   queryM = query;
+                   drawer = 3;
+                   observableDB = movieDataService.search(ApiKey, false, query);
+                   compositeDisposable.add(observableDB
+                           .subscribeOn(Schedulers.io())
+                           .observeOn(AndroidSchedulers.mainThread())
+                           .subscribeWith(new DisposableObserver<DiscoverDBResponse>() {
+                               @Override
+                               public void onNext(DiscoverDBResponse discoverDBResponse) {
+                                   if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
+                                       discovers = (ArrayList<Discover>) discoverDBResponse.getResults();
+                                       totalPagesGenres = discoverDBResponse.getTotalPages();
+                                       DiscoverToMovie discoverToMovie = new DiscoverToMovie(discovers);
+                                       movieList = discoverToMovie.getMovies();
+                                       if (progressBar != null) {
+                                           progressBar.setIndeterminate(false);
+                                       }
+                                       fragmentTransaction = fragmentManager.beginTransaction();
+                                       fragmentTransaction.addToBackStack(null);
+                                       fragmentTransaction.add(R.id.frame_layout, movies).commitAllowingStateLoss();
+                                   }
+                               }
 
+                               @Override
+                               public void onError(Throwable e) {
+                                   Toast.makeText(MainActivity.this, "Error!", Toast.LENGTH_SHORT).show();
 
-       /* searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(final String query) {
-                for (int i = 0; i <= getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                    getSupportFragmentManager().popBackStack();
-                }
-                if(!query.isEmpty())
-                {
-                final MovieDataService movieDataService = RetrofitInstance.getService();
-                final String ApiKey = BuildConfig.ApiKey;
-                queryM = query;
-                drawer = 3;
-                observableDB = movieDataService.search(ApiKey, false, query);
-                    compositeDisposable.add(observableDB.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .debounce(300, TimeUnit.MILLISECONDS)
-                        .distinctUntilChanged()
-                        .switchMap(new Function<DiscoverDBResponse, ObservableSource<DiscoverDBResponse>>() {
-                            @Override
-                            public ObservableSource<DiscoverDBResponse> apply(DiscoverDBResponse discoverDBResponse) throws Exception {
-                                return observableDB = movieDataService.search(ApiKey, false, query);
-                            }
-                        }).subscribeWith(new DisposableObserver<DiscoverDBResponse>() {
-                            @Override
-                            public void onNext(DiscoverDBResponse discoverDBResponse) {
-                                if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
-                                    discovers = (ArrayList<Discover>) discoverDBResponse.getResults();
-                                    totalPagesGenres = discoverDBResponse.getTotalPages();
-                                    DiscoverToMovie discoverToMovie = new DiscoverToMovie(discovers);
-                                    movieList = discoverToMovie.getMovies();
-                                    if (progressBar != null) {
-                                        progressBar.setIndeterminate(false);
-                                    }
-                                    fragmentTransaction = fragmentManager.beginTransaction();
-                                    fragmentTransaction.addToBackStack(null);
-                                    fragmentTransaction.add(R.id.frame_layout, movies).commitAllowingStateLoss();
-                                }
-                            }
+                               }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                Toast.makeText(MainActivity.this, "Error!", Toast.LENGTH_SHORT).show();
+                               @Override
+                               public void onComplete() {
 
-                            }
+                               }
+                           }));
+               }
+               return true;
+           }
 
-                            @Override
-                            public void onComplete() {
+           @Override
+           public boolean onQueryTextChange(String newText) {
+               final MovieDataService movieDataService = RetrofitInstance.getService();
+               final String ApiKey = BuildConfig.ApiKey;
+               queryM = newText;
+               drawer = 3;
+               observableDB = movieDataService.search(ApiKey, false, queryM);
+               compositeDisposable.add(observableDB
+                     //  .debounce(400,TimeUnit.MILLISECONDS)
+                       .subscribeOn(Schedulers.io())
+                       .observeOn(AndroidSchedulers.mainThread())
+                       .subscribeWith(new DisposableObserver<DiscoverDBResponse>() {
+                           @Override
+                           public void onNext(DiscoverDBResponse discoverDBResponse) {
+                               if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
+                                   search = (ArrayList<Discover>) discoverDBResponse.getResults();
+                                   DiscoverToMovie discoverToMovie = new DiscoverToMovie(search);
+                                   moviesearch = discoverToMovie.getMovies();
+                                   String a[] = new String[moviesearch.size()];
+                                   for (int i = 0; i < a.length; i++) {
+                                       a[i] = moviesearch.get(i).getTitle();
+                                   }
+                                   ArrayAdapter<String> Adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.search_list, a);
+                                   String[] columnNames = {"_id", "text"};
+                                   cursor = new MatrixCursor(columnNames);
+                                   String[] temp = new String[2];
+                                   int id = 0;
+                                   for (String item : a) {
+                                       temp[0] = Integer.toString(id++);
+                                       temp[1] = item;
+                                       cursor.addRow(temp);
 
-                            }
-                        }));
-                }
-                return true;
-            }
-        });*/
+                                   }
+                                   SearchAdapter searchAdapter=new SearchAdapter(MainActivity.this, cursor,true,searchView,moviesearch);
+                                   searchView.setSuggestionsAdapter(searchAdapter);
+                               }
+                           }
+
+                           @Override
+                           public void onError(Throwable e) {
+
+                           }
+
+                           @Override
+                           public void onComplete() {
+
+                           }
+                       }));
+           return true;
+           }
+    });
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search_view,menu);
         MenuItem menuItem = menu.findItem(R.id.app_bar_search);
-        android.widget.SearchView searchView = (android.widget.SearchView) menuItem.getActionView();
+        SearchView searchView = (SearchView) menuItem.getActionView();
         search(searchView);
         return true;
     }

@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.popularmovies.view.MoviesInfo;
@@ -16,11 +14,14 @@ import com.example.popularmovies.model.Movie;
 
 import java.util.ArrayList;
 
+import androidx.appcompat.widget.SearchView;
+import androidx.cursoradapter.widget.CursorAdapter;
+
 
 public class SearchAdapter extends CursorAdapter {
     private LayoutInflater mLayoutInflater;
     private Context mContext;
-    private android.widget.SearchView searchView;
+    private SearchView searchView;
     private ArrayList<Movie> movies;
     public SearchAdapter(Context context, Cursor c, boolean autoRequery, SearchView searchView, ArrayList<Movie> movies) {
         super(context, c, autoRequery);
