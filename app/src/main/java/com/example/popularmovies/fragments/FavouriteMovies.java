@@ -13,7 +13,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -25,7 +24,6 @@ import com.example.popularmovies.R;
 import com.example.popularmovies.adapter.MoviesAdapter;
 import com.example.popularmovies.databinding.FragmentFavouriteMoviesBinding;
 import com.example.popularmovies.model.Movie;
-import com.example.popularmovies.utils.PaginationScrollListener;
 import com.example.popularmovies.viewmodel.MainViewModel;
 
 import java.util.ArrayList;
