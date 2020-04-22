@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity
                 getSupportFragmentManager().popBackStack();
             }
             fragmentTransaction1=getSupportFragmentManager().beginTransaction();
+            fragmentTransaction1.addToBackStack(null);
             fragmentTransaction1.replace(R.id.frame_layout,new FavouriteMovies()).commitAllowingStateLoss();
         }
         else if (id == R.id.toprated) {

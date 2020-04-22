@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.example.popularmovies.R;
 import com.example.popularmovies.adapter.MoviesAdapter;
@@ -44,6 +45,7 @@ public class FavouriteMovies extends Fragment {
     private MainViewModel viewModel;
     private ArrayList<Movie> movie;
     private Context context;
+    private TextView textView;
     private MoviesAdapter moviesAdapter;
     private RecyclerView recyclerView;
     private ScrollView scrollView;
@@ -110,6 +112,13 @@ public class FavouriteMovies extends Fragment {
     }
 
     private void showRecyclerView() {
+        textView=fragmentFavouriteMoviesBinding.tvNoMovies;
+        if(movie.isEmpty()) {
+            textView.setVisibility(View.VISIBLE);
+        }
+        else {
+            textView.setVisibility(View.GONE);
+        }
         recyclerView=fragmentFavouriteMoviesBinding.rvF4;
         moviesAdapter= new MoviesAdapter(context,movie);
         if(context.getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT)
