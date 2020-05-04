@@ -1,12 +1,14 @@
 package com.sg.moviesindex.model;
-import java.util.List;
+
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MovieDBResponse implements Parcelable
-{
+import java.util.List;
+
+public class MovieDBResponse implements Parcelable {
 
     @SerializedName("page")
     @Expose
@@ -34,8 +36,7 @@ public class MovieDBResponse implements Parcelable
             return (new MovieDBResponse[size]);
         }
 
-    }
-            ;
+    };
 
     protected MovieDBResponse(Parcel in) {
         this.page = ((Integer) in.readValue((Integer.class.getClassLoader())));

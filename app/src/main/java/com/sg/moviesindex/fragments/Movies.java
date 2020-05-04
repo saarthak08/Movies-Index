@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.adapter.MoviesAdapter;
 import com.sg.moviesindex.databinding.FragmentMoviesBinding;
@@ -32,9 +34,10 @@ import com.sg.moviesindex.service.FetchMoreDataService;
 import com.sg.moviesindex.utils.PaginationScrollListener;
 import com.sg.moviesindex.view.MainActivity;
 import com.sg.moviesindex.viewmodel.MainViewModel;
-import java.util.ArrayList;
-import io.reactivex.disposables.CompositeDisposable;
 
+import java.util.ArrayList;
+
+import io.reactivex.disposables.CompositeDisposable;
 
 
 /**
@@ -68,9 +71,8 @@ public class Movies extends Fragment {
     private FetchFirstTimeDataService firstTimeData;
 
     public Movies(FetchFirstTimeDataService fetchFirstTimeDataService) {
-        firstTimeData= fetchFirstTimeDataService;
+        firstTimeData = fetchFirstTimeDataService;
     }
-
 
 
     @Override
@@ -132,11 +134,9 @@ public class Movies extends Fragment {
             }
         } else if (MainActivity.drawer == 3) {
             getActivity().setTitle("Search Results: " + MainActivity.queryM);
-        }
-        else if (MainActivity.drawer == 4) {
+        } else if (MainActivity.drawer == 4) {
             getActivity().setTitle("Upcoming Movies: " + MainActivity.region);
-        }
-        else if (MainActivity.drawer == 5) {
+        } else if (MainActivity.drawer == 5) {
             getActivity().setTitle("Now Playing: " + MainActivity.region);
         }
         context = getContext();
@@ -151,7 +151,7 @@ public class Movies extends Fragment {
                     public void run() {
                         swipeRefreshLayout.setRefreshing(false);
                         gridLayoutManager.scrollToPosition(0);
-                        gridLayoutManager.scrollToPositionWithOffset(0,0);
+                        gridLayoutManager.scrollToPositionWithOffset(0, 0);
                     }
                 }, 4000);
             }
@@ -171,12 +171,12 @@ public class Movies extends Fragment {
             }
         });
         gridLayoutManager.scrollToPosition(0);
-        gridLayoutManager.scrollToPositionWithOffset(0,0);
+        gridLayoutManager.scrollToPositionWithOffset(0, 0);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(moviesAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         moviesAdapter.notifyDataSetChanged();
-        fetchMoreDataService = new FetchMoreDataService(recyclerView,movieList,compositeDisposable,getActivity(),moviesAdapter);
+        fetchMoreDataService = new FetchMoreDataService(recyclerView, movieList, compositeDisposable, getActivity(), moviesAdapter);
         paginationScrollListener = new PaginationScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {

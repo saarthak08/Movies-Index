@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7a964d500cc0cd57497b5492b9a518e1",
+    "identityHash": "e70a4c7cc982b580d046cdd8ce1df393",
     "entities": [
       {
         "tableName": "favourite_movies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`vote_count` INTEGER, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `video` INTEGER, `vote_average` REAL, `title` TEXT, `popularity` REAL, `poster_path` TEXT, `original_language` TEXT, `original_title` TEXT, `backdrop_path` TEXT, `adult` INTEGER, `overview` TEXT, `release_date` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`vote_count` INTEGER, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `video` INTEGER, `vote_average` REAL, `title` TEXT, `popularity` REAL, `poster_path` TEXT, `original_language` TEXT, `original_title` TEXT, `backdrop_path` TEXT, `adult` INTEGER, `overview` TEXT, `release_date` TEXT, `casts_list` TEXT, `reviews_list` TEXT)",
         "fields": [
           {
             "fieldPath": "voteCount",
@@ -85,6 +85,18 @@
             "columnName": "release_date",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "castsList",
+            "columnName": "casts_list",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "reviewsList",
+            "columnName": "reviews_list",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -100,7 +112,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"7a964d500cc0cd57497b5492b9a518e1\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e70a4c7cc982b580d046cdd8ce1df393\")"
     ]
   }
 }

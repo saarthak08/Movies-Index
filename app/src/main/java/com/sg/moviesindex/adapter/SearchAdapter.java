@@ -8,14 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sg.moviesindex.view.MoviesInfo;
-import com.sg.moviesindex.R;
-import com.sg.moviesindex.model.Movie;
-
-import java.util.ArrayList;
-
 import androidx.appcompat.widget.SearchView;
 import androidx.cursoradapter.widget.CursorAdapter;
+
+import com.sg.moviesindex.R;
+import com.sg.moviesindex.model.Movie;
+import com.sg.moviesindex.view.MoviesInfo;
+
+import java.util.ArrayList;
 
 
 public class SearchAdapter extends CursorAdapter {
@@ -23,12 +23,13 @@ public class SearchAdapter extends CursorAdapter {
     private Context mContext;
     private SearchView searchView;
     private ArrayList<Movie> movies;
+
     public SearchAdapter(Context context, Cursor c, boolean autoRequery, SearchView searchView, ArrayList<Movie> movies) {
         super(context, c, autoRequery);
         mContext = context;
         this.searchView = searchView;
         mLayoutInflater = LayoutInflater.from(context);
-        this.movies=movies;
+        this.movies = movies;
     }
 
     @Override
@@ -50,15 +51,15 @@ public class SearchAdapter extends CursorAdapter {
 
     @Override
     public void bindView(final View view, Context context, final Cursor cursor) {
-        String title=cursor.getString(cursor.getColumnIndex("text"));
-        TextView textView=view.findViewById(R.id.textView2);
+        String title = cursor.getString(cursor.getColumnIndex("text"));
+        TextView textView = view.findViewById(R.id.textView2);
         textView.setText(title);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //String id=cursor.getString(cursor.getColumnIndex("_id"));
-                int id=(Integer) view.getTag();//here is the position
-                Movie movie=movies.get(id);
+                int id = (Integer) view.getTag();//here is the position
+                Movie movie = movies.get(id);
                 Intent i = new Intent(mContext, MoviesInfo.class);
                 i.putExtra("movie", movie);
                 mContext.startActivity(i);

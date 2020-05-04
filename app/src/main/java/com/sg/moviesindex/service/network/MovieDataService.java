@@ -35,7 +35,7 @@ public interface MovieDataService {
     Observable<ReviewsList> getReviews(@Path("movieId") Integer movieId, @Query("api_key") String apiKey, @Query("page") int pageIndex);
 
     @GET("movie/{movieId}/credits")
-    Observable<CastsList> getCasts(@Path("movieId") Integer movieId, @Query("api_key") String apiKey, @Query("page") int pageIndex);
+    Observable<CastsList> getCasts(@Path("movieId") Integer movieId, @Query("api_key") String apiKey);
 
     @GET("discover/movie")
     Observable<DiscoverDBResponse> discover(@Query("api_key") String apiKey, @Query("with_genres") String genres, @Query("include_adult") Boolean adult, @Query("include_video") Boolean video, @Query("page") int pageIndex, @Query("sort_by") String sortBy);

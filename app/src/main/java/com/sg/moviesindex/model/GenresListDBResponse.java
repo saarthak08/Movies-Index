@@ -1,13 +1,15 @@
 package com.sg.moviesindex.model;
 
-import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
 
-public class GenresListDBResponse implements Parcelable{
+
+public class GenresListDBResponse implements Parcelable {
 
     @SerializedName("genres")
     @Expose
@@ -26,8 +28,7 @@ public class GenresListDBResponse implements Parcelable{
             return (new GenresListDBResponse[size]);
         }
 
-    }
-            ;
+    };
 
     protected GenresListDBResponse(Parcel in) {
         in.readList(this.GenresLists, (GenresList.class.getClassLoader()));

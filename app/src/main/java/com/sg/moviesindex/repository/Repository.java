@@ -2,44 +2,38 @@ package com.sg.moviesindex.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import com.sg.moviesindex.db.Database;
 import com.sg.moviesindex.db.FavouriteMoviesDAO;
 import com.sg.moviesindex.model.Movie;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-
-import androidx.lifecycle.LiveData;
 
 public class Repository {
     private FavouriteMoviesDAO favouriteMoviesDAO;
-    public Repository(Application application)
-    {
-        Database database=Database.getInstance(application);
-        favouriteMoviesDAO=database.getFDAO();
+
+    public Repository(Application application) {
+        Database database = Database.getInstance(application);
+        favouriteMoviesDAO = database.getFDAO();
 
     }
 
-    public LiveData<List<Movie>> getAllFMovies()
-    {
+    public LiveData<List<Movie>> getAllFMovies() {
         return favouriteMoviesDAO.getAllFMovies();
     }
 
-    public Movie getMovie(String id)
-    {
+    public Movie getMovie(String id) {
         return favouriteMoviesDAO.getMovie(id);
     }
-    public void AddMovie(Movie movie)
-    {
+
+    public void AddMovie(Movie movie) {
 
         new AddFMovie(favouriteMoviesDAO).execute(movie);
     }
 
-    public void DeleteMovie(Movie movie)
-    {
-            new DeleteFMovie(favouriteMoviesDAO).execute(movie);
+    public void DeleteMovie(Movie movie) {
+        new DeleteFMovie(favouriteMoviesDAO).execute(movie);
     }
 
 }

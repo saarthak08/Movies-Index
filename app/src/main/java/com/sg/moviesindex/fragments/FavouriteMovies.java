@@ -4,6 +4,12 @@ package com.sg.moviesindex.fragments;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -13,16 +19,13 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ScrollView;
-import android.widget.TextView;
+
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.adapter.MoviesAdapter;
 import com.sg.moviesindex.databinding.FragmentFavouriteMoviesBinding;
 import com.sg.moviesindex.model.Movie;
 import com.sg.moviesindex.viewmodel.MainViewModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,8 +90,8 @@ public class FavouriteMovies extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        fragmentFavouriteMoviesBinding=DataBindingUtil.inflate(inflater,R.layout.fragment_favourite_movies,container,false);
-        View view=fragmentFavouriteMoviesBinding.getRoot();
+        fragmentFavouriteMoviesBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_favourite_movies, container, false);
+        View view = fragmentFavouriteMoviesBinding.getRoot();
         return view;
     }
 
@@ -96,33 +99,31 @@ public class FavouriteMovies extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Favourite Movies");
-        context=getContext();
-        viewModel= ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        context = getContext();
+        viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         viewModel.getAllMovies().observe(getActivity(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(List<Movie> movies) {
-                movie=(ArrayList<Movie>)movies;
+                movie = (ArrayList<Movie>) movies;
                 showRecyclerView();
             }
         });
     }
 
     private void showRecyclerView() {
-        textView=fragmentFavouriteMoviesBinding.tvNoMovies;
-        if(movie.isEmpty()) {
+        textView = fragmentFavouriteMoviesBinding.tvNoMovies;
+        if (movie.isEmpty()) {
             textView.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             textView.setVisibility(View.GONE);
         }
-        recyclerView=fragmentFavouriteMoviesBinding.rvF4;
-        moviesAdapter= new MoviesAdapter(context,movie);
-        if(context.getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT)
-        {
-            recyclerView.setLayoutManager(new GridLayoutManager(context,2));
+        recyclerView = fragmentFavouriteMoviesBinding.rvF4;
+        moviesAdapter = new MoviesAdapter(context, movie);
+        if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
+        } else {
+            recyclerView.setLayoutManager((new GridLayoutManager(context, 4)));
         }
-        else
-        {recyclerView.setLayoutManager((new GridLayoutManager(context,4)));}
         recyclerView.setAdapter(moviesAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         moviesAdapter.notifyDataSetChanged();

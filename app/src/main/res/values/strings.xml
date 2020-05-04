@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Movies</string>
-    <string name="title_activity_movies_info">Movies</string>
+    <string name="app_name">Movies Index</string>
+    <string name="title_activity_movies_info">Movies Index</string>
     <string name="favourite_movies">Favourite Movies</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="title_activity_main">Movies</string>
+    <string name="title_activity_main">Movies Index</string>
     <string name="popular_movies">Popular Movies</string>
     <string name="created_by_n_saarthak_gupta">Created By:\n\t\t\tSaarthak Gupta</string>
     <string name="categories">Categories</string>

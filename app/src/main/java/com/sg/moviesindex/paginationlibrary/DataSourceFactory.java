@@ -2,9 +2,10 @@ package com.sg.moviesindex.paginationlibrary;
 
 import android.app.Application;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.sg.moviesindex.service.network.MovieDataService;
 
-import androidx.lifecycle.MutableLiveData;
 /* ****
 
 
@@ -13,26 +14,24 @@ import androidx.lifecycle.MutableLiveData;
 
 
 **** */
-public class DataSourceFactory extends DataSource.Factory{
+public class DataSourceFactory extends DataSource.Factory {
     private DataSource dataSource;
     private Application application;
     private MovieDataService movieDataService;
     private MutableLiveData<DataSource> dataSourceMutableLiveData;
 
-    public DataSourceFactory(MovieDataService movieDataService,Application application) {
+    public DataSourceFactory(MovieDataService movieDataService, Application application) {
         this.application = application;
         this.movieDataService = movieDataService;
     }
 
-    public DataSource create()
-    {
-        dataSource=new DataSource(movieDataService,application);
+    public DataSource create() {
+        dataSource = new DataSource(movieDataService, application);
         dataSourceMutableLiveData.postValue(dataSource);
         return null;
     }
 
-    public MutableLiveData<DataSource> getDataSourceMutableLiveData()
-    {
+    public MutableLiveData<DataSource> getDataSourceMutableLiveData() {
         return dataSourceMutableLiveData;
     }
 }

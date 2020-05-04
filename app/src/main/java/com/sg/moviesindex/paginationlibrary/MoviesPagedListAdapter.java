@@ -2,14 +2,16 @@ package com.sg.moviesindex.paginationlibrary;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
-import androidx.paging.PagedListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.databinding.MovieListItemBinding;
 import com.sg.moviesindex.model.Movie;
@@ -22,7 +24,7 @@ This class is the data source for the paging library for this project. But pagin
 
 ******* */
 
-public class MoviesPagedListAdapter extends PagedListAdapter<Movie,RecyclerView.ViewHolder> {
+public class MoviesPagedListAdapter extends PagedListAdapter<Movie, RecyclerView.ViewHolder> {
     private Context context;
     public static int VIEW_TYPE_ITEM = 0;
     public static int VIEW_TYPE_LOADING = 1;
@@ -33,17 +35,15 @@ public class MoviesPagedListAdapter extends PagedListAdapter<Movie,RecyclerView.
     }
 
 
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        if (viewType==VIEW_TYPE_ITEM) {
-            MovieListItemBinding movieListItemBinding=DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()),
+        if (viewType == VIEW_TYPE_ITEM) {
+            MovieListItemBinding movieListItemBinding = DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()),
                     R.layout.movie_list_item, viewGroup, false);
             return new MoviesViewHolder(movieListItemBinding);
-        }
-        else {
-            View view=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.loadmore_progressbar, viewGroup, false);
+        } else {
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.loadmore_progressbar, viewGroup, false);
             return new LoadingViewHolder(view);
         }
     }
@@ -51,10 +51,9 @@ public class MoviesPagedListAdapter extends PagedListAdapter<Movie,RecyclerView.
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof MoviesViewHolder) {
-            Movie movie=getItem(i);
-            ((MoviesViewHolder)viewHolder).movieListItemBinding.setMovie(movie);
-        }
-        else if (viewHolder instanceof LoadingViewHolder) {
+            Movie movie = getItem(i);
+            ((MoviesViewHolder) viewHolder).movieListItemBinding.setMovie(movie);
+        } else if (viewHolder instanceof LoadingViewHolder) {
         }
     }
 
@@ -81,7 +80,7 @@ public class MoviesPagedListAdapter extends PagedListAdapter<Movie,RecyclerView.
 
     @Override
     public int getItemViewType(int position) {
-        return getItem(position)==null?VIEW_TYPE_LOADING:VIEW_TYPE_ITEM;
+        return getItem(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
     public class LoadingViewHolder extends RecyclerView.ViewHolder {

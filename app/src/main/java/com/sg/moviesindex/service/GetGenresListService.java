@@ -2,6 +2,7 @@ package com.sg.moviesindex.service;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -27,13 +28,15 @@ public class GetGenresListService {
     private Observable<DiscoverDBResponse> observableDB;
     private Observable<GenresListDBResponse> genresListObservable;
     private Context context;
+    private ProgressBar progressBar;
     private CompositeDisposable compositeDisposable;
     private FetchFirstTimeDataService fetchFirstTimeDataService;
 
-    public GetGenresListService(Context context, CompositeDisposable compositeDisposable, FetchFirstTimeDataService fetchFirstTimeDataService) {
+    public GetGenresListService(Context context, CompositeDisposable compositeDisposable, FetchFirstTimeDataService fetchFirstTimeDataService, ProgressBar progressBar) {
         this.context = context;
         this.compositeDisposable = compositeDisposable;
         this.fetchFirstTimeDataService = fetchFirstTimeDataService;
+        this.progressBar = progressBar;
     }
 
     public void getGenresList() {
@@ -67,8 +70,8 @@ public class GetGenresListService {
 
                             @Override
                             public void onError(Throwable e) {
-                                Toast.makeText(context, "Error!" + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
-
+                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                progressBar.setIndeterminate(false);
                             }
 
                             @Override

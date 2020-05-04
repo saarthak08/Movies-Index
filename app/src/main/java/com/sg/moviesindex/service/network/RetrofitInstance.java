@@ -9,21 +9,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitInstance {
 
-    private static Retrofit retrofit=null;
-    private static final String BASE_URL="https://api.themoviedb.org/3/";
+    private static Retrofit retrofit = null;
+    private static final String BASE_URL = "https://api.themoviedb.org/3/";
     private static final int REQUEST_TIMEOUT = 60;
     private static OkHttpClient okHttpClient;
-    public static MovieDataService getService()
-    {
-            if (okHttpClient == null)
+
+    public static MovieDataService getService() {
+        if (okHttpClient == null)
             initOkHttp();
-            if(retrofit==null)
-            {
-                retrofit=new Retrofit.Builder().baseUrl(BASE_URL)
-                        .client(okHttpClient)
-                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).addConverterFactory(GsonConverterFactory.create()).build();
-            }
-            return retrofit.create(MovieDataService.class);
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
+                    .client(okHttpClient)
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).addConverterFactory(GsonConverterFactory.create()).build();
+        }
+        return retrofit.create(MovieDataService.class);
     }
 
     private static void initOkHttp() {

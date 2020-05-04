@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import com.sg.moviesindex.db.FavouriteMoviesDAO;
 import com.sg.moviesindex.model.Movie;
 
-public class AddFMovie extends AsyncTask<Movie,Void,Void> {
+public class AddFMovie extends AsyncTask<Movie, Void, Void> {
     private FavouriteMoviesDAO favouriteMoviesDAO;
 
     public AddFMovie(FavouriteMoviesDAO favouriteMoviesDAO) {

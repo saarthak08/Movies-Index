@@ -2,11 +2,11 @@ package com.sg.moviesindex.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class GenresList implements Parcelable
-{
+public class GenresList implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -28,8 +28,7 @@ public class GenresList implements Parcelable
             return (new GenresList[size]);
         }
 
-    }
-            ;
+    };
 
     protected GenresList(Parcel in) {
         this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));

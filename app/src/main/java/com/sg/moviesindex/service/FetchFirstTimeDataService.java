@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
@@ -71,9 +72,9 @@ public class FetchFirstTimeDataService {
                         MainActivity.region = "GB";
                     }
                     if (a == 4) {
-                        observableMovie=movieDataService.getUpcomingMoviesWithRx(ApiKey, 1, MainActivity.region);
+                        observableMovie = movieDataService.getUpcomingMoviesWithRx(ApiKey, 1, MainActivity.region);
                     } else if (a == 5) {
-                        observableMovie=movieDataService.getNowPlayingWithRx(ApiKey, 1, MainActivity.region);
+                        observableMovie = movieDataService.getNowPlayingWithRx(ApiKey, 1, MainActivity.region);
                     }
                     fetchData(context);
                     return true;
@@ -111,7 +112,7 @@ public class FetchFirstTimeDataService {
 
                             @Override
                             public void onError(Throwable e) {
-                                Toast.makeText(context, "Error!" + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Error! " + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
                                 progressBar.setIndeterminate(false);
                             }
 
@@ -126,7 +127,12 @@ public class FetchFirstTimeDataService {
     public void getFirstGenreData(int genreid, final Context context) {
         final MovieDataService movieDataService = RetrofitInstance.getService();
         String ApiKey = BuildConfig.ApiKey;
-        observableDB = movieDataService.discover(ApiKey, Integer.toString(genreid), false, false, 1, "popularity.desc");
+        observableDB = movieDataService.discover(ApiKey, Integer.toString(genreid), false, false, 1, "popularity.desc").doOnError(new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                progressBar.setIndeterminate(false);
+            }
+        });
         compositeDisposable.add(
                 observableDB.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                         .subscribeWith(new DisposableObserver<DiscoverDBResponse>() {
@@ -149,7 +155,7 @@ public class FetchFirstTimeDataService {
 
                             @Override
                             public void onError(Throwable e) {
-                                Toast.makeText(context, "Error!" + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Error! " + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
                                 progressBar.setIndeterminate(false);
                             }
 

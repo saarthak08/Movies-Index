@@ -50,7 +50,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return reviewsList.getResults() == null ? 0 : reviewsList.getResults().size();
+        return reviewsList == null || reviewsList.getResults() == null ? 0 : reviewsList.getResults().size();
     }
 
 }

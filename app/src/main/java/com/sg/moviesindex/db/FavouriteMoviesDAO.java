@@ -1,14 +1,14 @@
 package com.sg.moviesindex.db;
 
-import com.sg.moviesindex.model.Movie;
-
-import java.util.List;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+
+import com.sg.moviesindex.model.Movie;
+
+import java.util.List;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 

@@ -49,14 +49,12 @@ public class FetchMoreDataService {
         String ApiKey = BuildConfig.ApiKey;
         if (a == 0) {
             observableMovie = movieDataService.getPopularMoviesWithRx(ApiKey, pages);
-        } else if(a==1) {
+        } else if (a == 1) {
             observableMovie = movieDataService.getTopRatedMoviesWithRx(ApiKey, pages);
-        }
-        else if(a==4) {
-            observableMovie = movieDataService.getUpcomingMoviesWithRx(ApiKey,pages,MainActivity.region);
-        }
-        else if(a==5){
-            observableMovie = movieDataService.getNowPlayingWithRx(ApiKey,pages,MainActivity.region);
+        } else if (a == 4) {
+            observableMovie = movieDataService.getUpcomingMoviesWithRx(ApiKey, pages, MainActivity.region);
+        } else if (a == 5) {
+            observableMovie = movieDataService.getNowPlayingWithRx(ApiKey, pages, MainActivity.region);
         }
         compositeDisposable.add(observableMovie.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<MovieDBResponse>() {
@@ -80,7 +78,7 @@ public class FetchMoreDataService {
 
                     @Override
                     public void onError(Throwable e) {
-                        Toast.makeText(context, "Error!" + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Error! " + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -89,7 +87,6 @@ public class FetchMoreDataService {
                     }
                 }));
     }
-
 
 
     public void loadMoreGenres(final int pages) {
@@ -121,7 +118,7 @@ public class FetchMoreDataService {
 
                             @Override
                             public void onError(Throwable e) {
-                                Toast.makeText(context, "Error!" + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Error! " + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
                             }
 
                             @Override

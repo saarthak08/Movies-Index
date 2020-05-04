@@ -1,14 +1,9 @@
 package com.sg.moviesindex.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.sg.moviesindex.BR;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
@@ -18,9 +13,15 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import com.sg.moviesindex.BR;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(tableName = "favourite_movies")
-public class Movie extends BaseObservable implements Parcelable
-{
+public class Movie extends BaseObservable implements Parcelable {
 
     @ColumnInfo(name = "vote_count")
     @SerializedName("vote_count")
@@ -70,12 +71,10 @@ public class Movie extends BaseObservable implements Parcelable
     private String originalTitle;
 
 
-
     @Ignore
     @SerializedName("genre_ids")
     @Expose
     private List<Integer> genreIds = new ArrayList<>();
-
 
 
     @ColumnInfo(name = "backdrop_path")
@@ -97,6 +96,12 @@ public class Movie extends BaseObservable implements Parcelable
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
+
+    @ColumnInfo(name = "casts_list")
+    private ArrayList<Cast> castsList = new ArrayList<>();
+
+    @ColumnInfo(name = "reviews_list")
+    private ArrayList<Review> reviewsList = new ArrayList<>();
 
 
     @Ignore
@@ -133,13 +138,15 @@ public class Movie extends BaseObservable implements Parcelable
         this.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.overview = ((String) in.readValue((String.class.getClassLoader())));
         this.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
+        in.readTypedList(castsList, Cast.CREATOR);
+        in.readTypedList(reviewsList, Review.CREATOR);
     }
 
     @Ignore
     public Movie() {
     }
 
-    public Movie(Integer voteCount, Integer id, Boolean video, Double voteAverage, String title, Double popularity, String posterPath, String originalLanguage, String originalTitle, String backdropPath, Boolean adult, String overview, String releaseDate) {
+    public Movie(Integer voteCount, Integer id, Boolean video, Double voteAverage, String title, Double popularity, String posterPath, String originalLanguage, String originalTitle, String backdropPath, Boolean adult, String overview, String releaseDate, ArrayList<Cast> castsList, ArrayList<Review> reviewsList) {
         this.voteCount = voteCount;
         this.id = id;
         this.video = video;
@@ -153,7 +160,8 @@ public class Movie extends BaseObservable implements Parcelable
         this.adult = adult;
         this.overview = overview;
         this.releaseDate = releaseDate;
-
+        this.castsList = castsList;
+        this.reviewsList = reviewsList;
     }
 
     @Bindable
@@ -297,6 +305,22 @@ public class Movie extends BaseObservable implements Parcelable
         notifyPropertyChanged(BR.releaseDate);
     }
 
+    public ArrayList<Cast> getCastsList() {
+        return castsList;
+    }
+
+    public void setCastsList(ArrayList<Cast> castsList) {
+        this.castsList = castsList;
+    }
+
+    public ArrayList<Review> getReviewsList() {
+        return reviewsList;
+    }
+
+    public void setReviewsList(ArrayList<Review> reviewsList) {
+        this.reviewsList = reviewsList;
+    }
+
     @Ignore
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(voteCount);
@@ -313,6 +337,8 @@ public class Movie extends BaseObservable implements Parcelable
         dest.writeValue(adult);
         dest.writeValue(overview);
         dest.writeValue(releaseDate);
+        dest.writeTypedList(castsList);
+        dest.writeTypedList(reviewsList);
     }
 
     @Ignore
@@ -320,7 +346,7 @@ public class Movie extends BaseObservable implements Parcelable
         return 0;
     }
 
-    public static final DiffUtil.ItemCallback<Movie> callback=new DiffUtil.ItemCallback<Movie>() {
+    public static final DiffUtil.ItemCallback<Movie> callback = new DiffUtil.ItemCallback<Movie>() {
         @Override
         public boolean areItemsTheSame(@NonNull Movie oldItem, @NonNull Movie newItem) {
             return oldItem.id.equals(newItem.id);
@@ -342,7 +368,9 @@ public class Movie extends BaseObservable implements Parcelable
                     oldItem.releaseDate.equals(newItem.releaseDate) &&
                     oldItem.title.equals(newItem.title) &&
                     oldItem.voteAverage.equals(newItem.voteAverage) &&
-                    oldItem.voteCount.equals(newItem.voteCount);
+                    oldItem.voteCount.equals(newItem.voteCount) &&
+                    oldItem.castsList.equals(newItem.castsList) &&
+                    oldItem.reviewsList.equals(newItem.reviewsList);
         }
     };
 }

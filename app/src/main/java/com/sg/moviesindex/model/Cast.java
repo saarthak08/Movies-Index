@@ -1,15 +1,15 @@
 package com.sg.moviesindex.model;
 
 
-import java.io.Serializable;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Cast implements Serializable, Parcelable
-{
+import java.io.Serializable;
+
+public class Cast implements Serializable, Parcelable {
 
     @SerializedName("cast_id")
     @Expose
@@ -49,8 +49,7 @@ public class Cast implements Serializable, Parcelable
             return (new Cast[size]);
         }
 
-    }
-            ;
+    };
     private final static long serialVersionUID = -64479243734966527L;
 
     protected Cast(Parcel in) {

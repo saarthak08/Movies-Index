@@ -1,14 +1,14 @@
 package com.sg.moviesindex.model;
 
-import java.io.Serializable;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Review implements Serializable, Parcelable
-{
+import java.io.Serializable;
+
+public class Review implements Serializable, Parcelable {
 
     @SerializedName("author")
     @Expose
@@ -36,8 +36,7 @@ public class Review implements Serializable, Parcelable
             return (new Review[size]);
         }
 
-    }
-            ;
+    };
     private final static long serialVersionUID = 633836138228227141L;
 
     protected Review(Parcel in) {

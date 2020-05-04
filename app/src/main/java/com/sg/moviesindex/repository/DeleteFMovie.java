@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import com.sg.moviesindex.db.FavouriteMoviesDAO;
 import com.sg.moviesindex.model.Movie;
 
-public class DeleteFMovie extends AsyncTask<Movie, Void,Void> {
+public class DeleteFMovie extends AsyncTask<Movie, Void, Void> {
     private FavouriteMoviesDAO favouriteMoviesDAO;
 
     public DeleteFMovie(FavouriteMoviesDAO favouriteMoviesDAO) {

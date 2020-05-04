@@ -20,18 +20,14 @@ import com.sg.moviesindex.BuildConfig;
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.fragments.FavouriteMovies;
 import com.sg.moviesindex.model.Discover;
-import com.sg.moviesindex.model.DiscoverDBResponse;
 import com.sg.moviesindex.model.GenresList;
-import com.sg.moviesindex.model.GenresListDBResponse;
 import com.sg.moviesindex.model.Movie;
-import com.sg.moviesindex.model.MovieDBResponse;
 import com.sg.moviesindex.service.FetchFirstTimeDataService;
 import com.sg.moviesindex.service.GetGenresListService;
 import com.sg.moviesindex.utils.SearchUtil;
 
 import java.util.ArrayList;
 
-import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 
 
@@ -47,7 +43,7 @@ public class MainActivity extends AppCompatActivity
     public static int drawer = 0;
     public static int imageup = 0;
     public static int genreid;
-    public static String region="";
+    public static String region = "";
     public static int selected;
     public static ArrayList<Discover> discovers;
     public static ArrayList<GenresList> genresLists;
@@ -82,7 +78,7 @@ public class MainActivity extends AppCompatActivity
         //getDataFirst(category,MainActivity.this);
         fetchFirstTimeDataService = new FetchFirstTimeDataService(progressBar, compositeDisposable, fragmentManager);
         fetchFirstTimeDataService.getDataFirst(drawer, MainActivity.this);
-        genresList = new GetGenresListService(MainActivity.this, compositeDisposable, fetchFirstTimeDataService);
+        genresList = new GetGenresListService(MainActivity.this, compositeDisposable, fetchFirstTimeDataService, progressBar);
     }
 
 

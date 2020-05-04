@@ -10,18 +10,16 @@ public class DiscoverToMovie {
     private ArrayList<Movie> movies;
 
     public DiscoverToMovie(ArrayList<Discover> discovers) {
-        this.discovers=discovers;
-        movies=new ArrayList<>(discovers.size());
+        this.discovers = discovers;
+        movies = new ArrayList<>(discovers.size());
     }
 
-    public ArrayList<Movie> getMovies()
-    {
-        for(int i=0;i<discovers.size();i++)
-        {
+    public ArrayList<Movie> getMovies() {
+        for (int i = 0; i < discovers.size(); i++) {
             movies.add(new Movie());
             movies.get(i).setTitle(discovers.get(i).getTitle());
             movies.get(i).setAdult(discovers.get(i).getAdult());
-            movies.get(i).setBackdropPath((String)discovers.get(i).getBackdropPath());
+            movies.get(i).setBackdropPath((String) discovers.get(i).getBackdropPath());
             movies.get(i).setPopularity(discovers.get(i).getPopularity());
             movies.get(i).setId(discovers.get(i).getId());
             movies.get(i).setOriginalLanguage(discovers.get(i).getOriginalLanguage());
