@@ -1,21 +1,18 @@
 <resources>
     <string name="app_name">Movies</string>
     <string name="title_activity_movies_info">Movies</string>
-    <string name="mark_as_favourite">Favourite</string>
     <string name="favourite_movies">Favourite Movies</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_main">Movies</string>
     <string name="popular_movies">Popular Movies</string>
     <string name="created_by_n_saarthak_gupta">Created By:\n\t\t\tSaarthak Gupta</string>
-    <string name="filter_search">Filter Search</string>
     <string name="categories">Categories</string>
-    <string name="my_movies">My Movies</string>
-    <string name="tmdb_movies">TMDb Movies</string>
+    <string name="movies_index">Movies Index</string>
     <string name="top_rated_movies">Top Rated Movies</string>
+    <string name="upcoming_movies">Upcoming Movies</string>
+    <string name="now_playing">Now Playing</string>
     <string name="genres">Filter By Genres</string>
     <string name="search_any_movie">Search Any Movie</string>
 

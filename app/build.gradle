@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.popularmovies"
+        applicationId "com.sg.moviesindex"
         minSdkVersion 16
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
@@ -28,14 +28,12 @@ android {
     buildTypes {
         debug {
             buildConfigField 'String', "ApiKey", PopularMovies_APIKEY
-            resValue 'string', "api_key", PopularMovies_APIKEY
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro -keep class android.support.v7.widget.SearchView { *; }\n' +
                     ''
             buildConfigField 'String', "ApiKey", PopularMovies_APIKEY
-            resValue 'string', "api_key", PopularMovies_APIKEY
         }
     }
 }

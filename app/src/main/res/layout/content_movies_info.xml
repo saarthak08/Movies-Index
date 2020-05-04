@@ -7,7 +7,7 @@
     <data>
         <variable
             name="contentMovie"
-            type="com.example.popularmovies.model.Movie">
+            type="com.sg.moviesindex.model.Movie">
         </variable>
         <variable
             name="checkBox"
@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="com.example.popularmovies.view.MoviesInfo"
+        tools:context="com.sg.moviesindex.view.MoviesInfo"
         tools:ignore="PrivateResource"
         tools:showIn="@layout/activity_movies_info">
 
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="4dp"
                 android:textColor="@android:color/black"
                 android:padding="16dp"
                 android:text="@{`Original Title:\n`+contentMovie.title}"
@@ -94,6 +94,36 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate" />
 
+            <TextView
+                android:id="@+id/tvPopularity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{`Popularity: `+contentMovie.popularity}"
+                android:layout_marginLeft="10dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvVoteCount" />
+
+            <TextView
+                android:id="@+id/tvLanguage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{`Original Language: `+contentMovie.originalLanguage}"
+                android:layout_marginLeft="10dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPopularity" />
+
             <com.varunest.sparkbutton.SparkButton
                 android:id="@+id/spark_button"
                 android:layout_width="48dp"
@@ -101,25 +131,102 @@
                 app:sparkbutton_activeImage="@drawable/ic_heart_on"
                 app:sparkbutton_inActiveImage="@drawable/ic_heart_off"
                 app:sparkbutton_iconSize="48dp"
-                android:layout_marginLeft="48dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvVoteCount"
+                app:layout_constraintTop_toBottomOf="@+id/tvLanguage"
                 app:sparkbutton_primaryColor="@color/heart_primary_color"
                 app:sparkbutton_secondaryColor="@color/heart_secondary_color"
-                android:layout_marginStart="18dp" />
+                android:layout_marginStart="24dp" />
+
+            <TextView
+                android:id="@+id/tvOverview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Overview:"
+                android:textStyle="bold"
+                android:layout_marginStart="10dp"
+                android:textColor="@android:color/black"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="16dp"
+                android:paddingTop="16dp"
+                android:paddingHorizontal="16dp"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spark_button" />
 
             <TextView
                 android:id="@+id/tvPlotsynopsis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{`Overview:\n`+ contentMovie.overview}"
+                android:text="@{contentMovie.overview}"
+                android:layout_marginStart="10dp"
+                android:textColor="@android:color/black"
+                android:layout_marginLeft="10dp"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="16dp"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvOverview" />
+
+            <TextView
+                android:id="@+id/casts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Casts:"
+                android:textStyle="bold"
+                android:layout_marginStart="10dp"
+                android:textColor="@android:color/black"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="16dp"
+                android:paddingTop="16dp"
+                android:paddingHorizontal="16dp"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPlotsynopsis" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCasts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:layout_marginStart="10dp"
                 android:textColor="@android:color/black"
                 android:layout_marginLeft="10dp"
                 android:padding="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/casts"/>
+
+            <TextView
+                android:id="@+id/reviews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reviews:"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="10dp"
+                android:textColor="@android:color/black"
+                android:layout_marginLeft="10dp"
+                android:paddingTop="16dp"
+                android:paddingHorizontal="16dp"
                 android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spark_button" />
+                app:layout_constraintTop_toBottomOf="@+id/rvCasts" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvReviews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="10dp"
+                android:textColor="@android:color/black"
+                android:layout_marginLeft="10dp"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reviews"/>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

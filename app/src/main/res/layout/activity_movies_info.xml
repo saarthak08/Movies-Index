@@ -7,7 +7,7 @@
     <data>
         <variable
             name="movie"
-            type="com.example.popularmovies.model.Movie">
+            type="com.sg.moviesindex.model.Movie">
         </variable>
     </data>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitXY"
                     app:imageUrl="@{`https://image.tmdb.org/t/p/w500`+ movie.posterPath}"
                     app:layout_collapseMode="parallax"
                     tools:ignore="contentDescription" />

@@ -16,12 +16,12 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="209dp"
+            android:layout_width="210dp"
             android:layout_height="192dp"
             android:layout_gravity="center"
             android:contentDescription="@string/nav_header_desc"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
-            app:srcCompat="@drawable/abc" />
+            app:srcCompat="@drawable/tmdb" />
 
         <TextView
             android:layout_width="match_parent"
@@ -30,15 +30,15 @@
             android:textStyle="bold"
             android:layout_gravity="center"
             android:gravity="center"
-            android:textColor="@android:color/holo_blue_bright"
-            android:text="@string/tmdb_movies"
+            android:textColor="@android:color/holo_green_light"
+            android:text="@string/movies_index"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_marginTop="8dp"
             android:textSize="18sp"
-            android:textColor="@android:color/holo_green_light"
+            android:textColor="@android:color/holo_blue_bright"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="italic"
