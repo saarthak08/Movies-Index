@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
-import com.sg.moviesindex.model.Movie;
+import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.paginationlibrary.DataSource;
 import com.sg.moviesindex.paginationlibrary.DataSourceFactory;
 import com.sg.moviesindex.repository.Repository;
@@ -29,7 +29,7 @@ public class MainViewModel extends AndroidViewModel {
     public MainViewModel(@NonNull Application application) {
         super(application);
         repository = new Repository(application);
-        MovieDataService movieDataService = RetrofitInstance.getService();
+        MovieDataService movieDataService = RetrofitInstance.getTMDbService();
         DataSourceFactory dataSourceFactory = new DataSourceFactory(movieDataService, application);
         dataSourceLiveData = dataSourceFactory.getDataSourceMutableLiveData();
         PagedList.Config config = (new PagedList.Config.Builder())

@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sg.moviesindex.BuildConfig;
 import com.sg.moviesindex.adapter.MoviesAdapter;
-import com.sg.moviesindex.model.Discover;
-import com.sg.moviesindex.model.DiscoverDBResponse;
-import com.sg.moviesindex.model.Movie;
-import com.sg.moviesindex.model.MovieDBResponse;
+import com.sg.moviesindex.model.tmdb.Discover;
+import com.sg.moviesindex.model.tmdb.DiscoverDBResponse;
+import com.sg.moviesindex.model.tmdb.Movie;
+import com.sg.moviesindex.model.tmdb.MovieDBResponse;
 import com.sg.moviesindex.service.network.MovieDataService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.utils.DiscoverToMovie;
@@ -45,7 +45,7 @@ public class FetchMoreDataService {
     }
 
     public void loadMore(int a, final int pages) {
-        final MovieDataService movieDataService = RetrofitInstance.getService();
+        final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
         String ApiKey = BuildConfig.ApiKey;
         if (a == 0) {
             observableMovie = movieDataService.getPopularMoviesWithRx(ApiKey, pages);
@@ -90,7 +90,7 @@ public class FetchMoreDataService {
 
 
     public void loadMoreGenres(final int pages) {
-        final MovieDataService movieDataService = RetrofitInstance.getService();
+        final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
         String ApiKey = BuildConfig.ApiKey;
         observableDB = movieDataService.discover(ApiKey, Integer.toString(MainActivity.genreid), false, false, pages, "popularity.desc");
         compositeDisposable.add(

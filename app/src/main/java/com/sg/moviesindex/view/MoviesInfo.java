@@ -3,6 +3,7 @@ package com.sg.moviesindex.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -12,20 +13,22 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dd.processbutton.iml.ActionProcessButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.sg.moviesindex.BuildConfig;
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.adapter.CastsAdapter;
 import com.sg.moviesindex.adapter.ReviewsAdapter;
 import com.sg.moviesindex.databinding.ActivityMoviesInfoBinding;
-import com.sg.moviesindex.model.Cast;
-import com.sg.moviesindex.model.CastsList;
-import com.sg.moviesindex.model.Movie;
-import com.sg.moviesindex.model.Review;
-import com.sg.moviesindex.model.ReviewsList;
+import com.sg.moviesindex.model.tmdb.Cast;
+import com.sg.moviesindex.model.tmdb.CastsList;
+import com.sg.moviesindex.model.tmdb.Movie;
+import com.sg.moviesindex.model.tmdb.Review;
+import com.sg.moviesindex.model.tmdb.ReviewsList;
 import com.sg.moviesindex.service.network.MovieDataService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.utils.PaginationScrollListener;
+import com.sg.moviesindex.service.TorrentFetcherService;
 import com.sg.moviesindex.viewmodel.MainViewModel;
 import com.varunest.sparkbutton.SparkButton;
 
@@ -39,14 +42,14 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class MoviesInfo extends AppCompatActivity {
+public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherService.OnCompleteListener {
     private Movie movie;
     private Boolean bool;
     private ActivityMoviesInfoBinding activityMoviesInfoBinding;
     private MainViewModel mainViewModel;
     private Observable<CastsList> castsList;
     private Observable<ReviewsList> reviewsList;
-    private final MovieDataService movieDataService = RetrofitInstance.getService();
+    private final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private String ApiKey = BuildConfig.ApiKey;
     private ReviewsAdapter reviewsAdapter;
@@ -58,7 +61,9 @@ public class MoviesInfo extends AppCompatActivity {
     private RecyclerView recyclerViewReviews;
     private LinearLayoutManager linearLayoutManagerCasts;
     private RecyclerView recyclerViewCasts;
+    private ActionProcessButton btnSignIn;
     private View parentlayout;
+    private TorrentFetcherService torrentFetcherService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +78,8 @@ public class MoviesInfo extends AppCompatActivity {
         reviews.setResults(new ArrayList<Review>());
         casts.setCast(new ArrayList<Cast>());
         reviews.setTotalPages(1);
+        btnSignIn=activityMoviesInfoBinding.secondaryLayout.btnSignIn;
+        torrentFetcherService = new TorrentFetcherService(this,MoviesInfo.this);
         recyclerViewReviews = activityMoviesInfoBinding.secondaryLayout.rvReviews;
         recyclerViewReviews.setLayoutManager(linearLayoutManagerReviews);
         recyclerViewReviews.setItemAnimator(new DefaultItemAnimator());
@@ -97,6 +104,13 @@ public class MoviesInfo extends AppCompatActivity {
             activityMoviesInfoBinding.setMovie(movie);
             activityMoviesInfoBinding.secondaryLayout.setLocale(new Locale(movie.getOriginalLanguage()).getDisplayLanguage(Locale.ENGLISH));
         }
+        btnSignIn.setMode(ActionProcessButton.Mode.ENDLESS);
+        btnSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                torrentFetcherService.start(btnSignIn,movie);
+            }
+        });
         getParcelableData();
         setPaginationListeners();
         getReviews(1);
@@ -225,4 +239,9 @@ public class MoviesInfo extends AppCompatActivity {
         compositeDisposable.clear();
         super.onDestroy();
     }
+    @Override
+    public void onComplete() {
+        Toast.makeText(this, "Complete", Toast.LENGTH_LONG).show();
+    }
+
 }

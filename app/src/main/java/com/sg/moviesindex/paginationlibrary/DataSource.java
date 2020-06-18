@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.paging.PageKeyedDataSource;
 
 import com.sg.moviesindex.BuildConfig;
-import com.sg.moviesindex.model.Movie;
+import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.service.network.MovieDataService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 
@@ -32,7 +32,7 @@ public class DataSource extends PageKeyedDataSource<Long, Movie> {
 
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Long> params, @NonNull final LoadInitialCallback<Long, Movie> callback) {
-        movieDataService = RetrofitInstance.getService();
+        movieDataService = RetrofitInstance.getTMDbService();
        /* Call<MovieDBResponse> call=movieDataService.getPopularMovies(ApiKey,1);
         call.enqueue(new Callback<MovieDBResponse>() {
             @Override
@@ -59,7 +59,7 @@ public class DataSource extends PageKeyedDataSource<Long, Movie> {
 
     @Override
     public void loadAfter(@NonNull final LoadParams<Long> params, @NonNull final LoadCallback<Long, Movie> callback) {
-        movieDataService = RetrofitInstance.getService();
+        movieDataService = RetrofitInstance.getTMDbService();
 /*     Call<MovieDBResponse> call=movieDataService.getPopularMovies(ApiKey, Math.toIntExact(params.key));
         call.enqueue(new Callback<MovieDBResponse>() {
             @Override

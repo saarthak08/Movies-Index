@@ -12,7 +12,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.cursoradapter.widget.CursorAdapter;
 
 import com.sg.moviesindex.R;
-import com.sg.moviesindex.model.Movie;
+import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.view.MoviesInfo;
 
 import java.util.ArrayList;

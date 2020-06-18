@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.adapter.MoviesAdapter;
 import com.sg.moviesindex.databinding.FragmentFavouriteMoviesBinding;
-import com.sg.moviesindex.model.Movie;
+import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.viewmodel.MainViewModel;
 
 import java.util.ArrayList;

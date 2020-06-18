@@ -14,8 +14,8 @@ import com.sg.moviesindex.BuildConfig;
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.adapter.SearchAdapter;
 import com.sg.moviesindex.fragments.Movies;
-import com.sg.moviesindex.model.Discover;
-import com.sg.moviesindex.model.DiscoverDBResponse;
+import com.sg.moviesindex.model.tmdb.Discover;
+import com.sg.moviesindex.model.tmdb.DiscoverDBResponse;
 import com.sg.moviesindex.service.FetchFirstTimeDataService;
 import com.sg.moviesindex.service.network.MovieDataService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
@@ -59,11 +59,11 @@ public class SearchUtil {
                     searchView.setQuery("", false);
                     searchView.clearFocus();
                     searchView.setIconified(true);
-                    final MovieDataService movieDataService = RetrofitInstance.getService();
+                    final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
                     final String ApiKey = BuildConfig.ApiKey;
                     MainActivity.queryM = query;
                     MainActivity.drawer = 3;
-                    observableDB = movieDataService.search(ApiKey, false, query);
+                    observableDB = movieDataService.search(ApiKey, false, query, 1);
                     compositeDisposable.add(observableDB
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -72,7 +72,7 @@ public class SearchUtil {
                                 public void onNext(DiscoverDBResponse discoverDBResponse) {
                                     if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
                                         MainActivity.discovers = (ArrayList<Discover>) discoverDBResponse.getResults();
-                                        MainActivity.totalPagesGenres = discoverDBResponse.getTotalPages();
+                                        MainActivity.totalPages = discoverDBResponse.getTotalPages();
                                         DiscoverToMovie discoverToMovie = new DiscoverToMovie(MainActivity.discovers);
                                         MainActivity.movieList = discoverToMovie.getMovies();
                                         if (progressBar != null) {
@@ -80,7 +80,7 @@ public class SearchUtil {
                                         }
                                         fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.addToBackStack(null);
-                                        fragmentTransaction.add(R.id.frame_layout, new Movies(new FetchFirstTimeDataService(progressBar, compositeDisposable, fragmentManager))).commitAllowingStateLoss();
+                                        fragmentTransaction.add(R.id.frame_layout, new Movies(new FetchFirstTimeDataService(progressBar, compositeDisposable, fragmentManager), SearchUtil.this)).commitAllowingStateLoss();
                                     }
                                 }
 
@@ -101,11 +101,11 @@ public class SearchUtil {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                final MovieDataService movieDataService = RetrofitInstance.getService();
+                final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
                 final String ApiKey = BuildConfig.ApiKey;
                 MainActivity.queryM = newText;
                 MainActivity.drawer = 3;
-                observableDB = movieDataService.search(ApiKey, false, MainActivity.queryM);
+                observableDB = movieDataService.search(ApiKey, false, MainActivity.queryM, 1);
                 compositeDisposable.add(observableDB
                         .debounce(400, TimeUnit.MILLISECONDS)
                         .subscribeOn(Schedulers.io())
@@ -150,5 +150,36 @@ public class SearchUtil {
                 return true;
             }
         });
+    }
+
+    public void loadMoreSearches(int pageIndex, String query) {
+        final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
+        final String ApiKey = BuildConfig.ApiKey;
+        observableDB = movieDataService.search(ApiKey, false, query, pageIndex);
+        compositeDisposable.add(observableDB
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<DiscoverDBResponse>() {
+                    @Override
+                    public void onNext(DiscoverDBResponse discoverDBResponse) {
+                        if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
+                            MainActivity.discovers = (ArrayList<Discover>) discoverDBResponse.getResults();
+                            MainActivity.totalPages = discoverDBResponse.getTotalPages();
+                            DiscoverToMovie discoverToMovie = new DiscoverToMovie(MainActivity.discovers);
+                            MainActivity.movieList.addAll(discoverToMovie.getMovies());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(context, "Error!", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
     }
 }

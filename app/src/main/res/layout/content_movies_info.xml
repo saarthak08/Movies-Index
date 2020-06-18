@@ -3,11 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:bind="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="contentMovie"
-            type="com.sg.moviesindex.model.Movie">
+            type="com.sg.moviesindex.model.tmdb.Movie">
         </variable>
         <variable
             name="checkBox"
@@ -31,7 +32,9 @@
             android:id="@+id/ad"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@+id/casts"
+            app:layout_constraintTop_toBottomOf="@+id/casts">
 
             <TextView
                 android:id="@+id/tvMovieTitle"
@@ -40,9 +43,9 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="4dp"
-                android:textColor="@android:color/black"
                 android:padding="16dp"
                 android:text="@{`Original Title:\n`+contentMovie.title}"
+                android:textColor="@android:color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -54,13 +57,13 @@
                 android:id="@+id/tvMovieRating"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{`Rating: `+contentMovie.voteAverage}"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:paddingTop="16dp"
+                android:paddingRight="16dp"
                 android:paddingBottom="4dp"
+                android:text="@{`Rating: `+contentMovie.voteAverage}"
                 android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvMovieTitle"
@@ -71,12 +74,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="@{`Release Date: `+contentMovie.releaseDate}"
                 android:layout_marginLeft="10dp"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:paddingTop="4dp"
+                android:paddingRight="16dp"
                 android:paddingBottom="4dp"
+                android:text="@{`Release Date: `+contentMovie.releaseDate}"
                 android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvMovieRating" />
@@ -87,12 +90,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="@{`Total Votes: `+contentMovie.voteCount}"
                 android:layout_marginLeft="10dp"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:paddingTop="4dp"
+                android:paddingRight="16dp"
                 android:paddingBottom="4dp"
+                android:text="@{`Total Votes: `+contentMovie.voteCount}"
                 android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate" />
@@ -102,12 +105,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="@{`Popularity: `+contentMovie.popularity}"
                 android:layout_marginLeft="10dp"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:paddingTop="4dp"
+                android:paddingRight="16dp"
                 android:paddingBottom="4dp"
+                android:text="@{`Popularity: `+contentMovie.popularity}"
                 android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvVoteCount" />
@@ -117,12 +120,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="@{`Original Language: `+ locale }"
                 android:layout_marginLeft="10dp"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:paddingTop="4dp"
+                android:paddingRight="16dp"
                 android:paddingBottom="4dp"
+                android:text="@{`Original Language: `+ locale }"
                 android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvPopularity" />
@@ -131,31 +134,55 @@
                 android:id="@+id/spark_button"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                app:sparkbutton_activeImage="@drawable/ic_heart_on"
-                app:sparkbutton_inActiveImage="@drawable/ic_heart_off"
-                app:sparkbutton_iconSize="48dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvLanguage"
+                app:sparkbutton_activeImage="@drawable/ic_heart_on"
+                app:sparkbutton_iconSize="48dp"
+                app:sparkbutton_inActiveImage="@drawable/ic_heart_off"
                 app:sparkbutton_primaryColor="@color/heart_primary_color"
-                app:sparkbutton_secondaryColor="@color/heart_secondary_color"
-                android:layout_marginStart="24dp" />
+                app:sparkbutton_secondaryColor="@color/heart_secondary_color" />
+
+
+            <com.dd.processbutton.iml.ActionProcessButton
+                android:id="@+id/btnSignIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="24dp"
+                android:text="Download Torrent"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.534"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/spark_button"
+                app:layout_constraintTop_toBottomOf="@+id/tvLanguage"
+                custom:pb_colorComplete="@color/blue_normal"
+                custom:pb_colorNormal="@color/blue_normal"
+                custom:pb_colorPressed="@color/blue_pressed"
+                custom:pb_colorProgress="@color/purple_progress"
+                custom:pb_textComplete="Download Torrent"
+                custom:pb_textError="Error"
+                custom:pb_textProgress="Loading.."/>
 
             <TextView
                 android:id="@+id/tvOverview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Overview:"
-                android:textStyle="bold"
                 android:layout_marginStart="10dp"
-                android:textColor="@android:color/black"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="16dp"
-                android:paddingTop="16dp"
                 android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:text="Overview:"
+                android:textColor="@android:color/black"
                 android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/spark_button" />
 
@@ -163,12 +190,12 @@
                 android:id="@+id/tvPlotsynopsis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{contentMovie.overview}"
                 android:layout_marginStart="10dp"
-                android:textColor="@android:color/black"
                 android:layout_marginLeft="10dp"
                 android:paddingHorizontal="16dp"
                 android:paddingBottom="16dp"
+                android:text="@{contentMovie.overview}"
+                android:textColor="@android:color/black"
                 android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvOverview" />
@@ -177,15 +204,15 @@
                 android:id="@+id/casts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Casts:"
-                android:textStyle="bold"
                 android:layout_marginStart="10dp"
-                android:textColor="@android:color/black"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="16dp"
-                android:paddingTop="16dp"
                 android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:text="Casts:"
+                android:textColor="@android:color/black"
                 android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvPlotsynopsis" />
 
@@ -193,27 +220,27 @@
                 android:id="@+id/rvCasts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginStart="10dp"
-                android:textColor="@android:color/black"
                 android:layout_marginLeft="10dp"
+                android:layout_marginBottom="16dp"
                 android:padding="16dp"
+                android:textColor="@android:color/black"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/casts"/>
+                app:layout_constraintTop_toBottomOf="@+id/casts" />
 
             <TextView
                 android:id="@+id/reviews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Reviews:"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp"
                 android:layout_marginStart="10dp"
-                android:textColor="@android:color/black"
                 android:layout_marginLeft="10dp"
-                android:paddingTop="16dp"
+                android:layout_marginTop="16dp"
                 android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:text="Reviews:"
+                android:textColor="@android:color/black"
                 android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rvCasts" />
 
@@ -221,14 +248,16 @@
                 android:id="@+id/rvReviews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginStart="10dp"
-                android:textColor="@android:color/black"
                 android:layout_marginLeft="10dp"
+                android:layout_marginBottom="16dp"
                 android:paddingHorizontal="16dp"
                 android:paddingBottom="16dp"
+                android:textColor="@android:color/black"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reviews"/>
+                app:layout_constraintTop_toBottomOf="@+id/reviews" />
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.sg.moviesindex.model;
+package com.sg.moviesindex.model.tmdb;
 
 import android.os.Parcel;
 import android.os.Parcelable;

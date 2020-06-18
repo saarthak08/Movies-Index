@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.databinding.MovieListItemBinding;
-import com.sg.moviesindex.model.Movie;
+import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.view.MoviesInfo;
 
 /* ******

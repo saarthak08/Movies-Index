@@ -7,10 +7,10 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.sg.moviesindex.BuildConfig;
-import com.sg.moviesindex.model.DiscoverDBResponse;
-import com.sg.moviesindex.model.GenresList;
-import com.sg.moviesindex.model.GenresListDBResponse;
-import com.sg.moviesindex.model.MovieDBResponse;
+import com.sg.moviesindex.model.tmdb.DiscoverDBResponse;
+import com.sg.moviesindex.model.tmdb.GenresList;
+import com.sg.moviesindex.model.tmdb.GenresListDBResponse;
+import com.sg.moviesindex.model.tmdb.MovieDBResponse;
 import com.sg.moviesindex.service.network.MovieDataService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.view.MainActivity;
@@ -40,7 +40,7 @@ public class GetGenresListService {
     }
 
     public void getGenresList() {
-        final MovieDataService movieDataService = RetrofitInstance.getService();
+        final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
         String ApiKey = BuildConfig.ApiKey;
         MainActivity.drawer = 2;
         genresListObservable = movieDataService.getGenresList(ApiKey);

@@ -12,13 +12,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.sg.moviesindex.BuildConfig;
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.fragments.Movies;
-import com.sg.moviesindex.model.Discover;
-import com.sg.moviesindex.model.DiscoverDBResponse;
-import com.sg.moviesindex.model.Movie;
-import com.sg.moviesindex.model.MovieDBResponse;
+import com.sg.moviesindex.model.tmdb.Discover;
+import com.sg.moviesindex.model.tmdb.DiscoverDBResponse;
+import com.sg.moviesindex.model.tmdb.Movie;
+import com.sg.moviesindex.model.tmdb.MovieDBResponse;
 import com.sg.moviesindex.service.network.MovieDataService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.utils.DiscoverToMovie;
+import com.sg.moviesindex.utils.SearchUtil;
 import com.sg.moviesindex.view.MainActivity;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class FetchFirstTimeDataService {
     }
 
     public void getDataFirst(int a, final Context context) {
-        final MovieDataService movieDataService = RetrofitInstance.getService();
+        final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
         String ApiKey = BuildConfig.ApiKey;
         if (a == 0 || a == 1) {
             if (a == 0) {
@@ -100,11 +101,11 @@ public class FetchFirstTimeDataService {
                                     if (fragmentManager.getFragments().isEmpty()) {
                                         fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.addToBackStack(null);
-                                        fragmentTransaction.add(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this)).commitAllowingStateLoss();
+                                        fragmentTransaction.add(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this,new SearchUtil(compositeDisposable,fragmentManager,context,progressBar))).commitAllowingStateLoss();
                                     } else {
                                         fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.addToBackStack(null);
-                                        fragmentTransaction.replace(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this)).commitAllowingStateLoss();
+                                        fragmentTransaction.replace(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this,new SearchUtil(compositeDisposable,fragmentManager,context,progressBar))).commitAllowingStateLoss();
                                     }
                                 }
 
@@ -125,7 +126,7 @@ public class FetchFirstTimeDataService {
 
 
     public void getFirstGenreData(int genreid, final Context context) {
-        final MovieDataService movieDataService = RetrofitInstance.getService();
+        final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
         String ApiKey = BuildConfig.ApiKey;
         observableDB = movieDataService.discover(ApiKey, Integer.toString(genreid), false, false, 1, "popularity.desc").doOnError(new Consumer<Throwable>() {
             @Override
@@ -148,7 +149,7 @@ public class FetchFirstTimeDataService {
                                     }
                                     fragmentTransaction = fragmentManager.beginTransaction();
                                     fragmentTransaction.addToBackStack(null);
-                                    fragmentTransaction.add(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this)).commitAllowingStateLoss();
+                                    fragmentTransaction.add(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this,new SearchUtil(compositeDisposable,fragmentManager,context,progressBar))).commitAllowingStateLoss();
                                 }
 
                             }

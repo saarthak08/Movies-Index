@@ -3,7 +3,7 @@ package com.sg.moviesindex.repository;
 import android.os.AsyncTask;
 
 import com.sg.moviesindex.db.FavouriteMoviesDAO;
-import com.sg.moviesindex.model.Movie;
+import com.sg.moviesindex.model.tmdb.Movie;
 
 public class AddFMovie extends AsyncTask<Movie, Void, Void> {
     private FavouriteMoviesDAO favouriteMoviesDAO;

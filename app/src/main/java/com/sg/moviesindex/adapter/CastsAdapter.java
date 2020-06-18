@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.databinding.CastListItemBinding;
-import com.sg.moviesindex.model.Cast;
-import com.sg.moviesindex.model.CastsList;
+import com.sg.moviesindex.model.tmdb.Cast;
+import com.sg.moviesindex.model.tmdb.CastsList;
 
 
 public class CastsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

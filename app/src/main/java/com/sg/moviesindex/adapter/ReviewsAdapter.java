@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.databinding.ReviewListItemBinding;
-import com.sg.moviesindex.model.Review;
-import com.sg.moviesindex.model.ReviewsList;
+import com.sg.moviesindex.model.tmdb.Review;
+import com.sg.moviesindex.model.tmdb.ReviewsList;
 
 public class ReviewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;

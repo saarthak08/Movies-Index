@@ -1,4 +1,4 @@
-package com.sg.moviesindex.model;
+package com.sg.moviesindex.model.tmdb;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class DiscoverDBResponse implements Parcelable {
+public class MovieDBResponse implements Parcelable {
 
     @SerializedName("page")
     @Expose
@@ -21,31 +21,31 @@ public class DiscoverDBResponse implements Parcelable {
     private Integer totalPages;
     @SerializedName("results")
     @Expose
-    private List<Discover> discovers = null;
-    public final static Parcelable.Creator<DiscoverDBResponse> CREATOR = new Creator<DiscoverDBResponse>() {
+    private List<Movie> movies = null;
+    public final static Parcelable.Creator<MovieDBResponse> CREATOR = new Creator<MovieDBResponse>() {
 
 
         @SuppressWarnings({
                 "unchecked"
         })
-        public DiscoverDBResponse createFromParcel(Parcel in) {
-            return new DiscoverDBResponse(in);
+        public MovieDBResponse createFromParcel(Parcel in) {
+            return new MovieDBResponse(in);
         }
 
-        public DiscoverDBResponse[] newArray(int size) {
-            return (new DiscoverDBResponse[size]);
+        public MovieDBResponse[] newArray(int size) {
+            return (new MovieDBResponse[size]);
         }
 
     };
 
-    protected DiscoverDBResponse(Parcel in) {
+    protected MovieDBResponse(Parcel in) {
         this.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.totalResults = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        in.readList(this.discovers, (Discover.class.getClassLoader()));
+        in.readList(this.movies, (Movie.class.getClassLoader()));
     }
 
-    public DiscoverDBResponse() {
+    public MovieDBResponse() {
     }
 
     public Integer getPage() {
@@ -72,19 +72,19 @@ public class DiscoverDBResponse implements Parcelable {
         this.totalPages = totalPages;
     }
 
-    public List<Discover> getResults() {
-        return discovers;
+    public List<Movie> getMovies() {
+        return movies;
     }
 
-    public void setResults(List<Discover> discovers) {
-        this.discovers = discovers;
+    public void setMovies(List<Movie> movies) {
+        this.movies = movies;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(page);
         dest.writeValue(totalResults);
         dest.writeValue(totalPages);
-        dest.writeList(discovers);
+        dest.writeList(movies);
     }
 
     public int describeContents() {

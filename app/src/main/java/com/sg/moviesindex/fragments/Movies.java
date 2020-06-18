@@ -28,10 +28,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.adapter.MoviesAdapter;
 import com.sg.moviesindex.databinding.FragmentMoviesBinding;
-import com.sg.moviesindex.model.Movie;
+import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.service.FetchFirstTimeDataService;
 import com.sg.moviesindex.service.FetchMoreDataService;
 import com.sg.moviesindex.utils.PaginationScrollListener;
+import com.sg.moviesindex.utils.SearchUtil;
 import com.sg.moviesindex.view.MainActivity;
 import com.sg.moviesindex.viewmodel.MainViewModel;
 
@@ -67,11 +68,13 @@ public class Movies extends Fragment {
     private static CompositeDisposable compositeDisposable = new CompositeDisposable();
     private static int genreid = MainActivity.genreid;
     private FetchMoreDataService fetchMoreDataService;
+    private SearchUtil searchUtil;
 
     private FetchFirstTimeDataService firstTimeData;
 
-    public Movies(FetchFirstTimeDataService fetchFirstTimeDataService) {
+    public Movies(FetchFirstTimeDataService fetchFirstTimeDataService, SearchUtil searchUtil) {
         firstTimeData = fetchFirstTimeDataService;
+        this.searchUtil = searchUtil;
     }
 
 
@@ -180,13 +183,17 @@ public class Movies extends Fragment {
         paginationScrollListener = new PaginationScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                if (MainActivity.drawer != 2) {
+                if (MainActivity.drawer == 0 || MainActivity.drawer == 1 || MainActivity.drawer == 4 || MainActivity.drawer == 5) {
                     if ((page + 1) <= MainActivity.totalPages) {
                         fetchMoreDataService.loadMore(MainActivity.drawer, page + 1);
                     }
-                } else {
+                } else if (MainActivity.drawer == 2) {
                     if ((page + 1) <= MainActivity.totalPagesGenres) {
                         fetchMoreDataService.loadMoreGenres(page + 1);
+                    }
+                } else if (MainActivity.drawer == 3) {
+                    if ((page + 1) <= MainActivity.totalPages) {
+                        searchUtil.loadMoreSearches(page + 1, MainActivity.queryM);
                     }
                 }
             }
