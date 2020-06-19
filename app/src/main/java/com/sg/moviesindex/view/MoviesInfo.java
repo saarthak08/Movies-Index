@@ -1,7 +1,10 @@
 package com.sg.moviesindex.view;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +43,7 @@ import com.sg.moviesindex.service.network.MovieDataService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.utils.PaginationScrollListener;
 import com.sg.moviesindex.service.TorrentFetcherService;
+import com.sg.moviesindex.utils.TorrentDownloaderService;
 import com.sg.moviesindex.viewmodel.MainViewModel;
 import com.varunest.sparkbutton.SparkButton;
 
@@ -59,6 +64,7 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
     private MainViewModel mainViewModel;
     private Observable<CastsList> castsList;
     private Observable<ReviewsList> reviewsList;
+    public static final String PROGRESS_UPDATE = "progress_update";
     private final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private String ApiKey = BuildConfig.ApiKey;
@@ -119,6 +125,7 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                registerReceiver();
                 requestStoragePermissions();
             }
         });
@@ -251,7 +258,10 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
         super.onDestroy();
     }
     @Override
-    public void onComplete() {
+    public void onComplete(boolean error) {
+        if(!error) {
+            startTorrentDownload();
+        }
     }
 
 
@@ -296,4 +306,31 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
             torrentFetcherService.start(btnSignIn,movie);
         }
     }
+
+    private void registerReceiver() {
+        LocalBroadcastManager bManager = LocalBroadcastManager.getInstance(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(PROGRESS_UPDATE);
+        bManager.registerReceiver(mBroadcastReceiver, intentFilter);
+    }
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().equals(PROGRESS_UPDATE)) {
+
+                boolean downloadComplete = intent.getBooleanExtra("downloadComplete", false);
+                if (downloadComplete) {
+                    Toast.makeText(getApplicationContext(), "File download completed", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    };
+
+    private void startTorrentDownload() {
+        Intent intent = new Intent(this, TorrentDownloaderService.class);
+        startService(intent);
+    }
+
 }

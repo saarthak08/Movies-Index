@@ -78,7 +78,7 @@ public class FetchMoreDataService {
 
                     @Override
                     public void onError(Throwable e) {
-                        Toast.makeText(context, "Error! " + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Error! Check your internet connection.", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -118,7 +118,7 @@ public class FetchMoreDataService {
 
                             @Override
                             public void onError(Throwable e) {
-                                Toast.makeText(context, "Error! " + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Error! Check your internet connection.", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override

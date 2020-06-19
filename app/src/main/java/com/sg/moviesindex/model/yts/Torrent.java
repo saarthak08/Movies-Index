@@ -1,14 +1,14 @@
 package com.sg.moviesindex.model.yts;
 
-import java.io.Serializable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Torrent implements Serializable, Parcelable
-{
+import java.io.Serializable;
+
+public class Torrent implements Serializable, Parcelable {
 
     @SerializedName("url")
     @Expose
@@ -54,8 +54,7 @@ public class Torrent implements Serializable, Parcelable
             return (new Torrent[size]);
         }
 
-    }
-            ;
+    };
     private final static long serialVersionUID = -8840109725450133141L;
 
     protected Torrent(Parcel in) {
@@ -73,13 +72,11 @@ public class Torrent implements Serializable, Parcelable
 
     /**
      * No args constructor for use in serialization
-     *
      */
     public Torrent() {
     }
 
     /**
-     *
      * @param dateUploadedUnix
      * @param size
      * @param seeds

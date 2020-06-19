@@ -1,14 +1,14 @@
 package com.sg.moviesindex.model.yts;
 
-import java.io.Serializable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class APIResponse implements Serializable, Parcelable
-{
+import java.io.Serializable;
+
+public class APIResponse implements Serializable, Parcelable {
 
     @SerializedName("status")
     @Expose
@@ -36,8 +36,7 @@ public class APIResponse implements Serializable, Parcelable
             return (new APIResponse[size]);
         }
 
-    }
-            ;
+    };
     private final static long serialVersionUID = 8980920924593425494L;
 
     protected APIResponse(Parcel in) {
@@ -49,13 +48,11 @@ public class APIResponse implements Serializable, Parcelable
 
     /**
      * No args constructor for use in serialization
-     *
      */
     public APIResponse() {
     }
 
     /**
-     *
      * @param data
      * @param meta
      * @param statusMessage

@@ -1,16 +1,16 @@
 package com.sg.moviesindex.model.yts;
 
 
-import java.io.Serializable;
-import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Data implements Serializable, Parcelable
-{
+import java.io.Serializable;
+import java.util.List;
+
+public class Data implements Serializable, Parcelable {
 
     @SerializedName("movie_count")
     @Expose
@@ -38,8 +38,7 @@ public class Data implements Serializable, Parcelable
             return (new Data[size]);
         }
 
-    }
-            ;
+    };
     private final static long serialVersionUID = 8675435186511918158L;
 
     protected Data(Parcel in) {
@@ -51,13 +50,11 @@ public class Data implements Serializable, Parcelable
 
     /**
      * No args constructor for use in serialization
-     *
      */
     public Data() {
     }
 
     /**
-     *
      * @param movies
      * @param pageNumber
      * @param movieCount

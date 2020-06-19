@@ -1,15 +1,15 @@
 package com.sg.moviesindex.model.yts;
 
-import java.io.Serializable;
-import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Movie implements Serializable, Parcelable
-{
+import java.io.Serializable;
+import java.util.List;
+
+public class Movie implements Serializable, Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -103,8 +103,7 @@ public class Movie implements Serializable, Parcelable
             return (new Movie[size]);
         }
 
-    }
-            ;
+    };
     private final static long serialVersionUID = -4667057645999373583L;
 
     protected Movie(Parcel in) {
@@ -138,13 +137,11 @@ public class Movie implements Serializable, Parcelable
 
     /**
      * No args constructor for use in serialization
-     *
      */
     public Movie() {
     }
 
     /**
-     *
      * @param year
      * @param mpaRating
      * @param backgroundImage

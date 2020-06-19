@@ -1,13 +1,9 @@
 package com.sg.moviesindex.service.network;
 
-import android.provider.SyncStateContract;
 
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -15,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitInstance {
 
     private static Retrofit retrofit = null;
-    private static Retrofit retrofitYTS=null;
+    private static Retrofit retrofitYTS = null;
     private static final String BASE_URL_TMDB = "https://api.themoviedb.org/3/";
     private static final String BASE_URL_YTS = "https://yts.mx/api/v2/";
     private static final int REQUEST_TIMEOUT = 60;

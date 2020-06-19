@@ -1,14 +1,14 @@
 package com.sg.moviesindex.model.yts;
 
-import java.io.Serializable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Meta implements Serializable, Parcelable
-{
+import java.io.Serializable;
+
+public class Meta implements Serializable, Parcelable {
 
     @SerializedName("server_time")
     @Expose
@@ -36,8 +36,7 @@ public class Meta implements Serializable, Parcelable
             return (new Meta[size]);
         }
 
-    }
-            ;
+    };
     private final static long serialVersionUID = 5939424027146566642L;
 
     protected Meta(Parcel in) {
@@ -49,13 +48,11 @@ public class Meta implements Serializable, Parcelable
 
     /**
      * No args constructor for use in serialization
-     *
      */
     public Meta() {
     }
 
     /**
-     *
      * @param executionTime
      * @param apiVersion
      * @param serverTimezone

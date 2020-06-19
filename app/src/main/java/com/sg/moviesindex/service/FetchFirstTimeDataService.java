@@ -100,11 +100,11 @@ public class FetchFirstTimeDataService {
                                     if (fragmentManager.getFragments().isEmpty()) {
                                         fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.addToBackStack(null);
-                                        fragmentTransaction.add(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this,new SearchUtil(compositeDisposable,fragmentManager,context,progressBar))).commitAllowingStateLoss();
+                                        fragmentTransaction.add(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this, new SearchUtil(compositeDisposable, fragmentManager, context, progressBar))).commitAllowingStateLoss();
                                     } else {
                                         fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.addToBackStack(null);
-                                        fragmentTransaction.replace(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this,new SearchUtil(compositeDisposable,fragmentManager,context,progressBar))).commitAllowingStateLoss();
+                                        fragmentTransaction.replace(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this, new SearchUtil(compositeDisposable, fragmentManager, context, progressBar))).commitAllowingStateLoss();
                                     }
                                 }
 
@@ -112,7 +112,7 @@ public class FetchFirstTimeDataService {
 
                             @Override
                             public void onError(Throwable e) {
-                                Toast.makeText(context, "Error! " + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Error! Check your internet connection.", Toast.LENGTH_SHORT).show();
                                 progressBar.setIndeterminate(false);
                             }
 
@@ -148,14 +148,14 @@ public class FetchFirstTimeDataService {
                                     }
                                     fragmentTransaction = fragmentManager.beginTransaction();
                                     fragmentTransaction.addToBackStack(null);
-                                    fragmentTransaction.add(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this,new SearchUtil(compositeDisposable,fragmentManager,context,progressBar))).commitAllowingStateLoss();
+                                    fragmentTransaction.add(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this, new SearchUtil(compositeDisposable, fragmentManager, context, progressBar))).commitAllowingStateLoss();
                                 }
 
                             }
 
                             @Override
                             public void onError(Throwable e) {
-                                Toast.makeText(context, "Error! " + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Error! Check your internet connection.", Toast.LENGTH_SHORT).show();
                                 progressBar.setIndeterminate(false);
                             }
 
