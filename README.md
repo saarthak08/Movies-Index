@@ -3,7 +3,7 @@
 
 
 ## *Features:*
-- Download torrent files of movies in different resolutions
+- Download torrent files of movies in different resolutions.
 - Search any movie & get its information: Original Title, Rating, Release Date, Total Votes, Synposis, Casts, Reviews.
 - Get a list of Most Popular movies of the current time.
 - Get a list of Top Rated movies on TMDb.
