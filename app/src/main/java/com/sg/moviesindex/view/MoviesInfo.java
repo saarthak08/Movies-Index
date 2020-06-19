@@ -1,18 +1,28 @@
 package com.sg.moviesindex.view;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.sg.moviesindex.BuildConfig;
@@ -63,6 +73,7 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
     private RecyclerView recyclerViewCasts;
     private ActionProcessButton btnSignIn;
     private View parentlayout;
+    final static int MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS=3;
     private TorrentFetcherService torrentFetcherService;
 
     @Override
@@ -108,7 +119,7 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                torrentFetcherService.start(btnSignIn,movie);
+                requestStoragePermissions();
             }
         });
         getParcelableData();
@@ -241,7 +252,48 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
     }
     @Override
     public void onComplete() {
-        Toast.makeText(this, "Complete", Toast.LENGTH_LONG).show();
     }
 
+
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                torrentFetcherService.start(btnSignIn,movie);
+            } else {
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                new MaterialDialog.Builder(MoviesInfo.this).title("Permission Required")
+                        .content("You need to give storage permission in order to download the torrent file.\nIf permission is denied permanently, then you need to \'Go to Settings\' and manually grant the storage permission.")
+                        .negativeText("Cancel")
+                        .neutralText("Allow")
+                        .positiveText("Go to Settings")
+                        .canceledOnTouchOutside(true)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                Intent x = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
+                                startActivity(x);
+                            }
+                        })
+                        .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                ActivityCompat.requestPermissions(MoviesInfo.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS);
+                            }
+                        })
+                        .show();
+            }
+        }
+    }
+
+
+    public void requestStoragePermissions() {
+        if (ContextCompat.checkSelfPermission(MoviesInfo.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MoviesInfo.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS);
+        }
+        else {
+            torrentFetcherService.start(btnSignIn,movie);
+        }
+    }
 }

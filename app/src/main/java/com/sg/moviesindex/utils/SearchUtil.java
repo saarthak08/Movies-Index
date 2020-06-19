@@ -86,7 +86,7 @@ public class SearchUtil {
 
                                 @Override
                                 public void onError(Throwable e) {
-                                    Toast.makeText(context, "Error!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "Error! " + e.getLocalizedMessage().trim(), Toast.LENGTH_SHORT).show();
 
                                 }
 
@@ -172,7 +172,7 @@ public class SearchUtil {
 
                     @Override
                     public void onError(Throwable e) {
-                        Toast.makeText(context, "Error!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Error! " + e.getLocalizedMessage().trim(), Toast.LENGTH_SHORT).show();
 
                     }
 

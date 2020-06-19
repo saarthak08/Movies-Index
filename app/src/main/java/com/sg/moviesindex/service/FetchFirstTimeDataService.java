@@ -53,7 +53,6 @@ public class FetchFirstTimeDataService {
         if (a == 0 || a == 1) {
             if (a == 0) {
                 observableMovie = movieDataService.getPopularMoviesWithRx(ApiKey, 1);
-
             } else if (a == 1) {
                 observableMovie = movieDataService.getTopRatedMoviesWithRx(ApiKey, 1);
             }
