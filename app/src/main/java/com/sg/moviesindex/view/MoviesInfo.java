@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -43,7 +42,7 @@ import com.sg.moviesindex.service.network.MovieDataService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.utils.PaginationScrollListener;
 import com.sg.moviesindex.service.TorrentFetcherService;
-import com.sg.moviesindex.utils.TorrentDownloaderService;
+import com.sg.moviesindex.service.TorrentDownloaderService;
 import com.sg.moviesindex.viewmodel.MainViewModel;
 import com.varunest.sparkbutton.SparkButton;
 

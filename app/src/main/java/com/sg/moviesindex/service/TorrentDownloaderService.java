@@ -1,4 +1,4 @@
-package com.sg.moviesindex.utils;
+package com.sg.moviesindex.service;
 
 import android.app.IntentService;
 import android.app.NotificationChannel;
@@ -23,7 +23,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.model.yts.Torrent;
-import com.sg.moviesindex.service.TorrentFetcherService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.view.MoviesInfo;
 

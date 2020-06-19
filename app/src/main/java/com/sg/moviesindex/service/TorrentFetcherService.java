@@ -4,18 +4,18 @@ package com.sg.moviesindex.service;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dd.processbutton.ProcessButton;
+import com.sg.moviesindex.adapter.TorrentsListItemAdapter;
 import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.model.yts.APIResponse;
 import com.sg.moviesindex.model.yts.Torrent;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.service.network.YTSService;
-
-import java.util.ArrayList;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -126,24 +126,10 @@ public class TorrentFetcherService {
     private void showMaterialDialog(Movie movie, ProcessButton button) {
         filterResults(movie, button);
         if (resultantMovie != null) {
-            ArrayList<String> torrentsName = new ArrayList<>();
-            int l = 1;
-            for (Torrent x : resultantMovie.getTorrents()) {
-                torrentsName.add(l + ") " + "Quality: " + x.getQuality() + "\nSize: " + x.getSize() + "\nType: " + x.getType() + "\nSeeds: " + x.getSeeds() + "\t|\tPeers: " + x.getPeers());
-                l++;
-            }
-            new MaterialDialog.Builder(context).items(torrentsName).title("Torrent Files").content("Note: If the torrent file isn't working, try using a VPN or check the torrent's seeds.\nYou need a torrent downloader to download the original file from the torrent file.").itemsCallback(new MaterialDialog.ListCallback() {
-
-                @Override
-                public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                    if (resultantMovie != null || resultantMovie.getTorrents() != null) {
-                        resultantTorrent = resultantMovie.getTorrents().get(position);
-                        mListener.onComplete(false);
-                        button.setProgress(0);
-                    }
-
-                }
-            }).show();
+            new MaterialDialog.Builder(context).adapter(new TorrentsListItemAdapter(context, resultantMovie.getTorrents(),button,mListener), new LinearLayoutManager(context)).dividerColor(context.getResources().getColor(android.R.color.darker_gray))
+                    .title("Torrent Files")
+                    .content("Note: If the torrent file isn't working, try using a VPN or check the torrent's seeds.\nYou need a torrent downloader to download the original file from the torrent file.")
+                    .show();
         }
     }
 

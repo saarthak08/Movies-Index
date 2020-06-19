@@ -41,7 +41,7 @@
             android:label="@string/title_activity_movies_info"
             android:theme="@style/AppTheme" />
 
-        <service android:name=".utils.TorrentDownloaderService" />
+        <service android:name=".service.TorrentDownloaderService" />
 
     </application>
 

@@ -15,6 +15,10 @@
     <string name="now_playing">Now Playing</string>
     <string name="genres">Filter By Genres</string>
     <string name="search_any_movie">Search Any Movie</string>
+    <string name="download">Download</string>
+
+
+
 
 </resources>
 
