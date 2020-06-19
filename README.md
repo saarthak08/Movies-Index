@@ -1,8 +1,9 @@
-# TMDb Movies
-> An android application which shows the list & information of movies from [The Movie Database API](https://www.themoviedb.org) (TMDb).
+# Movies Index
+> An android application which shows the list & information of movies from [The Movie Database API](https://www.themoviedb.org) (TMDb) & allows to download their torrent files from [YIFY](https://yts.mx/).
 
 
 ## *Features:*
+- Download torrent files of movies in different resolutions
 - Search any movie & get its information: Original Title, Rating, Release Date, Total Votes, Synposis, Casts, Reviews.
 - Get a list of Most Popular movies of the current time.
 - Get a list of Top Rated movies on TMDb.
