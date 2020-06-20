@@ -58,7 +58,7 @@ public class TorrentDownloaderService extends IntentService {
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel("id", "an", NotificationManager.IMPORTANCE_LOW);
+            NotificationChannel notificationChannel = new NotificationChannel("id", "Download Notification", NotificationManager.IMPORTANCE_LOW);
             notificationChannel.setDescription("no sound");
             notificationChannel.setSound(null, null);
             notificationChannel.enableLights(false);
