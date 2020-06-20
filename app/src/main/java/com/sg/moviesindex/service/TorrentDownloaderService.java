@@ -95,6 +95,7 @@ public class TorrentDownloaderService extends IntentService {
                     boolean writtenToDisk = downloadFile(response.body(), filename);
                     if (!writtenToDisk) {
                         Toast.makeText(getApplicationContext(), "File saving failed!", Toast.LENGTH_SHORT).show();
+                        notificationManager.cancel(0);
                     }
                     Log.d(TAG, "File download was a success? " + writtenToDisk);
                 } else {
