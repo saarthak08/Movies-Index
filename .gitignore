@@ -20,6 +20,7 @@ build/
 .idea/
 
 .DS_Store
+key.properties
 
 # Local configuration file (sdk path, etc)
 local.properties
