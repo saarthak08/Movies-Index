@@ -26,7 +26,7 @@
 
 
 ## *Note:*
-In order to build the project, you need to replace the word *'PopularMovies_APIKEY'* on *'Line No. 26 & Line No. 27'* in app's *'build.gradle'* file with your own API_KEY. In order to obtain the API_KEY, register at [TMDb](https://www.themoviedb.org) & ask for the API_KEY.
+In order to build the project, you need to replace the word *'PopularMovies_APIKEY'* on *'Line No. 45 & Line No. 51'* in app's *'build.gradle'* file with your own API_KEY. In order to obtain the API_KEY, register at [TMDb](https://www.themoviedb.org) & ask for the API_KEY.
 
 ## *APK Link:*
 https://play.google.com/store/apps/details?id=com.sg.moviesindex
