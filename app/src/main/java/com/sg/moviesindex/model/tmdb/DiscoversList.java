@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class DiscoverDBResponse implements Parcelable {
+public class DiscoversList implements Parcelable {
 
     @SerializedName("page")
     @Expose
@@ -22,30 +22,30 @@ public class DiscoverDBResponse implements Parcelable {
     @SerializedName("results")
     @Expose
     private List<Discover> discovers = null;
-    public final static Parcelable.Creator<DiscoverDBResponse> CREATOR = new Creator<DiscoverDBResponse>() {
+    public final static Parcelable.Creator<DiscoversList> CREATOR = new Creator<DiscoversList>() {
 
 
         @SuppressWarnings({
                 "unchecked"
         })
-        public DiscoverDBResponse createFromParcel(Parcel in) {
-            return new DiscoverDBResponse(in);
+        public DiscoversList createFromParcel(Parcel in) {
+            return new DiscoversList(in);
         }
 
-        public DiscoverDBResponse[] newArray(int size) {
-            return (new DiscoverDBResponse[size]);
+        public DiscoversList[] newArray(int size) {
+            return (new DiscoversList[size]);
         }
 
     };
 
-    protected DiscoverDBResponse(Parcel in) {
+    protected DiscoversList(Parcel in) {
         this.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.totalResults = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
         in.readList(this.discovers, (Discover.class.getClassLoader()));
     }
 
-    public DiscoverDBResponse() {
+    public DiscoversList() {
     }
 
     public Integer getPage() {

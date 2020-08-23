@@ -47,6 +47,7 @@
                 android:paddingTop="2dp"
                 android:paddingRight="8dp"
                 android:paddingEnd="8dp"
+                android:fontFamily="@font/roboto"
                 app:layout_constraintVertical_weight="1"
                 android:text="@{review.content}"
                 android:textSize="14sp"

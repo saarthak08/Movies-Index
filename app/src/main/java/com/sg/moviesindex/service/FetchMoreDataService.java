@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sg.moviesindex.BuildConfig;
 import com.sg.moviesindex.adapter.MoviesAdapter;
 import com.sg.moviesindex.model.tmdb.Discover;
-import com.sg.moviesindex.model.tmdb.DiscoverDBResponse;
+import com.sg.moviesindex.model.tmdb.DiscoversList;
 import com.sg.moviesindex.model.tmdb.Movie;
-import com.sg.moviesindex.model.tmdb.MovieDBResponse;
+import com.sg.moviesindex.model.tmdb.MoviesList;
 import com.sg.moviesindex.service.network.MovieDataService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.utils.DiscoverToMovie;
@@ -25,8 +25,8 @@ import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class FetchMoreDataService {
-    private Observable<MovieDBResponse> observableMovie;
-    private Observable<DiscoverDBResponse> observableDB;
+    private Observable<MoviesList> observableMovie;
+    private Observable<DiscoversList> observableDB;
     private RecyclerView recyclerView;
     private ArrayList<Movie> movieList;
     private int totalPages;
@@ -57,16 +57,16 @@ public class FetchMoreDataService {
             observableMovie = movieDataService.getNowPlayingWithRx(ApiKey, pages, MainActivity.region);
         }
         compositeDisposable.add(observableMovie.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<MovieDBResponse>() {
+                .subscribeWith(new DisposableObserver<MoviesList>() {
                     @Override
-                    public void onNext(MovieDBResponse movieDBResponse) {
-                        if (movieDBResponse != null && movieDBResponse.getMovies() != null) {
+                    public void onNext(MoviesList moviesList) {
+                        if (moviesList != null && moviesList.getMovies() != null) {
                             if (pages == 1) {
-                                movieList = (ArrayList<Movie>) movieDBResponse.getMovies();
-                                totalPages = movieDBResponse.getTotalPages();
+                                movieList = (ArrayList<Movie>) moviesList.getMovies();
+                                totalPages = moviesList.getTotalPages();
                                 recyclerView.setAdapter(moviesAdapter);
                             } else {
-                                ArrayList<Movie> movies = (ArrayList<Movie>) movieDBResponse.getMovies();
+                                ArrayList<Movie> movies = (ArrayList<Movie>) moviesList.getMovies();
                                 for (Movie movie : movies) {
                                     movieList.add(movie);
                                     moviesAdapter.notifyItemInserted(movieList.size() - 1);
@@ -92,20 +92,20 @@ public class FetchMoreDataService {
     public void loadMoreGenres(final int pages) {
         final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
         String ApiKey = BuildConfig.ApiKey;
-        observableDB = movieDataService.discover(ApiKey, Integer.toString(MainActivity.genreid), false, false, pages, "popularity.desc");
+        observableDB = movieDataService.discover(ApiKey, Long.toString(MainActivity.genreid), false, false, pages, "popularity.desc");
         compositeDisposable.add(
                 observableDB.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableObserver<DiscoverDBResponse>() {
+                        .subscribeWith(new DisposableObserver<DiscoversList>() {
                             @Override
-                            public void onNext(DiscoverDBResponse discoverDBResponse) {
-                                if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
+                            public void onNext(DiscoversList discoversList) {
+                                if (discoversList != null && discoversList.getResults() != null) {
                                     if (pages == 1) {
-                                        discovers = (ArrayList<Discover>) discoverDBResponse.getResults();
-                                        totalPagesGenre = discoverDBResponse.getTotalPages();
+                                        discovers = (ArrayList<Discover>) discoversList.getResults();
+                                        totalPagesGenre = discoversList.getTotalPages();
                                         recyclerView.setAdapter(moviesAdapter);
                                     } else {
-                                        ArrayList<Discover> discovers = (ArrayList<Discover>) discoverDBResponse.getResults();
+                                        ArrayList<Discover> discovers = (ArrayList<Discover>) discoversList.getResults();
                                         DiscoverToMovie discoverToMovie = new DiscoverToMovie(discovers);
                                         ArrayList<Movie> movies = discoverToMovie.getMovies();
                                         for (Movie movie : movies) {

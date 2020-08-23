@@ -2,16 +2,17 @@ package com.sg.moviesindex.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.databinding.BindingAdapter;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.sg.moviesindex.R;
@@ -19,7 +20,12 @@ import com.sg.moviesindex.databinding.MovieListItemBinding;
 import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.view.MoviesInfo;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
@@ -44,13 +50,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        if (viewType==VIEW_TYPE_ITEM) {
-            MovieListItemBinding movieListItemBinding=DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()),
+        if (viewType == VIEW_TYPE_ITEM) {
+            MovieListItemBinding movieListItemBinding = DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()),
                     R.layout.movie_list_item, viewGroup, false);
-                    return new MoviesViewHolder(movieListItemBinding);
-        }
-        else {
-            View view=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.loadmore_progressbar, viewGroup, false);
+            return new MoviesViewHolder(movieListItemBinding);
+        } else {
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.loadmore_progressbar, viewGroup, false);
             return new LoadingViewHolder(view);
         }
     }
@@ -58,10 +63,20 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof MoviesViewHolder) {
-            Movie movie=movies.get(i);
-            ((MoviesViewHolder)viewHolder).movieListItemBinding.setMovie(movie);
-        }
-        else if (viewHolder instanceof LoadingViewHolder) {
+            Movie movie = movies.get(i);
+
+            Date date1= null;
+            try {
+                date1 = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(movie.getReleaseDate());
+                DateFormat format = new SimpleDateFormat("MMM d, yyyy",Locale.US);
+                movie.setReleaseDate(format.format(date1));
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            ((MoviesViewHolder) viewHolder).movieListItemBinding.setMovie(movie);
+        } else if (viewHolder instanceof LoadingViewHolder) {
         }
     }
 
@@ -85,13 +100,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             });
         }
     }
+
     @Override
     public int getItemCount() {
-        return movies==null?0:movies.size();
+        return movies == null ? 0 : movies.size();
     }
+
     @Override
     public int getItemViewType(int position) {
-        return movies.get(position)==null?VIEW_TYPE_LOADING:VIEW_TYPE_ITEM;
+        return movies.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
     public static class LoadingViewHolder extends RecyclerView.ViewHolder {

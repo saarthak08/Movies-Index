@@ -29,7 +29,7 @@ public class DiscoverToMovie {
             movies.get(i).setReleaseDate(discovers.get(i).getReleaseDate());
             movies.get(i).setVideo(discovers.get(i).getVideo());
             movies.get(i).setVoteAverage(discovers.get(i).getVoteAverage());
-            movies.get(i).setVoteCount(discovers.get(i).getVoteCount());
+            movies.get(i).setGenreIds(discovers.get(i).getGenreIds());
         }
         return movies;
     }

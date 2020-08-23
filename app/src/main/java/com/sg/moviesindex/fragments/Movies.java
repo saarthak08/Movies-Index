@@ -37,6 +37,7 @@ import com.sg.moviesindex.view.MainActivity;
 import com.sg.moviesindex.viewmodel.MainViewModel;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -52,6 +53,10 @@ public class Movies extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    public Movies() {
+        //Required Constructor
+    }
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -66,7 +71,7 @@ public class Movies extends Fragment {
     private PaginationScrollListener paginationScrollListener;
     GridLayoutManager gridLayoutManager;
     private static CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private static int genreid = MainActivity.genreid;
+    private static long genreid = MainActivity.genreid;
     private FetchMoreDataService fetchMoreDataService;
     private SearchUtil searchUtil;
 
@@ -77,10 +82,14 @@ public class Movies extends Fragment {
         this.searchUtil = searchUtil;
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
     }
 
     @Override
@@ -91,15 +100,15 @@ public class Movies extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        String[] a = new String[MainActivity.genresLists.size()];
-        for (int i = 0; i < MainActivity.genresLists.size(); i++) {
-            a[i] = MainActivity.genresLists.get(i).getName();
+        String[] a = new String[MainActivity.genres.size()];
+        for (int i = 0; i < MainActivity.genres.size(); i++) {
+            a[i] = MainActivity.genres.get(i).getName();
         }
         selectedItem = MainActivity.selected;
         new AlertDialog.Builder(getContext()).setSingleChoiceItems(a, selectedItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                genreid = MainActivity.genresLists.get(which).getId();
+                genreid = MainActivity.genres.get(which).getId();
                 firstTimeData.getFirstGenreData(genreid, getContext());
                 selectedItem = which;
                 dialog.dismiss();
@@ -124,7 +133,7 @@ public class Movies extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(MainViewModel.class);
         recyclerView = fragmentMoviesBinding.rv2;
         swipeRefreshLayout = fragmentMoviesBinding.swiperefresh2;
         if (MainActivity.drawer == 0) {
@@ -132,8 +141,8 @@ public class Movies extends Fragment {
         } else if (MainActivity.drawer == 1) {
             getActivity().setTitle("Top Rated Movies");
         } else if (MainActivity.drawer == 2) {
-            if (!MainActivity.genresLists.isEmpty()) {
-                getActivity().setTitle("Genre: " + MainActivity.genresLists.get(MainActivity.selected).getName());
+            if (!MainActivity.genres.isEmpty()) {
+                getActivity().setTitle("Genre: " + MainActivity.genres.get(MainActivity.selected).getName());
             }
         } else if (MainActivity.drawer == 3) {
             getActivity().setTitle("Search Results: " + MainActivity.queryM);
@@ -204,8 +213,8 @@ public class Movies extends Fragment {
 
     @Override
     public void onDestroy() {
-        compositeDisposable.clear();
         super.onDestroy();
+        compositeDisposable.clear();
     }
 }
 

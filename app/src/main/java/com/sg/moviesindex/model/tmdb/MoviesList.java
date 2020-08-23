@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class MovieDBResponse implements Parcelable {
+public class MoviesList implements Parcelable {
 
     @SerializedName("page")
     @Expose
@@ -22,30 +22,30 @@ public class MovieDBResponse implements Parcelable {
     @SerializedName("results")
     @Expose
     private List<Movie> movies = null;
-    public final static Parcelable.Creator<MovieDBResponse> CREATOR = new Creator<MovieDBResponse>() {
+    public final static Parcelable.Creator<MoviesList> CREATOR = new Creator<MoviesList>() {
 
 
         @SuppressWarnings({
                 "unchecked"
         })
-        public MovieDBResponse createFromParcel(Parcel in) {
-            return new MovieDBResponse(in);
+        public MoviesList createFromParcel(Parcel in) {
+            return new MoviesList(in);
         }
 
-        public MovieDBResponse[] newArray(int size) {
-            return (new MovieDBResponse[size]);
+        public MoviesList[] newArray(int size) {
+            return (new MoviesList[size]);
         }
 
     };
 
-    protected MovieDBResponse(Parcel in) {
+    protected MoviesList(Parcel in) {
         this.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.totalResults = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
         in.readList(this.movies, (Movie.class.getClassLoader()));
     }
 
-    public MovieDBResponse() {
+    public MoviesList() {
     }
 
     public Integer getPage() {

@@ -1,16 +1,17 @@
 package com.sg.moviesindex.service;
 
+import android.app.Dialog;
 import android.content.Context;
-import android.view.View;
+import android.content.DialogInterface;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sg.moviesindex.BuildConfig;
-import com.sg.moviesindex.model.tmdb.DiscoverDBResponse;
+import com.sg.moviesindex.model.tmdb.DiscoversList;
+import com.sg.moviesindex.model.tmdb.Genre;
 import com.sg.moviesindex.model.tmdb.GenresList;
-import com.sg.moviesindex.model.tmdb.GenresListDBResponse;
-import com.sg.moviesindex.model.tmdb.MovieDBResponse;
+import com.sg.moviesindex.model.tmdb.MoviesList;
 import com.sg.moviesindex.service.network.MovieDataService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.view.MainActivity;
@@ -24,9 +25,9 @@ import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class GetGenresListService {
-    private Observable<MovieDBResponse> observableMovie;
-    private Observable<DiscoverDBResponse> observableDB;
-    private Observable<GenresListDBResponse> genresListObservable;
+    private Observable<MoviesList> observableMovie;
+    private Observable<DiscoversList> observableDB;
+    private Observable<GenresList> genresListObservable;
     private Context context;
     private ProgressBar progressBar;
     private CompositeDisposable compositeDisposable;
@@ -46,24 +47,24 @@ public class GetGenresListService {
         genresListObservable = movieDataService.getGenresList(ApiKey);
         compositeDisposable.add(
                 genresListObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableObserver<GenresListDBResponse>() {
+                        .subscribeWith(new DisposableObserver<GenresList>() {
                             @Override
-                            public void onNext(GenresListDBResponse genresListDBResponse) {
-                                if (genresListDBResponse != null && genresListDBResponse.getGenresLists() != null) {
-                                    MainActivity.genresLists = (ArrayList<GenresList>) genresListDBResponse.getGenresLists();
-                                    String[] a = new String[MainActivity.genresLists.size()];
-                                    for (int i = 0; i < MainActivity.genresLists.size(); i++) {
-                                        a[i] = MainActivity.genresLists.get(i).getName();
+                            public void onNext(GenresList genresList) {
+                                if (genresList != null && genresList.getGenres() != null) {
+                                    MainActivity.genres = (ArrayList<Genre>) genresList.getGenres();
+                                    String[] a = new String[MainActivity.genres.size()];
+                                    for (int i = 0; i < MainActivity.genres.size(); i++) {
+                                        a[i] = MainActivity.genres.get(i).getName();
                                     }
-                                    new MaterialDialog.Builder(context).title("Choose a Category").items(a).itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                                    Dialog dialog = new MaterialAlertDialogBuilder(context).setTitle("Choose a Category").setSingleChoiceItems(a, -1, new DialogInterface.OnClickListener() {
                                         @Override
-                                        public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                                        public void onClick(DialogInterface dialog, int which) {
                                             MainActivity.selected = which;
-                                            MainActivity.genreid = MainActivity.genresLists.get(which).getId();
+                                            MainActivity.genreid = MainActivity.genres.get(which).getId();
                                             fetchFirstTimeDataService.getFirstGenreData(MainActivity.genreid, context);
-                                            return true;
+                                            dialog.dismiss();
                                         }
-                                    }).canceledOnTouchOutside(false).cancelable(false).show();
+                                    }).setCancelable(false).show();
                                 }
 
                             }

@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "9d88e0257f68f587d6f07162bb298c6c",
+    "version": 2,
+    "identityHash": "3928234d9635639191a99ddafe6149f0",
     "entities": [
       {
         "tableName": "favourite_movies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`imdb_id` TEXT, `budget` INTEGER, `revenue` INTEGER, `runtime` INTEGER, `status` TEXT, `tagline` TEXT, `production_companies` TEXT, `production_countries` TEXT, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `video` INTEGER, `vote_average` REAL, `title` TEXT, `popularity` REAL, `poster_path` TEXT, `original_language` TEXT, `original_title` TEXT, `genres` TEXT, `backdrop_path` TEXT, `adult` INTEGER, `overview` TEXT, `release_date` TEXT, `casts_list` TEXT, `reviews_list` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`imdb_id` TEXT, `budget` INTEGER, `revenue` INTEGER, `runtime` INTEGER, `status` TEXT, `tagline` TEXT, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `video` INTEGER, `vote_average` REAL, `title` TEXT, `popularity` REAL, `poster_path` TEXT, `original_language` TEXT, `original_title` TEXT, `genres` TEXT, `backdrop_path` TEXT, `adult` INTEGER, `overview` TEXT, `release_date` TEXT, `casts_list` TEXT, `reviews_list` TEXT)",
         "fields": [
           {
             "fieldPath": "imdbId",
@@ -41,18 +41,6 @@
           {
             "fieldPath": "tagline",
             "columnName": "tagline",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "productionCompanies",
-            "columnName": "production_companies",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "productionCountries",
-            "columnName": "production_countries",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -160,7 +148,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9d88e0257f68f587d6f07162bb298c6c\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"3928234d9635639191a99ddafe6149f0\")"
     ]
   }
 }

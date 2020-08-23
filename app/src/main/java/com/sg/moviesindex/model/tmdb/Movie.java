@@ -23,16 +23,48 @@ import java.util.List;
 @Entity(tableName = "favourite_movies")
 public class Movie extends BaseObservable implements Parcelable {
 
-    @ColumnInfo(name = "vote_count")
-    @SerializedName("vote_count")
+    @ColumnInfo(name = "imdb_id")
+    @SerializedName("imdb_id")
     @Expose
-    private Integer voteCount;
+    private String imdbId;
+
+    @Ignore
+    @SerializedName("genre_ids")
+    @Expose
+    private List<Integer> genreIds = new ArrayList<>();
+
+
+    @ColumnInfo(name = "budget")
+    @SerializedName("budget")
+    @Expose
+    private Long budget;
+
+    @ColumnInfo(name = "revenue")
+    @SerializedName("revenue")
+    @Expose
+    private Long revenue;
+
+    @ColumnInfo(name = "runtime")
+    @SerializedName("runtime")
+    @Expose
+    private Long runtime;
+
+    @ColumnInfo(name = "status")
+    @SerializedName("status")
+    @Expose
+    private String status;
+
+    @ColumnInfo(name = "tagline")
+    @SerializedName("tagline")
+    @Expose
+    private String tagline;
+
 
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private Long id;
 
     @ColumnInfo(name = "video")
     @SerializedName("video")
@@ -70,11 +102,10 @@ public class Movie extends BaseObservable implements Parcelable {
     @Expose
     private String originalTitle;
 
-
-    @Ignore
-    @SerializedName("genre_ids")
+    @ColumnInfo(name = "genres")
+    @SerializedName("genres")
     @Expose
-    private List<Integer> genreIds = new ArrayList<>();
+    private ArrayList<Genre> genres = new ArrayList<>();
 
 
     @ColumnInfo(name = "backdrop_path")
@@ -122,64 +153,80 @@ public class Movie extends BaseObservable implements Parcelable {
 
     };
 
+
     @Ignore
     protected Movie(Parcel in) {
-        this.voteCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.video = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.voteAverage = ((Double) in.readValue((Double.class.getClassLoader())));
-        this.title = ((String) in.readValue((String.class.getClassLoader())));
-        this.popularity = ((Double) in.readValue((Double.class.getClassLoader())));
-        this.posterPath = ((String) in.readValue((String.class.getClassLoader())));
+        this.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.backdropPath = ((String) in.readValue((String.class.getClassLoader())));
+        this.budget = ((Long) in.readValue((Long.class.getClassLoader())));
+        in.readTypedList(this.genres, (Genre.CREATOR));
+        this.id = ((Long) in.readValue((Long.class.getClassLoader())));
+        this.imdbId = ((String) in.readValue((String.class.getClassLoader())));
         this.originalLanguage = ((String) in.readValue((String.class.getClassLoader())));
         this.originalTitle = ((String) in.readValue((String.class.getClassLoader())));
-        in.readList(this.genreIds, (java.lang.Integer.class.getClassLoader()));
-        this.backdropPath = ((String) in.readValue((String.class.getClassLoader())));
-        this.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.overview = ((String) in.readValue((String.class.getClassLoader())));
+        this.popularity = ((Double) in.readValue((Double.class.getClassLoader())));
+        this.posterPath = ((String) in.readValue((String.class.getClassLoader())));
         this.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
+        this.revenue = ((Long) in.readValue((Long.class.getClassLoader())));
+        this.runtime = ((Long) in.readValue((Long.class.getClassLoader())));
+        this.status = ((String) in.readValue((String.class.getClassLoader())));
+        this.tagline = ((String) in.readValue((String.class.getClassLoader())));
+        this.title = ((String) in.readValue((String.class.getClassLoader())));
+        this.video = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.voteAverage = ((Double) in.readValue((Double.class.getClassLoader())));
+        in.readList(this.genreIds, (java.lang.Integer.class.getClassLoader()));
         in.readTypedList(castsList, Cast.CREATOR);
         in.readTypedList(reviewsList, Review.CREATOR);
     }
+
 
     @Ignore
     public Movie() {
     }
 
-    public Movie(Integer voteCount, Integer id, Boolean video, Double voteAverage, String title, Double popularity, String posterPath, String originalLanguage, String originalTitle, String backdropPath, Boolean adult, String overview, String releaseDate, ArrayList<Cast> castsList, ArrayList<Review> reviewsList) {
-        this.voteCount = voteCount;
+    public Movie(Boolean adult, String backdropPath, Long budget, ArrayList<Genre> genres, Long id, String imdbId, String originalLanguage, String originalTitle, String overview, Double popularity, String posterPath, String releaseDate, Long revenue, Long runtime, String status, String tagline, String title, Boolean video, Double voteAverage, ArrayList<Cast> castsList, ArrayList<Review> reviewsList) {
+        super();
+        this.adult = adult;
+        this.backdropPath = backdropPath;
+        this.budget = budget;
+        this.genres = genres;
         this.id = id;
-        this.video = video;
-        this.voteAverage = voteAverage;
-        this.title = title;
-        this.popularity = popularity;
-        this.posterPath = posterPath;
+        this.imdbId = imdbId;
         this.originalLanguage = originalLanguage;
         this.originalTitle = originalTitle;
-        this.backdropPath = backdropPath;
-        this.adult = adult;
         this.overview = overview;
+        this.popularity = popularity;
+        this.posterPath = posterPath;
         this.releaseDate = releaseDate;
+        this.revenue = revenue;
+        this.runtime = runtime;
+        this.status = status;
+        this.tagline = tagline;
+        this.title = title;
+        this.video = video;
+        this.voteAverage = voteAverage;
         this.castsList = castsList;
         this.reviewsList = reviewsList;
     }
 
-    @Bindable
-    public Integer getVoteCount() {
-        return voteCount;
+
+    @Ignore
+    public List<Integer> getGenreIds() {
+        return genreIds;
     }
 
-    public void setVoteCount(Integer voteCount) {
-        this.voteCount = voteCount;
-        notifyPropertyChanged(BR.voteCount);
+    @Ignore
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = genreIds;
     }
 
     @Bindable
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
         notifyPropertyChanged(BR.id);
     }
@@ -255,15 +302,6 @@ public class Movie extends BaseObservable implements Parcelable {
         notifyPropertyChanged(BR.originalTitle);
     }
 
-    @Ignore
-    public List<Integer> getGenreIds() {
-        return genreIds;
-    }
-
-    @Ignore
-    public void setGenreIds(List<Integer> genreIds) {
-        this.genreIds = genreIds;
-    }
 
     @Bindable
     public String getBackdropPath() {
@@ -305,41 +343,122 @@ public class Movie extends BaseObservable implements Parcelable {
         notifyPropertyChanged(BR.releaseDate);
     }
 
+    @Bindable
+    public String getImdbId() {
+        return imdbId;
+    }
+
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
+        notifyPropertyChanged(BR.imdbId);
+    }
+
+    @Bindable
+    public Long getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Long budget) {
+        this.budget = budget;
+        notifyPropertyChanged(BR.budget);
+    }
+
+    @Bindable
+    public Long getRevenue() {
+        return revenue;
+    }
+
+    public void setRevenue(Long revenue) {
+        this.revenue = revenue;
+        notifyPropertyChanged(BR.revenue);
+    }
+
+    @Bindable
+    public Long getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(Long runtime) {
+        this.runtime = runtime;
+        notifyPropertyChanged(BR.runtime);
+    }
+
+    @Bindable
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+        notifyPropertyChanged(BR.status);
+    }
+
+    @Bindable
+    public String getTagline() {
+        return tagline;
+    }
+
+    public void setTagline(String tagline) {
+        this.tagline = tagline;
+        notifyPropertyChanged(BR.tagline);
+    }
+
+    @Bindable
+    public ArrayList<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(ArrayList<Genre> genres) {
+        this.genres = genres;
+        notifyPropertyChanged(BR.genres);
+    }
+
+    @Bindable
     public ArrayList<Cast> getCastsList() {
         return castsList;
     }
 
     public void setCastsList(ArrayList<Cast> castsList) {
         this.castsList = castsList;
+        notifyPropertyChanged(BR.castsList);
     }
 
+    @Bindable
     public ArrayList<Review> getReviewsList() {
         return reviewsList;
     }
 
     public void setReviewsList(ArrayList<Review> reviewsList) {
         this.reviewsList = reviewsList;
+        notifyPropertyChanged(BR.reviewsList);
     }
 
     @Ignore
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(voteCount);
+        dest.writeValue(adult);
+        dest.writeValue(backdropPath);
+        dest.writeValue(budget);
+        dest.writeTypedList(genres);
         dest.writeValue(id);
-        dest.writeValue(video);
-        dest.writeValue(voteAverage);
-        dest.writeValue(title);
-        dest.writeValue(popularity);
-        dest.writeValue(posterPath);
+        dest.writeValue(imdbId);
         dest.writeValue(originalLanguage);
         dest.writeValue(originalTitle);
-        dest.writeList(genreIds);
-        dest.writeValue(backdropPath);
-        dest.writeValue(adult);
         dest.writeValue(overview);
+        dest.writeValue(popularity);
+        dest.writeValue(posterPath);
         dest.writeValue(releaseDate);
+        dest.writeValue(revenue);
+        dest.writeValue(runtime);
+        dest.writeValue(status);
+        dest.writeValue(tagline);
+        dest.writeValue(title);
+        dest.writeValue(video);
+        dest.writeValue(voteAverage);
+        dest.writeList(genreIds);
         dest.writeTypedList(castsList);
         dest.writeTypedList(reviewsList);
     }
+
 
     @Ignore
     public int describeContents() {
@@ -358,7 +477,6 @@ public class Movie extends BaseObservable implements Parcelable {
             return oldItem.adult == newItem.adult &&
                     oldItem.video == newItem.video &&
                     oldItem.backdropPath.equals(newItem.backdropPath) &&
-                    oldItem.genreIds == newItem.genreIds &&
                     oldItem.id.equals(newItem.id) &&
                     oldItem.originalLanguage.equals(newItem.originalLanguage) &&
                     oldItem.originalTitle.equals(newItem.originalTitle) &&
@@ -368,7 +486,6 @@ public class Movie extends BaseObservable implements Parcelable {
                     oldItem.releaseDate.equals(newItem.releaseDate) &&
                     oldItem.title.equals(newItem.title) &&
                     oldItem.voteAverage.equals(newItem.voteAverage) &&
-                    oldItem.voteCount.equals(newItem.voteCount) &&
                     oldItem.castsList.equals(newItem.castsList) &&
                     oldItem.reviewsList.equals(newItem.reviewsList);
         }

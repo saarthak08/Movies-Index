@@ -28,42 +28,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="4dp"
-                bind:boldText="@{`Quality: `}"
-                bind:normalText="@{torrent.getQuality().toString()}"
+                android:fontFamily="@font/quicksand_medium"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@+id/tvSize"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                bind:boldText="@{`Quality: `}"
+                bind:normalText="@{torrent.getQuality().toString()}" />
 
             <TextView
                 android:id="@+id/tvSize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="4dp"
-                bind:boldText="@{`Size: `}"
-                bind:normalText="@{torrent.getSize().toString()}"
+                android:fontFamily="@font/quicksand_medium"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@+id/tvType"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvQuality" />
+                app:layout_constraintTop_toBottomOf="@id/tvQuality"
+                bind:boldText="@{`Size: `}"
+                bind:normalText="@{torrent.getSize().toString()}" />
 
             <TextView
                 android:id="@+id/tvType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="4dp"
-                bind:boldText="@{`Type: `}"
-                bind:normalText="@{torrent.getType().toString()}"
+                android:fontFamily="@font/quicksand_medium"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@+id/tvLLSP"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSize" />
+                app:layout_constraintTop_toBottomOf="@+id/tvSize"
+                bind:boldText="@{`Type: `}"
+                bind:normalText="@{torrent.getType().toString()}" />
 
             <LinearLayout
                 android:id="@+id/tvLLSP"
@@ -83,8 +83,9 @@
                     android:id="@+id/tvSeeds"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
                     android:layout_weight="1"
+                    android:fontFamily="@font/quicksand_medium"
+                    android:textSize="14sp"
                     bind:boldText="@{`Seeds: `}"
                     bind:normalText="@{torrent.getSeeds().toString()}" />
 
@@ -101,18 +102,19 @@
 
             <ImageButton
                 android:id="@+id/ivDownloadButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 android:layout_marginEnd="16dp"
                 android:elevation="4dp"
+                android:background="@drawable/rounded_button_background"
+                android:padding="4dp"
                 android:layout_marginRight="16dp"
-                android:background="@android:color/darker_gray"
                 android:contentDescription="@string/download"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.463"
-                app:srcCompat="@android:drawable/stat_sys_download_done"
+                app:srcCompat="@drawable/ic_cloud_download_black_48dp"
                 tools:targetApi="lollipop" />
 
 

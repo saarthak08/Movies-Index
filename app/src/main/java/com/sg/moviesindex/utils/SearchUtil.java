@@ -15,7 +15,7 @@ import com.sg.moviesindex.R;
 import com.sg.moviesindex.adapter.SearchAdapter;
 import com.sg.moviesindex.fragments.Movies;
 import com.sg.moviesindex.model.tmdb.Discover;
-import com.sg.moviesindex.model.tmdb.DiscoverDBResponse;
+import com.sg.moviesindex.model.tmdb.DiscoversList;
 import com.sg.moviesindex.service.FetchFirstTimeDataService;
 import com.sg.moviesindex.service.network.MovieDataService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
@@ -31,7 +31,7 @@ import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class SearchUtil {
-    private Observable<DiscoverDBResponse> observableDB;
+    private Observable<DiscoversList> observableDB;
     private CompositeDisposable compositeDisposable;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -67,12 +67,12 @@ public class SearchUtil {
                     compositeDisposable.add(observableDB
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeWith(new DisposableObserver<DiscoverDBResponse>() {
+                            .subscribeWith(new DisposableObserver<DiscoversList>() {
                                 @Override
-                                public void onNext(DiscoverDBResponse discoverDBResponse) {
-                                    if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
-                                        MainActivity.discovers = (ArrayList<Discover>) discoverDBResponse.getResults();
-                                        MainActivity.totalPages = discoverDBResponse.getTotalPages();
+                                public void onNext(DiscoversList discoversList) {
+                                    if (discoversList != null && discoversList.getResults() != null) {
+                                        MainActivity.discovers = (ArrayList<Discover>) discoversList.getResults();
+                                        MainActivity.totalPages = discoversList.getTotalPages();
                                         DiscoverToMovie discoverToMovie = new DiscoverToMovie(MainActivity.discovers);
                                         MainActivity.movieList = discoverToMovie.getMovies();
                                         if (progressBar != null) {
@@ -110,11 +110,11 @@ public class SearchUtil {
                         .debounce(400, TimeUnit.MILLISECONDS)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableObserver<DiscoverDBResponse>() {
+                        .subscribeWith(new DisposableObserver<DiscoversList>() {
                             @Override
-                            public void onNext(DiscoverDBResponse discoverDBResponse) {
-                                if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
-                                    MainActivity.search = (ArrayList<Discover>) discoverDBResponse.getResults();
+                            public void onNext(DiscoversList discoversList) {
+                                if (discoversList != null && discoversList.getResults() != null) {
+                                    MainActivity.search = (ArrayList<Discover>) discoversList.getResults();
                                     DiscoverToMovie discoverToMovie = new DiscoverToMovie(MainActivity.search);
                                     MainActivity.moviesearch = discoverToMovie.getMovies();
                                     String a[] = new String[MainActivity.moviesearch.size()];
@@ -159,12 +159,12 @@ public class SearchUtil {
         compositeDisposable.add(observableDB
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<DiscoverDBResponse>() {
+                .subscribeWith(new DisposableObserver<DiscoversList>() {
                     @Override
-                    public void onNext(DiscoverDBResponse discoverDBResponse) {
-                        if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
-                            MainActivity.discovers = (ArrayList<Discover>) discoverDBResponse.getResults();
-                            MainActivity.totalPages = discoverDBResponse.getTotalPages();
+                    public void onNext(DiscoversList discoversList) {
+                        if (discoversList != null && discoversList.getResults() != null) {
+                            MainActivity.discovers = (ArrayList<Discover>) discoversList.getResults();
+                            MainActivity.totalPages = discoversList.getTotalPages();
                             DiscoverToMovie discoverToMovie = new DiscoverToMovie(MainActivity.discovers);
                             MainActivity.movieList.addAll(discoverToMovie.getMovies());
                         }

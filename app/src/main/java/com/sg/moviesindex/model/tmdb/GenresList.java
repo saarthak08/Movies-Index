@@ -6,14 +6,14 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
+
 public class GenresList implements Parcelable {
 
-    @SerializedName("id")
+    @SerializedName("genres")
     @Expose
-    private Integer id;
-    @SerializedName("name")
-    @Expose
-    private String name;
+    private List<Genre> genres = null;
     public final static Parcelable.Creator<GenresList> CREATOR = new Creator<GenresList>() {
 
 
@@ -31,32 +31,22 @@ public class GenresList implements Parcelable {
     };
 
     protected GenresList(Parcel in) {
-        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.name = ((String) in.readValue((String.class.getClassLoader())));
+        in.readList(this.genres, (Genre.class.getClassLoader()));
     }
 
     public GenresList() {
     }
 
-    public Integer getId() {
-        return id;
+    public List<Genre> getGenres() {
+        return genres;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(id);
-        dest.writeValue(name);
+        dest.writeList(genres);
     }
 
     public int describeContents() {

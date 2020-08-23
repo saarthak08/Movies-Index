@@ -1,6 +1,8 @@
 package com.sg.moviesindex.service;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -8,14 +10,14 @@ import android.widget.Toast;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sg.moviesindex.BuildConfig;
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.fragments.Movies;
 import com.sg.moviesindex.model.tmdb.Discover;
-import com.sg.moviesindex.model.tmdb.DiscoverDBResponse;
+import com.sg.moviesindex.model.tmdb.DiscoversList;
 import com.sg.moviesindex.model.tmdb.Movie;
-import com.sg.moviesindex.model.tmdb.MovieDBResponse;
+import com.sg.moviesindex.model.tmdb.MoviesList;
 import com.sg.moviesindex.service.network.MovieDataService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.utils.DiscoverToMovie;
@@ -33,8 +35,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class FetchFirstTimeDataService {
     private ProgressBar progressBar;
-    private Observable<MovieDBResponse> observableMovie;
-    private Observable<DiscoverDBResponse> observableDB;
+    private Observable<MoviesList> observableMovie;
+    private Observable<DiscoversList> observableDB;
     private CompositeDisposable compositeDisposable;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -59,9 +61,9 @@ public class FetchFirstTimeDataService {
             fetchData(context);
         } else if (a == 4 || a == 5) {
             String[] x = {"All", "India", "USA", "UK"};
-            new MaterialDialog.Builder(context).title("Choose a Region").items(x).itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+            Dialog dialog=new MaterialAlertDialogBuilder(context).setTitle("Choose a Region").setSingleChoiceItems(x,-1, new DialogInterface.OnClickListener() {
                 @Override
-                public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                public void onClick(DialogInterface dialog, int which) {
                     if (which == 0) {
                         MainActivity.region = "";
                     } else if (which == 1) {
@@ -77,9 +79,9 @@ public class FetchFirstTimeDataService {
                         observableMovie = movieDataService.getNowPlayingWithRx(ApiKey, 1, MainActivity.region);
                     }
                     fetchData(context);
-                    return true;
+                    dialog.dismiss();
                 }
-            }).canceledOnTouchOutside(false).cancelable(false).show();
+            }).setCancelable(false).show();
         }
 
 
@@ -88,12 +90,12 @@ public class FetchFirstTimeDataService {
     public void fetchData(final Context context) {
         compositeDisposable.add(
                 observableMovie.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableObserver<MovieDBResponse>() {
+                        .subscribeWith(new DisposableObserver<MoviesList>() {
                             @Override
-                            public void onNext(MovieDBResponse movieDBResponse) {
-                                if (movieDBResponse != null && movieDBResponse.getMovies() != null) {
-                                    MainActivity.movieList = (ArrayList<Movie>) movieDBResponse.getMovies();
-                                    MainActivity.totalPages = movieDBResponse.getTotalPages();
+                            public void onNext(MoviesList moviesList) {
+                                if (moviesList != null && moviesList.getMovies() != null) {
+                                    MainActivity.movieList = (ArrayList<Movie>) moviesList.getMovies();
+                                    MainActivity.totalPages = moviesList.getTotalPages();
                                     if (progressBar != null) {
                                         progressBar.setIndeterminate(false);
                                     }
@@ -124,10 +126,10 @@ public class FetchFirstTimeDataService {
     }
 
 
-    public void getFirstGenreData(int genreid, final Context context) {
+    public void getFirstGenreData(long genreid, final Context context) {
         final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
         String ApiKey = BuildConfig.ApiKey;
-        observableDB = movieDataService.discover(ApiKey, Integer.toString(genreid), false, false, 1, "popularity.desc").doOnError(new Consumer<Throwable>() {
+        observableDB = movieDataService.discover(ApiKey, Long.toString(genreid), false, false, 1, "popularity.desc").doOnError(new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
                 progressBar.setIndeterminate(false);
@@ -135,12 +137,12 @@ public class FetchFirstTimeDataService {
         });
         compositeDisposable.add(
                 observableDB.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableObserver<DiscoverDBResponse>() {
+                        .subscribeWith(new DisposableObserver<DiscoversList>() {
                             @Override
-                            public void onNext(DiscoverDBResponse discoverDBResponse) {
-                                if (discoverDBResponse != null && discoverDBResponse.getResults() != null) {
-                                    MainActivity.discovers = (ArrayList<Discover>) discoverDBResponse.getResults();
-                                    MainActivity.totalPagesGenres = discoverDBResponse.getTotalPages();
+                            public void onNext(DiscoversList discoversList) {
+                                if (discoversList != null && discoversList.getResults() != null) {
+                                    MainActivity.discovers = (ArrayList<Discover>) discoversList.getResults();
+                                    MainActivity.totalPagesGenres = discoversList.getTotalPages();
                                     DiscoverToMovie discoverToMovie = new DiscoverToMovie(MainActivity.discovers);
                                     MainActivity.movieList = discoverToMovie.getMovies();
                                     if (progressBar != null) {

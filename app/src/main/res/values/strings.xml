@@ -7,7 +7,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="title_activity_main">Movies Index</string>
     <string name="popular_movies">Popular Movies</string>
-    <string name="created_by_n_saarthak_gupta">Created By:\n\t\t\tSaarthak Gupta</string>
+    <string name="created_by_n_saarthak_gupta">Made with Love,\n\t\t\t\tBy Saarthak Gupta</string>
     <string name="categories">Categories</string>
     <string name="movies_index">Movies Index</string>
     <string name="top_rated_movies">Top Rated Movies</string>

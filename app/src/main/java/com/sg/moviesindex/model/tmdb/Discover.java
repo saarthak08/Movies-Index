@@ -10,12 +10,10 @@ import java.util.List;
 
 public class Discover implements Parcelable {
 
-    @SerializedName("vote_count")
-    @Expose
-    private Integer voteCount;
+
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private Long id;
     @SerializedName("video")
     @Expose
     private Boolean video;
@@ -69,8 +67,7 @@ public class Discover implements Parcelable {
     };
 
     protected Discover(Parcel in) {
-        this.voteCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.id = ((Long) in.readValue((Long.class.getClassLoader())));
         this.video = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.voteAverage = ((Double) in.readValue((Integer.class.getClassLoader())));
         this.title = ((String) in.readValue((String.class.getClassLoader())));
@@ -88,19 +85,13 @@ public class Discover implements Parcelable {
     public Discover() {
     }
 
-    public Integer getVoteCount() {
-        return voteCount;
-    }
 
-    public void setVoteCount(Integer voteCount) {
-        this.voteCount = voteCount;
-    }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -202,7 +193,6 @@ public class Discover implements Parcelable {
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(voteCount);
         dest.writeValue(id);
         dest.writeValue(video);
         dest.writeValue(voteAverage);

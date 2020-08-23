@@ -6,4 +6,5 @@
     <color name="colorBackground">#4c4c4c</color>
     <color name="heart_primary_color">#da4439</color>
     <color name="heart_secondary_color">#8a098c</color>
+    <color name="chip_color">#cae9f5</color>
 </resources>

@@ -8,12 +8,13 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.sg.moviesindex.db.typeconverters.CastsTypeConverter;
-import com.sg.moviesindex.db.typeconverters.ReviewsTypeConverter;
+import com.sg.moviesindex.db.typeconverters.CastTypeConverter;
+import com.sg.moviesindex.db.typeconverters.GenreTypeConverter;
+import com.sg.moviesindex.db.typeconverters.ReviewTypeConverter;
 import com.sg.moviesindex.model.tmdb.Movie;
 
-@androidx.room.Database(entities = Movie.class, version = 1)
-@TypeConverters({CastsTypeConverter.class, ReviewsTypeConverter.class})
+@androidx.room.Database(entities = Movie.class, version = 2)
+@TypeConverters({CastTypeConverter.class, ReviewTypeConverter.class, GenreTypeConverter.class})
 public abstract class Database extends RoomDatabase {
     public abstract FavouriteMoviesDAO getFDAO();
 

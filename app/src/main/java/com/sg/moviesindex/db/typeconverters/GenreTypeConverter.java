@@ -4,30 +4,31 @@ import androidx.room.TypeConverter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.sg.moviesindex.model.tmdb.Cast;
+import com.sg.moviesindex.model.tmdb.Genre;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class CastsTypeConverter {
+public class GenreTypeConverter {
 
     private static Gson gson = new Gson();
 
     @TypeConverter
-    public static ArrayList<Cast> gettingListFromString(String data) {
+    public static ArrayList<Genre> gettingListFromString(String data) {
         if (data == null) {
-            return new ArrayList<Cast>();
+            return new ArrayList<Genre>();
         }
 
-        Type listType = new TypeToken<ArrayList<Cast>>() {
+        Type listType = new TypeToken<ArrayList<Genre>>() {
         }.getType();
 
         return gson.fromJson(data, listType);
     }
 
     @TypeConverter
-    public static String gettingStringFromList(ArrayList<Cast> someObjects) {
+    public static String gettingStringFromList(ArrayList<Genre> someObjects) {
         return gson.toJson(someObjects);
     }
 
 }
+

@@ -9,7 +9,7 @@ import com.sg.moviesindex.model.tmdb.Review;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class ReviewsTypeConverter {
+public class ReviewTypeConverter {
 
     private static Gson gson = new Gson();
 

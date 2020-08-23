@@ -3,16 +3,17 @@ package com.sg.moviesindex.view;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -24,9 +25,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.dd.processbutton.iml.ActionProcessButton;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.sg.moviesindex.BuildConfig;
 import com.sg.moviesindex.R;
@@ -35,20 +36,27 @@ import com.sg.moviesindex.adapter.ReviewsAdapter;
 import com.sg.moviesindex.databinding.ActivityMoviesInfoBinding;
 import com.sg.moviesindex.model.tmdb.Cast;
 import com.sg.moviesindex.model.tmdb.CastsList;
+import com.sg.moviesindex.model.tmdb.Genre;
 import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.model.tmdb.Review;
 import com.sg.moviesindex.model.tmdb.ReviewsList;
+import com.sg.moviesindex.service.TorrentDownloaderService;
+import com.sg.moviesindex.service.TorrentFetcherService;
 import com.sg.moviesindex.service.network.MovieDataService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.utils.PaginationScrollListener;
-import com.sg.moviesindex.service.TorrentFetcherService;
-import com.sg.moviesindex.service.TorrentDownloaderService;
 import com.sg.moviesindex.viewmodel.MainViewModel;
 import com.varunest.sparkbutton.SparkButton;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
+import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator;
+import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -56,7 +64,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherService.OnCompleteListener {
+public class MoviesInfo extends AppCompatActivity implements TorrentFetcherService.OnCompleteListener {
     private Movie movie;
     private Boolean bool;
     private ActivityMoviesInfoBinding activityMoviesInfoBinding;
@@ -76,9 +84,11 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
     private RecyclerView recyclerViewReviews;
     private LinearLayoutManager linearLayoutManagerCasts;
     private RecyclerView recyclerViewCasts;
-    private ActionProcessButton btnSignIn;
+    private CircularProgressButton btnSignIn;
+    private ChipGroup chipGroup;
     private View parentlayout;
-    final static int MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS=3;
+    private Observable<Movie> movieObservable;
+    final static int MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS = 3;
     private TorrentFetcherService torrentFetcherService;
 
     @Override
@@ -94,13 +104,14 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
         reviews.setResults(new ArrayList<Review>());
         casts.setCast(new ArrayList<Cast>());
         reviews.setTotalPages(1);
-        btnSignIn=activityMoviesInfoBinding.secondaryLayout.btnSignIn;
-        torrentFetcherService = new TorrentFetcherService(this,MoviesInfo.this);
+        btnSignIn = activityMoviesInfoBinding.secondaryLayout.btnId;
+        torrentFetcherService = new TorrentFetcherService(this, MoviesInfo.this);
         recyclerViewReviews = activityMoviesInfoBinding.secondaryLayout.rvReviews;
         recyclerViewReviews.setLayoutManager(linearLayoutManagerReviews);
         recyclerViewReviews.setItemAnimator(new DefaultItemAnimator());
         recyclerViewCasts = activityMoviesInfoBinding.secondaryLayout.rvCasts;
-        recyclerViewCasts.setLayoutManager(new LinearLayoutManager(MoviesInfo.this, LinearLayoutManager.HORIZONTAL, false));
+        linearLayoutManagerCasts = new LinearLayoutManager(MoviesInfo.this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerViewCasts.setLayoutManager(linearLayoutManagerCasts);
         recyclerViewCasts.setItemAnimator(new DefaultItemAnimator());
         Intent i = getIntent();
         if (i.hasExtra("movie")) {
@@ -119,8 +130,14 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
             }
             activityMoviesInfoBinding.setMovie(movie);
             activityMoviesInfoBinding.secondaryLayout.setLocale(new Locale(movie.getOriginalLanguage()).getDisplayLanguage(Locale.ENGLISH));
+            chipGroup = activityMoviesInfoBinding.secondaryLayout.chipGroup;
         }
-        btnSignIn.setMode(ActionProcessButton.Mode.ENDLESS);
+        getFullInformation();
+        getParcelableData();
+        setPaginationListeners();
+        setProgressBar();
+        getReviews(1);
+        getCasts();
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,10 +145,7 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
                 requestStoragePermissions();
             }
         });
-        getParcelableData();
-        setPaginationListeners();
-        getReviews(1);
-        getCasts();
+
         activityMoviesInfoBinding.secondaryLayout.sparkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,6 +171,50 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
         });
     }
 
+    public void setProgressBar() {
+        CircularProgressIndicator circleProgressBar = activityMoviesInfoBinding.secondaryLayout.circularProgress;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                circleProgressBar.setProgress(movie.getVoteAverage(), 10.0);
+            }
+        }, 1500);
+    }
+
+    public void getFullInformation() {
+        movieObservable = movieDataService.getFullMovieInformation(movie.getId(), BuildConfig.ApiKey);
+        compositeDisposable.add(movieObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeWith(new DisposableObserver<Movie>() {
+            @Override
+            public void onNext(Movie moviex) {
+                if (moviex != null) {
+                    movie = moviex;
+                    Date date1 = null;
+                    try {
+                        date1 = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(movie.getReleaseDate());
+                        DateFormat format = new SimpleDateFormat("MMM d, yyyy", Locale.US);
+                        movie.setReleaseDate(format.format(date1));
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    activityMoviesInfoBinding.setMovie(movie);
+                    for (Genre x : movie.getGenres()) {
+                        Chip chip = (Chip) getLayoutInflater().inflate(R.layout.chip_layout_item, chipGroup, false);
+                        chip.setText(x.getName());
+                        chipGroup.addView(chip);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        }));
+    }
 
     public void setPaginationListeners() {
         paginationScrollListenerReviews = new PaginationScrollListener(linearLayoutManagerReviews) {
@@ -179,8 +237,9 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
             if (movie.getReviewsList() != null) {
                 reviews.setResults(movie.getReviewsList());
             }
-            recyclerViewCasts.setAdapter(new CastsAdapter(MoviesInfo.this, casts));
             recyclerViewReviews.setAdapter(reviewsAdapter);
+            CastsAdapter castsAdapter = new CastsAdapter(MoviesInfo.this, casts);
+            recyclerViewCasts.setAdapter(castsAdapter);
         }
     }
 
@@ -197,7 +256,8 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
                     public void onNext(CastsList castsList) {
                         if (castsList != null && castsList.getCast() != null) {
                             casts = castsList;
-                            recyclerViewCasts.setAdapter(new CastsAdapter(MoviesInfo.this, casts));
+                            CastsAdapter castsAdapter = new CastsAdapter(MoviesInfo.this, casts);
+                            recyclerViewCasts.setAdapter(castsAdapter);
                         }
 
                     }
@@ -253,44 +313,50 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
 
     @Override
     protected void onDestroy() {
-        compositeDisposable.clear();
         super.onDestroy();
+        compositeDisposable.clear();
+        btnSignIn.dispose();
+
     }
+
     @Override
     public void onComplete(boolean error) {
-        if(!error) {
+        if (!error) {
             startTorrentDownload();
         }
     }
 
 
-
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-                torrentFetcherService.start(btnSignIn,movie);
+                torrentFetcherService.start(btnSignIn, movie);
             } else {
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
-                new MaterialDialog.Builder(MoviesInfo.this).title("Permission Required")
-                        .content("You need to give storage permission in order to download the torrent file.\nIf permission is denied permanently, then you need to \'Go to Settings\' and manually grant the storage permission.")
-                        .negativeText("Cancel")
-                        .neutralText("Allow")
-                        .positiveText("Go to Settings")
-                        .canceledOnTouchOutside(true)
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                new MaterialAlertDialogBuilder(MoviesInfo.this).setTitle("Permission Required")
+                        .setMessage("You need to give storage permission in order to download the torrent file.\nIf permission is denied permanently, then you need to \'Go to Settings\' and manually grant the storage permission.")
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setNeutralButton("Allow", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(MoviesInfo.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS);
+                            }
+                        })
+                        .setPositiveButton("Go to Settings", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
                                 Intent x = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
                                 startActivity(x);
                             }
                         })
-                        .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                ActivityCompat.requestPermissions(MoviesInfo.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS);
-                            }
-                        })
+                        .setCancelable(false)
                         .show();
             }
         }
@@ -299,10 +365,9 @@ public class MoviesInfo extends AppCompatActivity  implements TorrentFetcherServ
 
     public void requestStoragePermissions() {
         if (ContextCompat.checkSelfPermission(MoviesInfo.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(MoviesInfo.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS);
-        }
-        else {
-            torrentFetcherService.start(btnSignIn,movie);
+            ActivityCompat.requestPermissions(MoviesInfo.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS);
+        } else {
+            torrentFetcherService.start(btnSignIn, movie);
         }
     }
 
