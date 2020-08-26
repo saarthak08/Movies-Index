@@ -39,13 +39,13 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField 'String', "ApiKey", TMDB_API-KEY
+            buildConfigField 'String', "ApiKey", TMDB_API_KEY
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro -keep class android.support.v7.widget.SearchView { *; }\n' +
                     ''
-            buildConfigField 'String', "ApiKey", TMDB_API-KEY
+            buildConfigField 'String', "ApiKey", TMDB_API_KEY
             signingConfig signingConfigs.release
         }
     }
