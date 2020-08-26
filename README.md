@@ -3,11 +3,12 @@
 
 
 ## *Features:*
-- Download torrent files of movies in different resolutions.
-- Search any movie & get its information: Original Title, Rating, Release Date, Total Votes, Synposis, Casts, Reviews.
-- Get a list of Most Popular movies of the current time.
-- Get a list of Top Rated movies on TMDb.
-- Discover movies by different genres.
+- Download torrent files of movies in different resolutions from YIFY.
+- Search any movie & get its information: Original Title, Rating, Release Date, Original Language, Synposis, Casts, Reviews, Runtime & Status.
+- Get a list of Most Popular Movies of the current time on TMDb.
+- Get a list of Top Rated Movies on TMDb.
+- Get a list of Upcoming Movies & Now Playing Movies (Movies Currently Playing in Cinemas).
+- Discover movies according to different genres.
 - Mark a movie as favourite & save it for future preferences.
 
 
@@ -16,17 +17,18 @@
 ## *Libraries Used:*
 - [Glide](https://github.com/bumptech/glide)
 - [Retrofit](https://github.com/square/retrofit)
-- [okhttp](https://github.com/square/okhttp)
+- [OkHttp](https://github.com/square/okhttp)
 - [Material Dialogs](https://github.com/afollestad/material-dialogs)
 - [Room](https://developer.android.com/topic/libraries/architecture/room)
 - [SparkButton](https://github.com/varunest/SparkButton)
-- [Data Binding (Android Architectural Components)](https://developer.android.com/topic/libraries/data-binding)
-- [Live Data (Android Architectural Components)](https://developer.android.com/topic/libraries/architecture/livedata)
+- [LoadingAndroidButton](https://github.com/leandroBorgesFerreira/LoadingButtonAndroid)
+- [CircularProgressIndicator](https://github.com/antonKozyriatskyi/CircularProgressIndicator)
+- [MVVM, Live Data & Data Binding (Android Architectural Components)](https://developer.android.com/topic/libraries/architecture)
 - [RxJava](https://github.com/ReactiveX/RxJava)
 
 
 ## *Note:*
-In order to build the project, you need to replace the word *'PopularMovies_APIKEY'* on *'Line No. 45 & Line No. 51'* in app's *'build.gradle'* file with your own API_KEY. In order to obtain the API_KEY, register at [TMDb](https://www.themoviedb.org) & ask for the API_KEY.
+In order to build the project, you need to replace the word *'TMDB_API-KEY'* on *'Line No. 42 & Line No. 48'* in app's *'build.gradle'* file with your own API_KEY. In order to obtain the API_KEY, register at [TMDb](https://www.themoviedb.org) & ask for the API_KEY.
 
 ## *APK Link:*
 https://play.google.com/store/apps/details?id=com.sg.moviesindex
