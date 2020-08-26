@@ -39,13 +39,13 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField 'String', "ApiKey", PopularMovies_APIKEY
+            buildConfigField 'String', "ApiKey", TMDB_API-KEY
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro -keep class android.support.v7.widget.SearchView { *; }\n' +
                     ''
-            buildConfigField 'String', "ApiKey", PopularMovies_APIKEY
+            buildConfigField 'String', "ApiKey", TMDB_API-KEY
             signingConfig signingConfigs.release
         }
     }
