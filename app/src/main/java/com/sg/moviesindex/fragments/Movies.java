@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -133,7 +134,7 @@ public class Movies extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(MainViewModel.class);
+        viewModel = ViewModelProviders.of(requireActivity()).get(MainViewModel.class);
         recyclerView = fragmentMoviesBinding.rv2;
         swipeRefreshLayout = fragmentMoviesBinding.swiperefresh2;
         if (MainActivity.drawer == 0) {
@@ -189,24 +190,29 @@ public class Movies extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         moviesAdapter.notifyDataSetChanged();
         fetchMoreDataService = new FetchMoreDataService(recyclerView, movieList, compositeDisposable, getActivity(), moviesAdapter);
-        paginationScrollListener = new PaginationScrollListener(gridLayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                if (MainActivity.drawer == 0 || MainActivity.drawer == 1 || MainActivity.drawer == 4 || MainActivity.drawer == 5) {
-                    if ((page + 1) <= MainActivity.totalPages) {
-                        fetchMoreDataService.loadMore(MainActivity.drawer, page + 1);
-                    }
-                } else if (MainActivity.drawer == 2) {
-                    if ((page + 1) <= MainActivity.totalPagesGenres) {
-                        fetchMoreDataService.loadMoreGenres(page + 1);
-                    }
-                } else if (MainActivity.drawer == 3) {
-                    if ((page + 1) <= MainActivity.totalPages) {
-                        searchUtil.loadMoreSearches(page + 1, MainActivity.queryM);
+        try {
+            paginationScrollListener = new PaginationScrollListener(gridLayoutManager) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                    if (MainActivity.drawer == 0 || MainActivity.drawer == 1 || MainActivity.drawer == 4 || MainActivity.drawer == 5) {
+                        if ((page + 1) <= MainActivity.totalPages) {
+                            fetchMoreDataService.loadMore(MainActivity.drawer, page + 1);
+                        }
+                    } else if (MainActivity.drawer == 2) {
+                        if ((page + 1) <= MainActivity.totalPagesGenres) {
+                            fetchMoreDataService.loadMoreGenres(page + 1);
+                        }
+                    } else if (MainActivity.drawer == 3) {
+                        if ((page + 1) <= MainActivity.totalPages) {
+                            searchUtil.loadMoreSearches(page + 1, MainActivity.queryM);
+                        }
                     }
                 }
-            }
-        };
+            };
+        }
+        catch(Error e) {
+           // Toast.makeText(getContext(),"Error in Loading Movies!",Toast.LENGTH_SHORT).show();
+        }
         recyclerView.addOnScrollListener(paginationScrollListener);
     }
 

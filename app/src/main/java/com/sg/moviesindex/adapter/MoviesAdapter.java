@@ -64,14 +64,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof MoviesViewHolder) {
             Movie movie = movies.get(i);
-
-            Date date1= null;
             try {
-                date1 = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(movie.getReleaseDate());
-                DateFormat format = new SimpleDateFormat("MMM d, yyyy",Locale.US);
-                movie.setReleaseDate(format.format(date1));
+                Date date1= null;
+                if(!movie.getReleaseDate().contains(",")) {
+                    date1 = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(movie.getReleaseDate());
+                    DateFormat format = new SimpleDateFormat("MMM d, yyyy", Locale.US);
+                    movie.setReleaseDate(format.format(date1));
+                }
 
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

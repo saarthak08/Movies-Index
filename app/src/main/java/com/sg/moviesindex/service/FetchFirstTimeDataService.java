@@ -120,7 +120,6 @@ public class FetchFirstTimeDataService {
 
                             @Override
                             public void onComplete() {
-
                             }
                         }));
     }

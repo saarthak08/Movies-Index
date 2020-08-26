@@ -103,6 +103,7 @@ public class TorrentDownloaderService extends IntentService {
                     Toast.makeText(getApplicationContext(), "Error in downloading torrent file!", Toast.LENGTH_SHORT).show();
                     notificationManager.cancel(0);
                 }
+
             }
 
             @Override
