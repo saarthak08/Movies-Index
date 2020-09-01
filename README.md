@@ -30,7 +30,7 @@ https://play.google.com/store/apps/details?id=com.sg.moviesindex
 
 
 ## *Note:*
-In order to build the project, you need to replace the word *'TMDB_API_KEY'* on *'Line No. 42 & Line No. 48'* in app's *'build.gradle'* file with your own API_KEY. In order to obtain the API_KEY, register at [TMDb](https://www.themoviedb.org) & ask for the API_KEY.
+In order to build the project, open the project in android studio, in the 'Gradle Scripts' section, open the file 'gradle.properties' & enter: *TMDB_API_KEY: "YOUR_OWN_API_KEY"*. In order to obtain the API_KEY, register at [TMDb](https://www.themoviedb.org) & ask for the API_KEY.
 
 
 ## *Screenshots:*
