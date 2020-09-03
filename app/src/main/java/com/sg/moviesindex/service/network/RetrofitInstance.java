@@ -19,18 +19,20 @@ public class RetrofitInstance {
     private static final String BASE_URL_TMDB = "https://api.themoviedb.org/3/";
     private static final String BASE_URL_YTS = "https://yts.mx/api/v2/";
     private static final int REQUEST_TIMEOUT = 60;
-    private static OkHttpClient okHttpClient;
+    private static OkHttpClient okHttpClientYTS;
+    private static OkHttpClient okHttpClientTMDb;
     private static int cacheSize = 10 * 1024 * 1024; // 10 MB
-    private static Cache cache;
+    private static Cache cacheYTS;
+    private static Cache cacheTMDb;
 
 
     public static TMDbService getTMDbService(Context context) {
-        if (okHttpClient == null) {
-            initOkHttp(context);
+        if (okHttpClientTMDb == null) {
+            initOkHttpTMDb(context);
         }
         if (retrofit == null) {
             retrofit = new Retrofit.Builder().baseUrl(BASE_URL_TMDB)
-                    .client(okHttpClient)
+                    .client(okHttpClientTMDb)
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).addConverterFactory(GsonConverterFactory.create()).build();
         }
         return retrofit.create(TMDbService.class);
@@ -38,30 +40,45 @@ public class RetrofitInstance {
 
 
     public static YTSService getYTSService(Context context) {
-        if (okHttpClient == null) {
-            initOkHttp(context);
+        if (okHttpClientYTS == null) {
+            initOkHttpYTS(context);
         }
         retrofitYTS = new Retrofit.Builder()
                 .baseUrl(BASE_URL_YTS)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(okHttpClient)
+                .client(okHttpClientYTS)
                 .build();
         return retrofitYTS.create(YTSService.class);
     }
 
-    private static void initOkHttp(Context context) {
-        cache = new Cache(context.getCacheDir(), cacheSize);
+    private static void initOkHttpYTS(Context context) {
+        cacheYTS = new Cache(context.getCacheDir(), cacheSize);
         OkHttpClient.Builder httpClient = new OkHttpClient().newBuilder()
                 .connectTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
-                .cache(cache)
+                .cache(cacheYTS)
                 .readTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS);
-        okHttpClient = httpClient.build();
+        okHttpClientYTS = httpClient.build();
+    }
+
+    private static void initOkHttpTMDb(Context context) {
+        cacheTMDb = new Cache(context.getCacheDir(), cacheSize);
+        OkHttpClient.Builder httpClient = new OkHttpClient().newBuilder()
+                .connectTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
+                .cache(cacheTMDb)
+                .readTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS);
+        okHttpClientTMDb = httpClient.build();
     }
 
     public static void resetCache() throws IOException {
-       cache.evictAll();
+        if (cacheYTS != null) {
+            cacheYTS.evictAll();
+        }
+        if (cacheTMDb != null) {
+            cacheTMDb.evictAll();
+        }
     }
 
 

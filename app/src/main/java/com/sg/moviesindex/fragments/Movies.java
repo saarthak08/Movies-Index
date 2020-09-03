@@ -24,6 +24,7 @@ import com.sg.moviesindex.databinding.FragmentMoviesBinding;
 import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.service.FetchFirstTimeDataService;
 import com.sg.moviesindex.service.FetchMoreDataService;
+import com.sg.moviesindex.service.GetGenresListService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.utils.PaginationScrollListener;
 import com.sg.moviesindex.utils.SearchUtil;
@@ -67,12 +68,14 @@ public class Movies extends Fragment {
     private static long genreid = MainActivity.genreid;
     private FetchMoreDataService fetchMoreDataService;
     private SearchUtil searchUtil;
+    private GetGenresListService getGenresListService;
 
     private FetchFirstTimeDataService firstTimeData;
 
     public Movies(FetchFirstTimeDataService fetchFirstTimeDataService, SearchUtil searchUtil) {
         firstTimeData = fetchFirstTimeDataService;
         this.searchUtil = searchUtil;
+        this.getGenresListService = MainActivity.genresList;
     }
 
     @Override
@@ -126,9 +129,14 @@ public class Movies extends Fragment {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                firstTimeData.getDataFirst(MainActivity.drawer, context);
-                movieList=MainActivity.movieList;
-                moviesAdapter.notifyDataSetChanged();
+                for (int i = 0; i <= getActivity().getSupportFragmentManager().getBackStackEntryCount(); i++) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+                if (MainActivity.drawer != 2) {
+                    firstTimeData.getDataFirst(MainActivity.drawer, context);
+                } else {
+                    getGenresListService.getGenresList();
+                }
                 swipeRefreshLayout.setRefreshing(false);
             }
         });

@@ -1,69 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/frame_layout"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".view.MainActivity"
-    tools:ignore="PrivateResource"
-    tools:showIn="@layout/app_bar_main">
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".view.MainActivity"
+        tools:ignore="PrivateResource"
+        tools:showIn="@layout/app_bar_main">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
-
-    <LinearLayout
-        android:visibility="gone"
-        android:id="@+id/llError"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_gravity="center">
-
-        <ImageView
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:src="@drawable/ic_bug_report_black_48dp" />
-        <TextView
-            android:layout_marginEnd="12dp"
-            android:layout_marginStart="12dp"
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Oops! An error occurred.\nPlease try again!"
-            android:textSize="24sp"
-            android:fontFamily="@font/quicksand_medium"/>
+            android:layout_gravity="center" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonllError"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
-            app:icon="@drawable/ic_autorenew_white_48dp"
-            app:iconTint="@android:color/white"
-            app:iconSize="36dp"
-            app:iconGravity="textStart"
-            android:padding="0dp"
-            app:backgroundTint="#359AE8"
-            app:iconPadding="0dp"
-            app:strokeColor="#359AE8"
-            android:layout_marginTop="24dp"
-            app:rippleColor="@android:color/white"
-            android:insetLeft="0dp"
-            android:insetTop="0dp"
-            android:insetRight="0dp"
-            android:insetBottom="0dp"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle"
-            />
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/llError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-</FrameLayout>
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@drawable/ic_bug_report_black_48dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:fontFamily="@font/quicksand_medium"
+                android:text="Oops! An error occurred."
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:fontFamily="@font/quicksand_medium"
+                android:text="Check your internet connection or try again."
+                android:textSize="24sp" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonllError"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="24dp"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:backgroundTint="#359AE8"
+                app:icon="@drawable/ic_autorenew_white_48dp"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="36dp"
+                app:iconTint="@android:color/white"
+                app:rippleColor="@android:color/white"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle"
+                app:strokeColor="#359AE8" />
+        </LinearLayout>
+
+    </FrameLayout>
 </layout>

@@ -70,7 +70,7 @@ public class TorrentFetcherService {
                     @Override
                     public void onError(Throwable e) {
                         Log.e("Torrent Fetch", e.toString());
-                        Toast.makeText(context, "Error in fetching torrent files! ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Error in fetching torrent files! Try using a VPN", Toast.LENGTH_SHORT).show();
                         mListener.onComplete(true);
                         button.revertAnimation();
                         button.stopAnimation();

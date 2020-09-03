@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -174,8 +173,19 @@ public class FetchFirstTimeDataService {
 
                             @Override
                             public void onError(Throwable e) {
-                                Toast.makeText(context, "Error! Check your internet connection.", Toast.LENGTH_SHORT).show();
                                 progressBar.setIndeterminate(false);
+                                progressBar.setVisibility(View.GONE);
+                                linearLayoutError.setVisibility(View.VISIBLE);
+                                refreshButtonError.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        progressBar.setIndeterminate(true);
+                                        progressBar.setVisibility(View.VISIBLE);
+                                        linearLayoutError.setVisibility(View.GONE);
+                                        getFirstGenreData(context);
+                                    }
+                                });
+                                Log.d("Check Your Internet", e.getMessage());
                             }
 
                             @Override

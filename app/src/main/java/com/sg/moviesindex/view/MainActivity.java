@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity
     public static String queryM;
     private LinearLayout linearLayoutError;
     private Button refreshButtonError;
-    private GetGenresListService genresList;
+    public static GetGenresListService genresList;
     private FetchFirstTimeDataService fetchFirstTimeDataService;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -74,12 +74,12 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         progressBar.animate().alpha(1).setDuration(500);
         progressBar.setIndeterminate(true);
-        linearLayoutError=findViewById(R.id.llError);
-        refreshButtonError=findViewById(R.id.buttonllError);
+        linearLayoutError = findViewById(R.id.llError);
+        refreshButtonError = findViewById(R.id.buttonllError);
         navigationView.getMenu().getItem(0).setChecked(true);
-        fetchFirstTimeDataService = new FetchFirstTimeDataService(linearLayoutError,refreshButtonError,progressBar, compositeDisposable, fragmentManager);
+        fetchFirstTimeDataService = new FetchFirstTimeDataService(linearLayoutError, refreshButtonError, progressBar, compositeDisposable, fragmentManager);
         fetchFirstTimeDataService.getDataFirst(drawer, MainActivity.this);
-        genresList = new GetGenresListService(linearLayoutError,refreshButtonError,MainActivity.this, compositeDisposable, fetchFirstTimeDataService, progressBar);
+        genresList = new GetGenresListService(linearLayoutError, refreshButtonError, MainActivity.this, compositeDisposable, fetchFirstTimeDataService, progressBar);
     }
 
 
@@ -103,7 +103,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-
+        progressBar.setIndeterminate(true);
+        progressBar.setVisibility(View.VISIBLE);
+        linearLayoutError.setVisibility(View.GONE);
 
         int id = item.getItemId();
 
@@ -158,7 +160,7 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.search_view, menu);
         MenuItem menuItem = menu.findItem(R.id.app_bar_search);
         SearchView searchView = (SearchView) menuItem.getActionView();
-        SearchUtil searchUtil = new SearchUtil(linearLayoutError,refreshButtonError,compositeDisposable, fragmentManager, MainActivity.this, progressBar);
+        SearchUtil searchUtil = new SearchUtil(linearLayoutError, refreshButtonError, compositeDisposable, fragmentManager, MainActivity.this, progressBar);
         searchUtil.search(searchView);
         return true;
     }
