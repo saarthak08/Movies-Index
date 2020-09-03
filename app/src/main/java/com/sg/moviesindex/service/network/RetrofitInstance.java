@@ -1,8 +1,12 @@
 package com.sg.moviesindex.service.network;
 
 
+import android.content.Context;
+
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -16,11 +20,14 @@ public class RetrofitInstance {
     private static final String BASE_URL_YTS = "https://yts.mx/api/v2/";
     private static final int REQUEST_TIMEOUT = 60;
     private static OkHttpClient okHttpClient;
+    private static int cacheSize = 10 * 1024 * 1024; // 10 MB
+    private static Cache cache;
 
 
-    public static TMDbService getTMDbService() {
-        if (okHttpClient == null)
-            initOkHttp();
+    public static TMDbService getTMDbService(Context context) {
+        if (okHttpClient == null) {
+            initOkHttp(context);
+        }
         if (retrofit == null) {
             retrofit = new Retrofit.Builder().baseUrl(BASE_URL_TMDB)
                     .client(okHttpClient)
@@ -30,24 +37,31 @@ public class RetrofitInstance {
     }
 
 
-    public static YTSService getYTSService() {
-        OkHttpClient client = new OkHttpClient.Builder().build();
-
+    public static YTSService getYTSService(Context context) {
+        if (okHttpClient == null) {
+            initOkHttp(context);
+        }
         retrofitYTS = new Retrofit.Builder()
                 .baseUrl(BASE_URL_YTS)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(client)
+                .client(okHttpClient)
                 .build();
         return retrofitYTS.create(YTSService.class);
     }
 
-    private static void initOkHttp() {
+    private static void initOkHttp(Context context) {
+        cache = new Cache(context.getCacheDir(), cacheSize);
         OkHttpClient.Builder httpClient = new OkHttpClient().newBuilder()
                 .connectTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
+                .cache(cache)
                 .readTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS);
         okHttpClient = httpClient.build();
+    }
+
+    public static void resetCache() throws IOException {
+       cache.evictAll();
     }
 
 

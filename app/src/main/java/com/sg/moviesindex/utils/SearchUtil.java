@@ -3,6 +3,8 @@ package com.sg.moviesindex.utils;
 import android.content.Context;
 import android.database.MatrixCursor;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -38,11 +40,15 @@ public class SearchUtil {
     private Context context;
     private ProgressBar progressBar;
     private MatrixCursor cursor;
+    private LinearLayout linearLayoutError;
+    private Button refreshButtonError;
 
 
-    public SearchUtil(CompositeDisposable compositeDisposable, FragmentManager fragmentManager, Context context, ProgressBar progressBar) {
+    public SearchUtil(LinearLayout linearLayout, Button button,CompositeDisposable compositeDisposable, FragmentManager fragmentManager, Context context, ProgressBar progressBar) {
         this.compositeDisposable = compositeDisposable;
         this.fragmentManager = fragmentManager;
+        this.linearLayoutError=linearLayout;
+        this.refreshButtonError=button;
         this.fragmentTransaction = fragmentManager.beginTransaction();
         this.context = context;
         this.progressBar = progressBar;
@@ -59,7 +65,7 @@ public class SearchUtil {
                     searchView.setQuery("", false);
                     searchView.clearFocus();
                     searchView.setIconified(true);
-                    final TMDbService TMDbService = RetrofitInstance.getTMDbService();
+                    final TMDbService TMDbService = RetrofitInstance.getTMDbService(context);
                     final String ApiKey = BuildConfig.ApiKey;
                     MainActivity.queryM = query;
                     MainActivity.drawer = 3;
@@ -80,7 +86,7 @@ public class SearchUtil {
                                         }
                                         fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.addToBackStack(null);
-                                        fragmentTransaction.add(R.id.frame_layout, new Movies(new FetchFirstTimeDataService(progressBar, compositeDisposable, fragmentManager), SearchUtil.this)).commitAllowingStateLoss();
+                                        fragmentTransaction.add(R.id.frame_layout, new Movies(new FetchFirstTimeDataService(linearLayoutError,refreshButtonError,progressBar, compositeDisposable, fragmentManager), SearchUtil.this)).commitAllowingStateLoss();
                                     }
                                 }
 
@@ -101,7 +107,7 @@ public class SearchUtil {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                final TMDbService TMDbService = RetrofitInstance.getTMDbService();
+                final TMDbService TMDbService = RetrofitInstance.getTMDbService(context);
                 final String ApiKey = BuildConfig.ApiKey;
                 MainActivity.queryM = newText;
                 MainActivity.drawer = 3;
@@ -153,7 +159,7 @@ public class SearchUtil {
     }
 
     public void loadMoreSearches(int pageIndex, String query) {
-        final TMDbService TMDbService = RetrofitInstance.getTMDbService();
+        final TMDbService TMDbService = RetrofitInstance.getTMDbService(context);
         final String ApiKey = BuildConfig.ApiKey;
         observableDB = TMDbService.search(ApiKey, false, query, pageIndex);
         compositeDisposable.add(observableDB

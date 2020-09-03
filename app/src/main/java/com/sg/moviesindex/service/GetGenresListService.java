@@ -3,8 +3,11 @@ package com.sg.moviesindex.service;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sg.moviesindex.BuildConfig;
@@ -30,18 +33,22 @@ public class GetGenresListService {
     private Observable<GenresList> genresListObservable;
     private Context context;
     private ProgressBar progressBar;
+    private LinearLayout linearLayoutError;
+    private Button refreshButtonError;
     private CompositeDisposable compositeDisposable;
     private FetchFirstTimeDataService fetchFirstTimeDataService;
 
-    public GetGenresListService(Context context, CompositeDisposable compositeDisposable, FetchFirstTimeDataService fetchFirstTimeDataService, ProgressBar progressBar) {
+    public GetGenresListService(LinearLayout linearLayout, Button button, Context context, CompositeDisposable compositeDisposable, FetchFirstTimeDataService fetchFirstTimeDataService, ProgressBar progressBar) {
         this.context = context;
+        this.linearLayoutError = linearLayout;
+        this.refreshButtonError = button;
         this.compositeDisposable = compositeDisposable;
         this.fetchFirstTimeDataService = fetchFirstTimeDataService;
         this.progressBar = progressBar;
     }
 
     public void getGenresList() {
-        final TMDbService TMDbService = RetrofitInstance.getTMDbService();
+        final TMDbService TMDbService = RetrofitInstance.getTMDbService(context);
         String ApiKey = BuildConfig.ApiKey;
         MainActivity.drawer = 2;
         genresListObservable = TMDbService.getGenresList(ApiKey);
@@ -71,8 +78,19 @@ public class GetGenresListService {
 
                             @Override
                             public void onError(Throwable e) {
-                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 progressBar.setIndeterminate(false);
+                                progressBar.setVisibility(View.GONE);
+                                linearLayoutError.setVisibility(View.VISIBLE);
+                                refreshButtonError.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        progressBar.setIndeterminate(true);
+                                        progressBar.setVisibility(View.VISIBLE);
+                                        linearLayoutError.setVisibility(View.GONE);
+                                        getGenresList();
+                                    }
+                                });
+                                Log.d("Check Your Internet", e.getMessage());
                             }
 
                             @Override

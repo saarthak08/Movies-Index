@@ -3,8 +3,10 @@ package com.sg.moviesindex.view;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +18,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
-import com.sg.moviesindex.BuildConfig;
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.fragments.FavouriteMovies;
 import com.sg.moviesindex.model.tmdb.Discover;
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity
     public static ArrayList<Discover> search;
     public static ArrayList<Movie> moviesearch;
     public static String queryM;
+    private LinearLayout linearLayoutError;
+    private Button refreshButtonError;
     private GetGenresListService genresList;
     private FetchFirstTimeDataService fetchFirstTimeDataService;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -58,9 +61,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (BuildConfig.ApiKey.isEmpty()) {
-            Toast.makeText(MainActivity.this, "Please get the API key first", Toast.LENGTH_SHORT).show();
-        }
         fragmentManager = getSupportFragmentManager();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         progressBar = findViewById(R.id.progressBar);
@@ -74,11 +74,12 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         progressBar.animate().alpha(1).setDuration(500);
         progressBar.setIndeterminate(true);
+        linearLayoutError=findViewById(R.id.llError);
+        refreshButtonError=findViewById(R.id.buttonllError);
         navigationView.getMenu().getItem(0).setChecked(true);
-        //getDataFirst(category,MainActivity.this);
-        fetchFirstTimeDataService = new FetchFirstTimeDataService(progressBar, compositeDisposable, fragmentManager);
+        fetchFirstTimeDataService = new FetchFirstTimeDataService(linearLayoutError,refreshButtonError,progressBar, compositeDisposable, fragmentManager);
         fetchFirstTimeDataService.getDataFirst(drawer, MainActivity.this);
-        genresList = new GetGenresListService(MainActivity.this, compositeDisposable, fetchFirstTimeDataService, progressBar);
+        genresList = new GetGenresListService(linearLayoutError,refreshButtonError,MainActivity.this, compositeDisposable, fetchFirstTimeDataService, progressBar);
     }
 
 
@@ -102,6 +103,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
+
         int id = item.getItemId();
 
         if (id == R.id.movies) {
@@ -155,7 +158,7 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.search_view, menu);
         MenuItem menuItem = menu.findItem(R.id.app_bar_search);
         SearchView searchView = (SearchView) menuItem.getActionView();
-        SearchUtil searchUtil = new SearchUtil(compositeDisposable, fragmentManager, MainActivity.this, progressBar);
+        SearchUtil searchUtil = new SearchUtil(linearLayoutError,refreshButtonError,compositeDisposable, fragmentManager, MainActivity.this, progressBar);
         searchUtil.search(searchView);
         return true;
     }

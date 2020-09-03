@@ -45,7 +45,7 @@ public class FetchMoreDataService {
     }
 
     public void loadMore(int a, final int pages) {
-        final TMDbService TMDbService = RetrofitInstance.getTMDbService();
+        final TMDbService TMDbService = RetrofitInstance.getTMDbService(context);
         String ApiKey = BuildConfig.ApiKey;
         if (a == 0) {
             observableMovie = TMDbService.getPopularMoviesWithRx(ApiKey, pages);
@@ -90,7 +90,7 @@ public class FetchMoreDataService {
 
 
     public void loadMoreGenres(final int pages) {
-        final TMDbService TMDbService = RetrofitInstance.getTMDbService();
+        final TMDbService TMDbService = RetrofitInstance.getTMDbService(context);
         String ApiKey = BuildConfig.ApiKey;
         observableDB = TMDbService.discover(ApiKey, Long.toString(MainActivity.genreid), false, false, pages, "popularity.desc");
         compositeDisposable.add(

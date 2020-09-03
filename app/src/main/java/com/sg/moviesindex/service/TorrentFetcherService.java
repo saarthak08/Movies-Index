@@ -49,7 +49,7 @@ public class TorrentFetcherService {
     public void start(final CircularProgressButton button, Movie movieTMDb) {
         final Handler handler = new Handler();
         button.startAnimation();
-        final YTSService ytsService = RetrofitInstance.getYTSService();
+        final YTSService ytsService = RetrofitInstance.getYTSService(context);
         String movieId = movieTMDb.getImdbId();
         if (movieId == null || movieId.equals("")) {
             Toast.makeText(context, "No Torrents Found!", Toast.LENGTH_SHORT).show();

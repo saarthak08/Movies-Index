@@ -4,7 +4,6 @@ package com.sg.moviesindex.fragments;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +24,13 @@ import com.sg.moviesindex.databinding.FragmentMoviesBinding;
 import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.service.FetchFirstTimeDataService;
 import com.sg.moviesindex.service.FetchMoreDataService;
+import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.utils.PaginationScrollListener;
 import com.sg.moviesindex.utils.SearchUtil;
 import com.sg.moviesindex.view.MainActivity;
 import com.sg.moviesindex.viewmodel.MainViewModel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -120,14 +121,15 @@ public class Movies extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        gridLayoutManager.scrollToPosition(0);
-                        gridLayoutManager.scrollToPositionWithOffset(0, 0);
-                    }
-                }, 4000);
+                try {
+                    RetrofitInstance.resetCache();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                firstTimeData.getDataFirst(MainActivity.drawer, context);
+                movieList=MainActivity.movieList;
+                moviesAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
         gridLayoutManager = new GridLayoutManager(getContext(), 2);

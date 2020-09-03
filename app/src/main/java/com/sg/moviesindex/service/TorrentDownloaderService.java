@@ -82,7 +82,7 @@ public class TorrentDownloaderService extends IntentService {
     }
 
     public void downloadTorrent() {
-        Call<ResponseBody> call = RetrofitInstance.getYTSService().downloadFileWithDynamicUrlSync(torrent.getUrl());
+        Call<ResponseBody> call = RetrofitInstance.getYTSService(getApplicationContext()).downloadFileWithDynamicUrlSync(torrent.getUrl());
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

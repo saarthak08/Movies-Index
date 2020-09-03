@@ -3,6 +3,10 @@ package com.sg.moviesindex.service;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -38,18 +42,22 @@ public class FetchFirstTimeDataService {
     private Observable<DiscoversList> observableDB;
     private CompositeDisposable compositeDisposable;
     private FragmentManager fragmentManager;
+    private LinearLayout linearLayoutError;
+    private Button refreshButtonError;
     private FragmentTransaction fragmentTransaction;
 
 
-    public FetchFirstTimeDataService(ProgressBar progressBar, CompositeDisposable compositeDisposable, FragmentManager fragmentManager) {
+    public FetchFirstTimeDataService(LinearLayout linearLayout, Button button, ProgressBar progressBar, CompositeDisposable compositeDisposable, FragmentManager fragmentManager) {
         this.progressBar = progressBar;
+        this.linearLayoutError = linearLayout;
+        this.refreshButtonError = button;
         this.compositeDisposable = compositeDisposable;
         this.fragmentManager = fragmentManager;
         this.fragmentTransaction = fragmentManager.beginTransaction();
     }
 
     public void getDataFirst(int a, final Context context) {
-        final TMDbService TMDbService = RetrofitInstance.getTMDbService();
+        final TMDbService TMDbService = RetrofitInstance.getTMDbService(context);
         String ApiKey = BuildConfig.ApiKey;
         if (a == 0 || a == 1) {
             if (a == 0) {
@@ -57,7 +65,7 @@ public class FetchFirstTimeDataService {
             } else if (a == 1) {
                 observableMovie = TMDbService.getTopRatedMoviesWithRx(ApiKey, 1);
             }
-            fetchData(context);
+            fetchData(context, a);
         } else if (a == 4 || a == 5) {
             String[] x = {"All", "India", "USA", "UK"};
             Dialog dialog = new MaterialAlertDialogBuilder(context).setTitle("Choose a Region").setSingleChoiceItems(x, -1, new DialogInterface.OnClickListener() {
@@ -77,7 +85,7 @@ public class FetchFirstTimeDataService {
                     } else if (a == 5) {
                         observableMovie = TMDbService.getNowPlayingWithRx(ApiKey, 1, MainActivity.region);
                     }
-                    fetchData(context);
+                    fetchData(context, a);
                     dialog.dismiss();
                 }
             }).setCancelable(false).show();
@@ -86,7 +94,7 @@ public class FetchFirstTimeDataService {
 
     }
 
-    public void fetchData(final Context context) {
+    private void fetchData(final Context context, int a) {
         compositeDisposable.add(
                 observableMovie.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                         .subscribeWith(new DisposableObserver<MoviesList>() {
@@ -101,11 +109,11 @@ public class FetchFirstTimeDataService {
                                     if (fragmentManager.getFragments().isEmpty()) {
                                         fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.addToBackStack(null);
-                                        fragmentTransaction.add(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this, new SearchUtil(compositeDisposable, fragmentManager, context, progressBar))).commitAllowingStateLoss();
+                                        fragmentTransaction.add(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this, new SearchUtil(linearLayoutError, refreshButtonError, compositeDisposable, fragmentManager, context, progressBar))).commitAllowingStateLoss();
                                     } else {
                                         fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.addToBackStack(null);
-                                        fragmentTransaction.replace(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this, new SearchUtil(compositeDisposable, fragmentManager, context, progressBar))).commitAllowingStateLoss();
+                                        fragmentTransaction.replace(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this, new SearchUtil(linearLayoutError, refreshButtonError, compositeDisposable, fragmentManager, context, progressBar))).commitAllowingStateLoss();
                                     }
                                 }
 
@@ -113,8 +121,19 @@ public class FetchFirstTimeDataService {
 
                             @Override
                             public void onError(Throwable e) {
-                                Toast.makeText(context, "Error! Check your internet connection.", Toast.LENGTH_SHORT).show();
                                 progressBar.setIndeterminate(false);
+                                progressBar.setVisibility(View.GONE);
+                                linearLayoutError.setVisibility(View.VISIBLE);
+                                refreshButtonError.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        progressBar.setIndeterminate(true);
+                                        progressBar.setVisibility(View.VISIBLE);
+                                        linearLayoutError.setVisibility(View.GONE);
+                                        getDataFirst(a, context);
+                                    }
+                                });
+                                Log.d("Check Your Internet", e.getMessage());
                             }
 
                             @Override
@@ -125,7 +144,7 @@ public class FetchFirstTimeDataService {
 
 
     public void getFirstGenreData(final Context context) {
-        final TMDbService TMDbService = RetrofitInstance.getTMDbService();
+        final TMDbService TMDbService = RetrofitInstance.getTMDbService(context);
         String ApiKey = BuildConfig.ApiKey;
         observableDB = TMDbService.discover(ApiKey, Long.toString(MainActivity.genreid), false, false, 1, "popularity.desc").doOnError(new Consumer<Throwable>() {
             @Override
@@ -148,7 +167,7 @@ public class FetchFirstTimeDataService {
                                     }
                                     fragmentTransaction = fragmentManager.beginTransaction();
                                     fragmentTransaction.addToBackStack(null);
-                                    fragmentTransaction.add(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this, new SearchUtil(compositeDisposable, fragmentManager, context, progressBar))).commitAllowingStateLoss();
+                                    fragmentTransaction.add(R.id.frame_layout, new Movies(FetchFirstTimeDataService.this, new SearchUtil(linearLayoutError, refreshButtonError, compositeDisposable, fragmentManager, context, progressBar))).commitAllowingStateLoss();
                                 }
 
                             }

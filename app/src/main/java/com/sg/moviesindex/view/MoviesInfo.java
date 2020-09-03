@@ -72,7 +72,7 @@ public class MoviesInfo extends AppCompatActivity implements TorrentFetcherServi
     private Observable<CastsList> castsList;
     private Observable<ReviewsList> reviewsList;
     public static final String PROGRESS_UPDATE = "progress_update";
-    private final TMDbService TMDbService = RetrofitInstance.getTMDbService();
+    private TMDbService TMDbService;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private String ApiKey = BuildConfig.ApiKey;
     private ReviewsAdapter reviewsAdapter;
@@ -98,6 +98,7 @@ public class MoviesInfo extends AppCompatActivity implements TorrentFetcherServi
         Toolbar toolbar = findViewById(R.id.toolbar);
         parentlayout = findViewById(android.R.id.content);
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        TMDbService = RetrofitInstance.getTMDbService(MoviesInfo.this);
         activityMoviesInfoBinding = DataBindingUtil.setContentView(MoviesInfo.this, R.layout.activity_movies_info);
         linearLayoutManagerReviews = new LinearLayoutManager(MoviesInfo.this);
         reviewsAdapter = new ReviewsAdapter(MoviesInfo.this, reviews);
