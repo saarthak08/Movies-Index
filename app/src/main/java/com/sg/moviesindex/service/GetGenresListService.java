@@ -12,8 +12,8 @@ import com.sg.moviesindex.model.tmdb.DiscoversList;
 import com.sg.moviesindex.model.tmdb.Genre;
 import com.sg.moviesindex.model.tmdb.GenresList;
 import com.sg.moviesindex.model.tmdb.MoviesList;
-import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
+import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.view.MainActivity;
 
 import java.util.ArrayList;

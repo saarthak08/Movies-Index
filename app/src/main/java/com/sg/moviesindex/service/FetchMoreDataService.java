@@ -11,8 +11,8 @@ import com.sg.moviesindex.model.tmdb.Discover;
 import com.sg.moviesindex.model.tmdb.DiscoversList;
 import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.model.tmdb.MoviesList;
-import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
+import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.utils.DiscoverToMovie;
 import com.sg.moviesindex.view.MainActivity;
 

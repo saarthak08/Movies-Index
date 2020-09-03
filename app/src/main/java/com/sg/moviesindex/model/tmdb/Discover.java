@@ -86,7 +86,6 @@ public class Discover implements Parcelable {
     }
 
 
-
     public Long getId() {
         return id;
     }

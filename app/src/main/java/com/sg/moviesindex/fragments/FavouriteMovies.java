@@ -100,7 +100,7 @@ public class FavouriteMovies extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Favourite Movies");
         context = getContext();
-        viewModel= new ViewModelProvider(this).get(MainViewModel.class);
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         viewModel.getAllMovies().observe(getActivity(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(List<Movie> movies) {

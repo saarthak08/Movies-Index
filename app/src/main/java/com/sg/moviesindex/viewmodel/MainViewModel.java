@@ -14,7 +14,6 @@ import java.util.List;
 public class MainViewModel extends AndroidViewModel {
     private Repository repository;
 
-    @SuppressWarnings("unchecked")
     public MainViewModel(@NonNull Application application) {
         super(application);
         repository = new Repository(application);

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
@@ -21,7 +20,6 @@ import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.view.MoviesInfo;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,8 +63,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (viewHolder instanceof MoviesViewHolder) {
             Movie movie = movies.get(i);
             try {
-                Date date1= null;
-                if(!movie.getReleaseDate().contains(",")) {
+                Date date1 = null;
+                if (!movie.getReleaseDate().contains(",")) {
                     date1 = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(movie.getReleaseDate());
                     DateFormat format = new SimpleDateFormat("MMM d, yyyy", Locale.US);
                     movie.setReleaseDate(format.format(date1));
@@ -90,7 +88,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             movieListItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position=getAbsoluteAdapterPosition();
+                    int position = getAbsoluteAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         Movie movie = movies.get(position);
                         Intent i = new Intent(context, MoviesInfo.class);

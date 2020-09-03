@@ -42,8 +42,8 @@ import com.sg.moviesindex.model.tmdb.Review;
 import com.sg.moviesindex.model.tmdb.ReviewsList;
 import com.sg.moviesindex.service.TorrentDownloaderService;
 import com.sg.moviesindex.service.TorrentFetcherService;
-import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
+import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.utils.PaginationScrollListener;
 import com.sg.moviesindex.viewmodel.MainViewModel;
 import com.varunest.sparkbutton.SparkButton;
@@ -97,7 +97,7 @@ public class MoviesInfo extends AppCompatActivity implements TorrentFetcherServi
         setContentView(R.layout.activity_movies_info);
         Toolbar toolbar = findViewById(R.id.toolbar);
         parentlayout = findViewById(android.R.id.content);
-        mainViewModel= new ViewModelProvider(this).get(MainViewModel.class);
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         activityMoviesInfoBinding = DataBindingUtil.setContentView(MoviesInfo.this, R.layout.activity_movies_info);
         linearLayoutManagerReviews = new LinearLayoutManager(MoviesInfo.this);
         reviewsAdapter = new ReviewsAdapter(MoviesInfo.this, reviews);

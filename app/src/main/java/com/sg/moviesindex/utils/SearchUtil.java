@@ -17,8 +17,8 @@ import com.sg.moviesindex.fragments.Movies;
 import com.sg.moviesindex.model.tmdb.Discover;
 import com.sg.moviesindex.model.tmdb.DiscoversList;
 import com.sg.moviesindex.service.FetchFirstTimeDataService;
-import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
+import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.view.MainActivity;
 
 import java.util.ArrayList;

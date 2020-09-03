@@ -1,21 +1,14 @@
 package com.sg.moviesindex.service;
 
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.sg.moviesindex.R;
 import com.sg.moviesindex.adapter.TorrentsListItemAdapter;
 import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.model.yts.APIResponse;
@@ -102,7 +95,7 @@ public class TorrentFetcherService {
 
     private void showMaterialDialog(Movie movie, CircularProgressButton button) {
         if (resultantMovie != null) {
-            new MaterialDialog.Builder(context).adapter(new TorrentsListItemAdapter(context, resultantMovie.getTorrents(),button,mListener), new LinearLayoutManager(context)).dividerColor(context.getResources().getColor(android.R.color.darker_gray))
+            new MaterialDialog.Builder(context).adapter(new TorrentsListItemAdapter(context, resultantMovie.getTorrents(), button, mListener), new LinearLayoutManager(context)).dividerColor(context.getResources().getColor(android.R.color.darker_gray))
                     .title("Torrent Files")
                     .content("Note: If the torrent file isn't working, try using a VPN or check the torrent's seeds.\nYou need a torrent downloader to download the original file from the torrent file.")
                     .show();

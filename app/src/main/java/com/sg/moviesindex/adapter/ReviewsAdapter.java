@@ -1,7 +1,6 @@
 package com.sg.moviesindex.adapter;
 
 import android.content.Context;
-import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 

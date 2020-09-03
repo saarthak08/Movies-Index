@@ -17,8 +17,8 @@ import com.sg.moviesindex.model.tmdb.Discover;
 import com.sg.moviesindex.model.tmdb.DiscoversList;
 import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.model.tmdb.MoviesList;
-import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
+import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.utils.DiscoverToMovie;
 import com.sg.moviesindex.utils.SearchUtil;
 import com.sg.moviesindex.view.MainActivity;
@@ -60,7 +60,7 @@ public class FetchFirstTimeDataService {
             fetchData(context);
         } else if (a == 4 || a == 5) {
             String[] x = {"All", "India", "USA", "UK"};
-            Dialog dialog=new MaterialAlertDialogBuilder(context).setTitle("Choose a Region").setSingleChoiceItems(x,-1, new DialogInterface.OnClickListener() {
+            Dialog dialog = new MaterialAlertDialogBuilder(context).setTitle("Choose a Region").setSingleChoiceItems(x, -1, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (which == 0) {
