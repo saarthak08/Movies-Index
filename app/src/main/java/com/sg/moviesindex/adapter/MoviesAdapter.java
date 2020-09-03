@@ -90,7 +90,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             movieListItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = getAdapterPosition();
+                    int position=getAbsoluteAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         Movie movie = movies.get(position);
                         Intent i = new Intent(context, MoviesInfo.class);

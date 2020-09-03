@@ -3,7 +3,6 @@ package com.sg.moviesindex.service;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -18,7 +17,7 @@ import com.sg.moviesindex.model.tmdb.Discover;
 import com.sg.moviesindex.model.tmdb.DiscoversList;
 import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.model.tmdb.MoviesList;
-import com.sg.moviesindex.service.network.MovieDataService;
+import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.utils.DiscoverToMovie;
 import com.sg.moviesindex.utils.SearchUtil;
@@ -50,13 +49,13 @@ public class FetchFirstTimeDataService {
     }
 
     public void getDataFirst(int a, final Context context) {
-        final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
+        final TMDbService TMDbService = RetrofitInstance.getTMDbService();
         String ApiKey = BuildConfig.ApiKey;
         if (a == 0 || a == 1) {
             if (a == 0) {
-                observableMovie = movieDataService.getPopularMoviesWithRx(ApiKey, 1);
+                observableMovie = TMDbService.getPopularMoviesWithRx(ApiKey, 1);
             } else if (a == 1) {
-                observableMovie = movieDataService.getTopRatedMoviesWithRx(ApiKey, 1);
+                observableMovie = TMDbService.getTopRatedMoviesWithRx(ApiKey, 1);
             }
             fetchData(context);
         } else if (a == 4 || a == 5) {
@@ -74,9 +73,9 @@ public class FetchFirstTimeDataService {
                         MainActivity.region = "GB";
                     }
                     if (a == 4) {
-                        observableMovie = movieDataService.getUpcomingMoviesWithRx(ApiKey, 1, MainActivity.region);
+                        observableMovie = TMDbService.getUpcomingMoviesWithRx(ApiKey, 1, MainActivity.region);
                     } else if (a == 5) {
-                        observableMovie = movieDataService.getNowPlayingWithRx(ApiKey, 1, MainActivity.region);
+                        observableMovie = TMDbService.getNowPlayingWithRx(ApiKey, 1, MainActivity.region);
                     }
                     fetchData(context);
                     dialog.dismiss();
@@ -125,10 +124,10 @@ public class FetchFirstTimeDataService {
     }
 
 
-    public void getFirstGenreData(long genreid, final Context context) {
-        final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
+    public void getFirstGenreData(final Context context) {
+        final TMDbService TMDbService = RetrofitInstance.getTMDbService();
         String ApiKey = BuildConfig.ApiKey;
-        observableDB = movieDataService.discover(ApiKey, Long.toString(genreid), false, false, 1, "popularity.desc").doOnError(new Consumer<Throwable>() {
+        observableDB = TMDbService.discover(ApiKey, Long.toString(MainActivity.genreid), false, false, 1, "popularity.desc").doOnError(new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
                 progressBar.setIndeterminate(false);

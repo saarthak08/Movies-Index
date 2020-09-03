@@ -109,7 +109,7 @@
 
 
             <TextView
-                android:id="@+id/tvReleaseDate"
+                android:id="@+id/tvStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/quicksand_medium"
@@ -118,14 +118,14 @@
                 android:paddingRight="16dp"
                 android:layout_marginEnd="104dp"
                 android:paddingBottom="4dp"
-                android:text="@{`Release Date: `+contentMovie.releaseDate}"
+                android:text="@{`Status: `+contentMovie.status}"
                 android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvMovieTitle" />
 
 
             <TextView
-                android:id="@+id/tvStatus"
+                android:id="@+id/tvReleaseDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/quicksand_medium"
@@ -133,10 +133,10 @@
                 android:paddingTop="4dp"
                 android:paddingRight="16dp"
                 android:paddingBottom="4dp"
-                android:text="@{`Status: `+contentMovie.status}"
+                android:text="@{`Release Date: `+contentMovie.releaseDate}"
                 android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate" />
+                app:layout_constraintTop_toBottomOf="@+id/tvStatus" />
 
             <TextView
                 android:id="@+id/tvPopularity"
@@ -150,7 +150,7 @@
                 android:text="@{`Runtime: `+(contentMovie.runtime/60)+`Hrs `+ (contentMovie.runtime%60) +`Mins`}"
                 android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvStatus" />
+                app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate" />
 
             <TextView
                 android:id="@+id/tvLanguage"

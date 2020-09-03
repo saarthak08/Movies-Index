@@ -116,6 +116,7 @@ public class TorrentDownloaderService extends IntentService {
     }
 
 
+    @SuppressWarnings("deprecation")
     private boolean downloadFile(ResponseBody body, String filename) {
         boolean downloadComplete = false;
         try {

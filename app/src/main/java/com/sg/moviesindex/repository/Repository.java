@@ -29,11 +29,11 @@ public class Repository {
 
     public void AddMovie(Movie movie) {
 
-        new AddFMovie(favouriteMoviesDAO).execute(movie);
+        new AddFavouriteMovie(favouriteMoviesDAO).execute(movie);
     }
 
     public void DeleteMovie(Movie movie) {
-        new DeleteFMovie(favouriteMoviesDAO).execute(movie);
+        new DeleteFavouriteMovie(favouriteMoviesDAO).execute(movie);
     }
 
 }

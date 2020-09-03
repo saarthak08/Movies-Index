@@ -11,6 +11,11 @@
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/popular_movies" />
 
+        <item
+            android:id="@+id/now_playing"
+            android:icon="@drawable/ic_recently_released_movies"
+            android:title="@string/now_playing" />
+
 
         <item
             android:id="@+id/upcoming_movies"
@@ -22,10 +27,6 @@
             android:icon="@drawable/ic_menu_send"
             android:title="@string/top_rated_movies" />
 
-        <item
-            android:id="@+id/now_playing"
-            android:icon="@drawable/ic_recently_released_movies"
-            android:title="@string/now_playing" />
 
         <item
             android:id="@+id/genres"

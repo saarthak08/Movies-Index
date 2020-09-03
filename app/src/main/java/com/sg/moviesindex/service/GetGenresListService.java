@@ -12,7 +12,7 @@ import com.sg.moviesindex.model.tmdb.DiscoversList;
 import com.sg.moviesindex.model.tmdb.Genre;
 import com.sg.moviesindex.model.tmdb.GenresList;
 import com.sg.moviesindex.model.tmdb.MoviesList;
-import com.sg.moviesindex.service.network.MovieDataService;
+import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.view.MainActivity;
 
@@ -41,10 +41,10 @@ public class GetGenresListService {
     }
 
     public void getGenresList() {
-        final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
+        final TMDbService TMDbService = RetrofitInstance.getTMDbService();
         String ApiKey = BuildConfig.ApiKey;
         MainActivity.drawer = 2;
-        genresListObservable = movieDataService.getGenresList(ApiKey);
+        genresListObservable = TMDbService.getGenresList(ApiKey);
         compositeDisposable.add(
                 genresListObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                         .subscribeWith(new DisposableObserver<GenresList>() {
@@ -61,7 +61,7 @@ public class GetGenresListService {
                                         public void onClick(DialogInterface dialog, int which) {
                                             MainActivity.selected = which;
                                             MainActivity.genreid = MainActivity.genres.get(which).getId();
-                                            fetchFirstTimeDataService.getFirstGenreData(MainActivity.genreid, context);
+                                            fetchFirstTimeDataService.getFirstGenreData(context);
                                             dialog.dismiss();
                                         }
                                     }).setCancelable(false).show();

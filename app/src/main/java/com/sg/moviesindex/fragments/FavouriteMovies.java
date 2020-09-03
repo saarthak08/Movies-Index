@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -100,7 +100,7 @@ public class FavouriteMovies extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Favourite Movies");
         context = getContext();
-        viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        viewModel= new ViewModelProvider(this).get(MainViewModel.class);
         viewModel.getAllMovies().observe(getActivity(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(List<Movie> movies) {

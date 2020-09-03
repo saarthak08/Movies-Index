@@ -12,7 +12,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface MovieDataService {
+public interface TMDbService {
 
     //@GET("movie/popular")
     //Call<MovieDBResponse> getPopularMovies(@Query("api_key")String apiKey, @Query("page")int pageIndex);

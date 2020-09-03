@@ -17,7 +17,7 @@ import com.sg.moviesindex.fragments.Movies;
 import com.sg.moviesindex.model.tmdb.Discover;
 import com.sg.moviesindex.model.tmdb.DiscoversList;
 import com.sg.moviesindex.service.FetchFirstTimeDataService;
-import com.sg.moviesindex.service.network.MovieDataService;
+import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.view.MainActivity;
 
@@ -59,11 +59,11 @@ public class SearchUtil {
                     searchView.setQuery("", false);
                     searchView.clearFocus();
                     searchView.setIconified(true);
-                    final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
+                    final TMDbService TMDbService = RetrofitInstance.getTMDbService();
                     final String ApiKey = BuildConfig.ApiKey;
                     MainActivity.queryM = query;
                     MainActivity.drawer = 3;
-                    observableDB = movieDataService.search(ApiKey, false, query, 1);
+                    observableDB = TMDbService.search(ApiKey, false, query, 1);
                     compositeDisposable.add(observableDB
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -101,11 +101,11 @@ public class SearchUtil {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
+                final TMDbService TMDbService = RetrofitInstance.getTMDbService();
                 final String ApiKey = BuildConfig.ApiKey;
                 MainActivity.queryM = newText;
                 MainActivity.drawer = 3;
-                observableDB = movieDataService.search(ApiKey, false, MainActivity.queryM, 1);
+                observableDB = TMDbService.search(ApiKey, false, MainActivity.queryM, 1);
                 compositeDisposable.add(observableDB
                         .debounce(400, TimeUnit.MILLISECONDS)
                         .subscribeOn(Schedulers.io())
@@ -153,9 +153,9 @@ public class SearchUtil {
     }
 
     public void loadMoreSearches(int pageIndex, String query) {
-        final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
+        final TMDbService TMDbService = RetrofitInstance.getTMDbService();
         final String ApiKey = BuildConfig.ApiKey;
-        observableDB = movieDataService.search(ApiKey, false, query, pageIndex);
+        observableDB = TMDbService.search(ApiKey, false, query, pageIndex);
         compositeDisposable.add(observableDB
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

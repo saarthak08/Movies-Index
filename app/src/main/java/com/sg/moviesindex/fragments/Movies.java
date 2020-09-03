@@ -1,26 +1,19 @@
 package com.sg.moviesindex.fragments;
 
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,7 +31,6 @@ import com.sg.moviesindex.view.MainActivity;
 import com.sg.moviesindex.viewmodel.MainViewModel;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -68,7 +60,6 @@ public class Movies extends Fragment {
     private MainViewModel viewModel;
     private SwipeRefreshLayout swipeRefreshLayout;
     private FragmentMoviesBinding fragmentMoviesBinding;
-    private int selectedItem = 0;
     private PaginationScrollListener paginationScrollListener;
     GridLayoutManager gridLayoutManager;
     private static CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -94,35 +85,6 @@ public class Movies extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_fragment, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        String[] a = new String[MainActivity.genres.size()];
-        for (int i = 0; i < MainActivity.genres.size(); i++) {
-            a[i] = MainActivity.genres.get(i).getName();
-        }
-        selectedItem = MainActivity.selected;
-        new AlertDialog.Builder(getContext()).setSingleChoiceItems(a, selectedItem, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                genreid = MainActivity.genres.get(which).getId();
-                firstTimeData.getFirstGenreData(genreid, getContext());
-                selectedItem = which;
-                dialog.dismiss();
-                for (int i = 0; i <= getActivity().getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                    getActivity().getSupportFragmentManager().popBackStack();
-                }
-
-            }
-        }).show();
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         fragmentMoviesBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movies, container, false);
@@ -130,11 +92,10 @@ public class Movies extends Fragment {
         return view;
     }
 
-    @SuppressLint("WrongConstant")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = ViewModelProviders.of(requireActivity()).get(MainViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         recyclerView = fragmentMoviesBinding.rv2;
         swipeRefreshLayout = fragmentMoviesBinding.swiperefresh2;
         if (MainActivity.drawer == 0) {
@@ -209,9 +170,8 @@ public class Movies extends Fragment {
                     }
                 }
             };
-        }
-        catch(Error e) {
-           // Toast.makeText(getContext(),"Error in Loading Movies!",Toast.LENGTH_SHORT).show();
+        } catch (Error e) {
+            // Toast.makeText(getContext(),"Error in Loading Movies!",Toast.LENGTH_SHORT).show();
         }
         recyclerView.addOnScrollListener(paginationScrollListener);
     }

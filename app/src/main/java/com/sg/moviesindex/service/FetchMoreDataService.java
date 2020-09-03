@@ -11,7 +11,7 @@ import com.sg.moviesindex.model.tmdb.Discover;
 import com.sg.moviesindex.model.tmdb.DiscoversList;
 import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.model.tmdb.MoviesList;
-import com.sg.moviesindex.service.network.MovieDataService;
+import com.sg.moviesindex.service.network.TMDbService;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.utils.DiscoverToMovie;
 import com.sg.moviesindex.view.MainActivity;
@@ -45,16 +45,16 @@ public class FetchMoreDataService {
     }
 
     public void loadMore(int a, final int pages) {
-        final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
+        final TMDbService TMDbService = RetrofitInstance.getTMDbService();
         String ApiKey = BuildConfig.ApiKey;
         if (a == 0) {
-            observableMovie = movieDataService.getPopularMoviesWithRx(ApiKey, pages);
+            observableMovie = TMDbService.getPopularMoviesWithRx(ApiKey, pages);
         } else if (a == 1) {
-            observableMovie = movieDataService.getTopRatedMoviesWithRx(ApiKey, pages);
+            observableMovie = TMDbService.getTopRatedMoviesWithRx(ApiKey, pages);
         } else if (a == 4) {
-            observableMovie = movieDataService.getUpcomingMoviesWithRx(ApiKey, pages, MainActivity.region);
+            observableMovie = TMDbService.getUpcomingMoviesWithRx(ApiKey, pages, MainActivity.region);
         } else if (a == 5) {
-            observableMovie = movieDataService.getNowPlayingWithRx(ApiKey, pages, MainActivity.region);
+            observableMovie = TMDbService.getNowPlayingWithRx(ApiKey, pages, MainActivity.region);
         }
         compositeDisposable.add(observableMovie.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<MoviesList>() {
@@ -90,9 +90,9 @@ public class FetchMoreDataService {
 
 
     public void loadMoreGenres(final int pages) {
-        final MovieDataService movieDataService = RetrofitInstance.getTMDbService();
+        final TMDbService TMDbService = RetrofitInstance.getTMDbService();
         String ApiKey = BuildConfig.ApiKey;
-        observableDB = movieDataService.discover(ApiKey, Long.toString(MainActivity.genreid), false, false, pages, "popularity.desc");
+        observableDB = TMDbService.discover(ApiKey, Long.toString(MainActivity.genreid), false, false, pages, "popularity.desc");
         compositeDisposable.add(
                 observableDB.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

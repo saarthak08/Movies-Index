@@ -74,3 +74,10 @@ app/release/
 key.properties
 
 assets
+
+.project
+.settings/
+app/.classpath
+app/.project
+app/.settings/
+*.DS_Store

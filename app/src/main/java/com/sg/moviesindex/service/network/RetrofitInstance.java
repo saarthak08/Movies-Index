@@ -17,7 +17,8 @@ public class RetrofitInstance {
     private static final int REQUEST_TIMEOUT = 60;
     private static OkHttpClient okHttpClient;
 
-    public static MovieDataService getTMDbService() {
+
+    public static TMDbService getTMDbService() {
         if (okHttpClient == null)
             initOkHttp();
         if (retrofit == null) {
@@ -25,7 +26,7 @@ public class RetrofitInstance {
                     .client(okHttpClient)
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).addConverterFactory(GsonConverterFactory.create()).build();
         }
-        return retrofit.create(MovieDataService.class);
+        return retrofit.create(TMDbService.class);
     }
 
 

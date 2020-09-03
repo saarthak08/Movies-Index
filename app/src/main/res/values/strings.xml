@@ -16,8 +16,8 @@
     <string name="genres">Filter By Genres</string>
     <string name="search_any_movie">Search Any Movie</string>
     <string name="download">Download</string>
-
-
+    <string name="sort_by_popularity">Sort By Popularity</string>
+    <string name="sort_by_rating">Sort By Rating</string>
 
 
 </resources>
