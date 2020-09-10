@@ -26,7 +26,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class TorrentFetcherService {
 
-    private Observable<APIResponse> observableAPIResponse;
     private CompositeDisposable compositeDisposable;
     private APIResponse response = new APIResponse();
     private Context context;
@@ -58,7 +57,7 @@ public class TorrentFetcherService {
             button.stopAnimation();
             return;
         }
-        observableAPIResponse = ytsService.getMoviesList(movieId);
+        Observable<APIResponse> observableAPIResponse = ytsService.getMoviesList(movieId);
         compositeDisposable.add(observableAPIResponse.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<APIResponse>() {
                     @Override
@@ -70,7 +69,7 @@ public class TorrentFetcherService {
                     @Override
                     public void onError(Throwable e) {
                         Log.e("Torrent Fetch", e.toString());
-                        Toast.makeText(context, "Error in fetching torrent files! Try using a VPN", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Error in fetching torrent files! Try using a VPN.", Toast.LENGTH_SHORT).show();
                         mListener.onComplete(true);
                         button.revertAnimation();
                         button.stopAnimation();
@@ -95,10 +94,14 @@ public class TorrentFetcherService {
 
     private void showMaterialDialog(Movie movie, CircularProgressButton button) {
         if (resultantMovie != null) {
-            new MaterialDialog.Builder(context).adapter(new TorrentsListItemAdapter(context, resultantMovie.getTorrents(), button, mListener), new LinearLayoutManager(context)).dividerColor(context.getResources().getColor(android.R.color.darker_gray))
-                    .title("Torrent Files")
-                    .content("Note: If the torrent file isn't working, try using a VPN or check the torrent's seeds.\nYou need a torrent downloader to download the original file from the torrent file.")
-                    .show();
+            try {
+                new MaterialDialog.Builder(context).adapter(new TorrentsListItemAdapter(resultantMovie.getTorrents(), button, mListener), new LinearLayoutManager(context)).dividerColor(context.getResources().getColor(android.R.color.darker_gray))
+                        .title("Torrent Files")
+                        .content("Note: If the torrent file isn't working, try using a VPN or check the torrent's seeds.\nYou need a torrent downloader to download the original file from the torrent file.")
+                        .show();
+            } catch (Exception e) {
+                Log.e("MaterialDialogException", e.toString());
+            }
         }
     }
 }

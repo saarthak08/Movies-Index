@@ -14,11 +14,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitInstance {
 
-    private static Retrofit retrofit = null;
+    private static Retrofit retrofitTMDb = null;
     private static Retrofit retrofitYTS = null;
     private static final String BASE_URL_TMDB = "https://api.themoviedb.org/3/";
     private static final String BASE_URL_YTS = "https://yts.mx/api/v2/";
-    private static final int REQUEST_TIMEOUT = 60;
     private static OkHttpClient okHttpClientYTS;
     private static OkHttpClient okHttpClientTMDb;
     private static int cacheSize = 10 * 1024 * 1024; // 10 MB
@@ -30,12 +29,12 @@ public class RetrofitInstance {
         if (okHttpClientTMDb == null) {
             initOkHttpTMDb(context);
         }
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder().baseUrl(BASE_URL_TMDB)
+        if (retrofitTMDb == null) {
+            retrofitTMDb = new Retrofit.Builder().baseUrl(BASE_URL_TMDB)
                     .client(okHttpClientTMDb)
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).addConverterFactory(GsonConverterFactory.create()).build();
         }
-        return retrofit.create(TMDbService.class);
+        return retrofitTMDb.create(TMDbService.class);
     }
 
 
@@ -55,20 +54,14 @@ public class RetrofitInstance {
     private static void initOkHttpYTS(Context context) {
         cacheYTS = new Cache(context.getCacheDir(), cacheSize);
         OkHttpClient.Builder httpClient = new OkHttpClient().newBuilder()
-                .connectTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
-                .cache(cacheYTS)
-                .readTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
-                .writeTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS);
+                .cache(cacheYTS);
         okHttpClientYTS = httpClient.build();
     }
 
     private static void initOkHttpTMDb(Context context) {
         cacheTMDb = new Cache(context.getCacheDir(), cacheSize);
         OkHttpClient.Builder httpClient = new OkHttpClient().newBuilder()
-                .connectTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
-                .cache(cacheTMDb)
-                .readTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
-                .writeTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS);
+                .cache(cacheTMDb);
         okHttpClientTMDb = httpClient.build();
     }
 

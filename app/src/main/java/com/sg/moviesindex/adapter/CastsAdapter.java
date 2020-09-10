@@ -21,13 +21,11 @@ import com.sg.moviesindex.model.tmdb.CastsList;
 
 
 public class CastsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private Context context;
     private CastsList castsList;
     private static int VIEW_TYPE_ITEM = 0;
     private static int VIEW_TYPE_LOADING = 1;
 
-    public CastsAdapter(Context context, CastsList castsList) {
-        this.context = context;
+    public CastsAdapter(CastsList castsList) {
         this.castsList = castsList;
     }
 

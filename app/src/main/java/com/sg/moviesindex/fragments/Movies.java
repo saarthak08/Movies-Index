@@ -31,6 +31,8 @@ import com.sg.moviesindex.utils.SearchUtil;
 import com.sg.moviesindex.view.MainActivity;
 import com.sg.moviesindex.viewmodel.MainViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -52,14 +54,8 @@ public class Movies extends Fragment {
         //Required Constructor
     }
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private ArrayList<Movie> movieList = new ArrayList<>();
-    private RecyclerView recyclerView;
     private MoviesAdapter moviesAdapter;
     private Context context;
-    private MainViewModel viewModel;
     private SwipeRefreshLayout swipeRefreshLayout;
     private FragmentMoviesBinding fragmentMoviesBinding;
     private PaginationScrollListener paginationScrollListener;
@@ -83,24 +79,24 @@ public class Movies extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // TODO: Rename and change types of parameters
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         fragmentMoviesBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movies, container, false);
-        View view = fragmentMoviesBinding.getRoot();
-        return view;
+        return fragmentMoviesBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
-        recyclerView = fragmentMoviesBinding.rv2;
+        MainViewModel viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+        RecyclerView recyclerView = fragmentMoviesBinding.rv2;
         swipeRefreshLayout = fragmentMoviesBinding.swiperefresh2;
         if (MainActivity.drawer == 0) {
             getActivity().setTitle("Popular Movies");
@@ -118,7 +114,7 @@ public class Movies extends Fragment {
             getActivity().setTitle("Now Playing: " + MainActivity.region);
         }
         context = getContext();
-        movieList = MainActivity.movieList;
+        ArrayList<Movie> movieList = MainActivity.movieList;
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.DKGRAY, Color.RED, Color.GREEN, Color.MAGENTA, Color.BLACK, Color.CYAN);
         moviesAdapter = new MoviesAdapter(context, movieList);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

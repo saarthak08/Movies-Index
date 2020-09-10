@@ -26,6 +26,8 @@ import com.sg.moviesindex.databinding.FragmentFavouriteMoviesBinding;
 import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.viewmodel.MainViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,18 +43,10 @@ public class FavouriteMovies extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
 
-    private MainViewModel viewModel;
     private ArrayList<Movie> movie;
     private Context context;
-    private TextView textView;
-    private MoviesAdapter moviesAdapter;
-    private RecyclerView recyclerView;
     private ScrollView scrollView;
     private FragmentFavouriteMoviesBinding fragmentFavouriteMoviesBinding;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
 
     public FavouriteMovies() {
@@ -82,17 +76,17 @@ public class FavouriteMovies extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // TODO: Rename and change types of parameters
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         fragmentFavouriteMoviesBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_favourite_movies, container, false);
-        View view = fragmentFavouriteMoviesBinding.getRoot();
-        return view;
+        return fragmentFavouriteMoviesBinding.getRoot();
     }
 
     @Override
@@ -100,7 +94,7 @@ public class FavouriteMovies extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Favourite Movies");
         context = getContext();
-        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        MainViewModel viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         viewModel.getAllMovies().observe(getActivity(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(List<Movie> movies) {
@@ -111,14 +105,14 @@ public class FavouriteMovies extends Fragment {
     }
 
     private void showRecyclerView() {
-        textView = fragmentFavouriteMoviesBinding.tvNoMovies;
+        TextView textView = fragmentFavouriteMoviesBinding.tvNoMovies;
         if (movie.isEmpty()) {
             textView.setVisibility(View.VISIBLE);
         } else {
             textView.setVisibility(View.GONE);
         }
-        recyclerView = fragmentFavouriteMoviesBinding.rvF4;
-        moviesAdapter = new MoviesAdapter(context, movie);
+        RecyclerView recyclerView = fragmentFavouriteMoviesBinding.rvF4;
+        MoviesAdapter moviesAdapter = new MoviesAdapter(context, movie);
         if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
         } else {

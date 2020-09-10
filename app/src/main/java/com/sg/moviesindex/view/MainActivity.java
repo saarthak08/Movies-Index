@@ -1,5 +1,6 @@
 package com.sg.moviesindex.view;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,7 +38,6 @@ public class MainActivity extends AppCompatActivity
 
     private ProgressBar progressBar;
     public static ArrayList<Movie> movieList = new ArrayList<>();
-    private NavigationView navigationView;
     private FragmentManager fragmentManager;
     public static int totalPages;
     public static int totalPagesGenres;
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     public static String queryM;
     private LinearLayout linearLayoutError;
     private Button refreshButtonError;
+    @SuppressLint("StaticFieldLeak")
     public static GetGenresListService genresList;
     private FetchFirstTimeDataService fetchFirstTimeDataService;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         progressBar = findViewById(R.id.progressBar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

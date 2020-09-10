@@ -138,7 +138,7 @@ public class SearchUtil {
                                         cursor.addRow(temp);
 
                                     }
-                                    SearchAdapter searchAdapter = new SearchAdapter(context, cursor, true, searchView, MainActivity.moviesearch);
+                                    SearchAdapter searchAdapter = new SearchAdapter(context, cursor, true, MainActivity.moviesearch);
                                     searchView.setSuggestionsAdapter(searchAdapter);
                                 }
                             }

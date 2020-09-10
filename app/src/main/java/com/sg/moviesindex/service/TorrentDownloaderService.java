@@ -26,6 +26,8 @@ import com.sg.moviesindex.model.yts.Torrent;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.view.MoviesInfo;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -75,6 +77,7 @@ public class TorrentDownloaderService extends IntentService {
                 .setAutoCancel(true);
         notificationManager.notify(0, notificationBuilder.build());
         Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher);
+        assert drawable != null;
         Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
         notificationBuilder.setLargeIcon(bitmap);
         downloadTorrent();
@@ -85,12 +88,12 @@ public class TorrentDownloaderService extends IntentService {
         Call<ResponseBody> call = RetrofitInstance.getYTSService(getApplicationContext()).downloadFileWithDynamicUrlSync(torrent.getUrl());
         call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Log.d(TAG, "Server Contacted and Has File");
                     Headers headers = response.headers();
                     String content = headers.get("Content-Disposition");
-                    String contentSplit[] = content.split("filename=");
+                    String[] contentSplit = content.split("filename=");
                     String filename = contentSplit[1].replace("filename=", "").replace("\"", "").trim();
                     boolean writtenToDisk = downloadFile(response.body(), filename);
                     if (!writtenToDisk) {
@@ -107,7 +110,7 @@ public class TorrentDownloaderService extends IntentService {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NotNull Call<ResponseBody> call, @NotNull Throwable t) {
                 Log.e(TAG, "Error in downloading torrent! " + t.getLocalizedMessage());
                 Toast.makeText(getApplicationContext(), "Error in downloading torrent file!", Toast.LENGTH_SHORT).show();
                 notificationManager.cancel(0);

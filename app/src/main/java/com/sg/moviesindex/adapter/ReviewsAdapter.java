@@ -14,11 +14,9 @@ import com.sg.moviesindex.model.tmdb.Review;
 import com.sg.moviesindex.model.tmdb.ReviewsList;
 
 public class ReviewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private Context context;
     private ReviewsList reviewsList;
 
-    public ReviewsAdapter(Context context, ReviewsList reviewsList) {
-        this.context = context;
+    public ReviewsAdapter(ReviewsList reviewsList) {
         this.reviewsList = reviewsList;
     }
 
