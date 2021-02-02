@@ -8,7 +8,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.sg.moviesindex"
         minSdkVersion 21
@@ -21,9 +21,9 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 9
-        versionName "1.3.3"
+        versionName "1.3.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     sourceSets {
@@ -39,7 +39,7 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField 'String', "ApiKey", TMDB_API_KEY
+            buildConfigField "String", "ApiKey", TMDB_API_KEY
         }
         release {
             minifyEnabled false

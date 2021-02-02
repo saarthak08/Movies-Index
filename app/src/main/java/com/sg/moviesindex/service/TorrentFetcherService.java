@@ -16,6 +16,8 @@ import com.sg.moviesindex.model.yts.Torrent;
 import com.sg.moviesindex.service.network.RetrofitInstance;
 import com.sg.moviesindex.service.network.YTSService;
 
+import org.jetbrains.annotations.NotNull;
+
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -26,9 +28,9 @@ import io.reactivex.schedulers.Schedulers;
 
 public class TorrentFetcherService {
 
-    private CompositeDisposable compositeDisposable;
+    private final CompositeDisposable compositeDisposable;
     private APIResponse response = new APIResponse();
-    private Context context;
+    private final Context context;
     public static Torrent resultantTorrent;
     private com.sg.moviesindex.model.yts.Movie resultantMovie;
 
@@ -36,7 +38,7 @@ public class TorrentFetcherService {
         public void onComplete(boolean error);
     }
 
-    private OnCompleteListener mListener;
+    private final OnCompleteListener mListener;
 
     public TorrentFetcherService(OnCompleteListener listener, Context context) {
         mListener = listener;
@@ -61,13 +63,13 @@ public class TorrentFetcherService {
         compositeDisposable.add(observableAPIResponse.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<APIResponse>() {
                     @Override
-                    public void onNext(APIResponse apiResponse) {
+                    public void onNext(@NotNull APIResponse apiResponse) {
                         response = apiResponse;
                         Log.e("Torrent Fetch", apiResponse.getStatus());
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(@NotNull Throwable e) {
                         Log.e("Torrent Fetch", e.toString());
                         Toast.makeText(context, "Error in fetching torrent files! Try using a VPN.", Toast.LENGTH_SHORT).show();
                         mListener.onComplete(true);
@@ -80,12 +82,14 @@ public class TorrentFetcherService {
                         mListener.onComplete(true);
                         button.revertAnimation();
                         button.stopAnimation();
-                        if (response.getData().getMovieCount() == 0) {
-                            Toast.makeText(context, "No Torrents Found!", Toast.LENGTH_SHORT).show();
+                        if(response!=null) {
+                            if (response.getData().getMovieCount() == 0) {
+                                Toast.makeText(context, "No Torrents Found!", Toast.LENGTH_SHORT).show();
 
-                        } else {
-                            resultantMovie = response.getData().getMovies().get(0);
-                            showMaterialDialog(movieTMDb, button);
+                            } else {
+                                resultantMovie = response.getData().getMovies().get(0);
+                                showMaterialDialog(movieTMDb, button);
+                            }
                         }
                     }
                 }));

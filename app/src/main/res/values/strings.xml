@@ -7,7 +7,8 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="title_activity_main">Movies Index</string>
     <string name="popular_movies">Popular Movies</string>
-    <string name="created_by_n_saarthak_gupta">Made with Love,\n\t\t\t\tBy Saarthak Gupta</string>
+    <string name="made_with_love">Made with</string>
+    <string name="in_india">in</string>
     <string name="categories">Categories</string>
     <string name="movies_index">Movies Index</string>
     <string name="top_rated_movies">Top Rated Movies</string>
@@ -18,6 +19,9 @@
     <string name="download">Download</string>
     <string name="sort_by_popularity">Sort By Popularity</string>
     <string name="sort_by_rating">Sort By Rating</string>
+    <string name="play_dumb_charades">Play Dumb Charades</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

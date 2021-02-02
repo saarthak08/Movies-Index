@@ -1,6 +1,5 @@
 package com.sg.moviesindex.view;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +24,7 @@ import com.sg.moviesindex.model.tmdb.Discover;
 import com.sg.moviesindex.model.tmdb.Genre;
 import com.sg.moviesindex.model.tmdb.Movie;
 import com.sg.moviesindex.service.FetchFirstTimeDataService;
-import com.sg.moviesindex.service.GetGenresListService;
+import com.sg.moviesindex.service.FetchGenresListService;
 import com.sg.moviesindex.utils.SearchUtil;
 
 import java.util.ArrayList;
@@ -53,17 +52,17 @@ public class MainActivity extends AppCompatActivity
     public static String queryM;
     private LinearLayout linearLayoutError;
     private Button refreshButtonError;
-    @SuppressLint("StaticFieldLeak")
-    public static GetGenresListService genresList;
+    private NavigationView navigationView;
+    public FetchGenresListService genresList;
     private FetchFirstTimeDataService fetchFirstTimeDataService;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         progressBar = findViewById(R.id.progressBar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -78,26 +77,26 @@ public class MainActivity extends AppCompatActivity
         linearLayoutError = findViewById(R.id.llError);
         refreshButtonError = findViewById(R.id.buttonllError);
         navigationView.getMenu().getItem(0).setChecked(true);
-        fetchFirstTimeDataService = new FetchFirstTimeDataService(linearLayoutError, refreshButtonError, progressBar, compositeDisposable, fragmentManager);
-        fetchFirstTimeDataService.getDataFirst(drawer, MainActivity.this);
-        genresList = new GetGenresListService(linearLayoutError, refreshButtonError, MainActivity.this, compositeDisposable, fetchFirstTimeDataService, progressBar);
+        fetchFirstTimeDataService = new FetchFirstTimeDataService(linearLayoutError, refreshButtonError, progressBar, compositeDisposable, fragmentManager, MainActivity.this);
+        fetchFirstTimeDataService.getDataFirst();
+        genresList=new FetchGenresListService(linearLayoutError,refreshButtonError, MainActivity.this,compositeDisposable,fetchFirstTimeDataService,progressBar);
     }
-
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            int fragments = getSupportFragmentManager().getBackStackEntryCount();
-            if (fragments == 1) {
-                finish();
-            } else if (getFragmentManager().getBackStackEntryCount() > 1) {
-                getFragmentManager().popBackStack();
-            } else {
-                super.onBackPressed();
+        } else if (MainActivity.drawer != 0) {
+            MainActivity.drawer = 0;
+            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+                getSupportFragmentManager().popBackStack();
             }
+            navigationView.getMenu().getItem(0).setChecked(true);
+            fetchFirstTimeDataService.getDataFirst();
+        } else {
+            super.onBackPressed();
+            finish();
         }
     }
 
@@ -112,42 +111,43 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.movies) {
             drawer = 0;
-            for (int i = 0; i <= getSupportFragmentManager().getBackStackEntryCount(); i++) {
+            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
                 getSupportFragmentManager().popBackStack();
             }
-            fetchFirstTimeDataService.getDataFirst(drawer, MainActivity.this);
+            fetchFirstTimeDataService.getDataFirst();
         } else if (id == R.id.favmovies) {
             FragmentTransaction fragmentTransaction1;
-            for (int i = 0; i <= getSupportFragmentManager().getBackStackEntryCount(); i++) {
+            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
                 getSupportFragmentManager().popBackStack();
             }
+            drawer = 5;
             fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
             fragmentTransaction1.addToBackStack(null);
-            fragmentTransaction1.replace(R.id.frame_layout, new FavouriteMovies()).commitAllowingStateLoss();
+            fragmentTransaction1.replace(R.id.frame_layout, FavouriteMovies.newInstance()).commit();
         } else if (id == R.id.toprated) {
-            drawer = 1;
-            for (int i = 0; i <= getSupportFragmentManager().getBackStackEntryCount(); i++) {
+            drawer = 3;
+            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
                 getSupportFragmentManager().popBackStack();
             }
-            fetchFirstTimeDataService.getDataFirst(drawer, MainActivity.this);
+            fetchFirstTimeDataService.getDataFirst();
         } else if (id == R.id.genres) {
-            drawer = 2;
-            for (int i = 0; i <= getSupportFragmentManager().getBackStackEntryCount(); i++) {
+            drawer = 4;
+            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
                 getSupportFragmentManager().popBackStack();
             }
             genresList.getGenresList();
         } else if (id == R.id.upcoming_movies) {
-            drawer = 4;
-            for (int i = 0; i <= getSupportFragmentManager().getBackStackEntryCount(); i++) {
+            drawer = 2;
+            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
                 getSupportFragmentManager().popBackStack();
             }
-            fetchFirstTimeDataService.getDataFirst(drawer, MainActivity.this);
+            fetchFirstTimeDataService.getDataFirst();
         } else if (id == R.id.now_playing) {
-            drawer = 5;
-            for (int i = 0; i <= getSupportFragmentManager().getBackStackEntryCount(); i++) {
+            drawer = 1;
+            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
                 getSupportFragmentManager().popBackStack();
             }
-            fetchFirstTimeDataService.getDataFirst(drawer, MainActivity.this);
+            fetchFirstTimeDataService.getDataFirst();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.search_view, menu);
         MenuItem menuItem = menu.findItem(R.id.app_bar_search);
         SearchView searchView = (SearchView) menuItem.getActionView();
-        SearchUtil searchUtil = new SearchUtil(linearLayoutError, refreshButtonError, compositeDisposable, fragmentManager, MainActivity.this, progressBar);
+        SearchUtil searchUtil = new SearchUtil(linearLayoutError, refreshButtonError, compositeDisposable, fragmentManager, MainActivity.this, progressBar, fetchFirstTimeDataService);
         searchUtil.search(searchView);
         return true;
     }
@@ -171,4 +171,5 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
         compositeDisposable.clear();
     }
+
 }

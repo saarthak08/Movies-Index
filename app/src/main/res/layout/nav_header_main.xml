@@ -32,19 +32,61 @@
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:text="@string/movies_index"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@android:color/holo_green_dark"
+            android:textColor="@color/tmdb_text_color"
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linear_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/created_by_n_saarthak_gupta"
-            android:textColor="@android:color/holo_blue_bright"
-            android:textSize="16sp" />
+            android:layout_gravity="bottom"
+            android:layout_marginTop="12dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonDC">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/made_with_love"
+                android:textColor="@android:color/holo_blue_bright"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="24dp"
+                android:layout_marginTop="2dp"
+                android:layout_height="24dp"
+                app:srcCompat="@drawable/ic_heart_on" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="8dp"
+                android:fontFamily="@font/montserrat"
+                android:gravity="center"
+                android:text="@string/in_india"
+                android:textColor="@android:color/holo_blue_bright"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="24dp"
+                android:layout_marginTop="2dp"
+                android:layout_height="24dp"
+                app:srcCompat="@drawable/india" />
+        </LinearLayout>
+
 
     </LinearLayout>
 </layout>

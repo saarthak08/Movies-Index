@@ -15,12 +15,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitInstance {
 
     private static Retrofit retrofitTMDb = null;
-    private static Retrofit retrofitYTS = null;
     private static final String BASE_URL_TMDB = "https://api.themoviedb.org/3/";
     private static final String BASE_URL_YTS = "https://yts.mx/api/v2/";
     private static OkHttpClient okHttpClientYTS;
     private static OkHttpClient okHttpClientTMDb;
-    private static int cacheSize = 10 * 1024 * 1024; // 10 MB
+    private static final int cacheSize = 10 * 1024 * 1024; // 10 MB
     private static Cache cacheYTS;
     private static Cache cacheTMDb;
 
@@ -42,7 +41,7 @@ public class RetrofitInstance {
         if (okHttpClientYTS == null) {
             initOkHttpYTS(context);
         }
-        retrofitYTS = new Retrofit.Builder()
+        Retrofit retrofitYTS = new Retrofit.Builder()
                 .baseUrl(BASE_URL_YTS)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

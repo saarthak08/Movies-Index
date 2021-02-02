@@ -29,10 +29,11 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
-import com.sg.moviesindex.BuildConfig;
+
 import com.sg.moviesindex.R;
 import com.sg.moviesindex.adapter.CastsAdapter;
 import com.sg.moviesindex.adapter.ReviewsAdapter;
+import com.sg.moviesindex.config.BuildConfigs;
 import com.sg.moviesindex.databinding.ActivityMoviesInfoBinding;
 import com.sg.moviesindex.model.tmdb.Cast;
 import com.sg.moviesindex.model.tmdb.CastsList;
@@ -70,11 +71,11 @@ public class MoviesInfo extends AppCompatActivity implements TorrentFetcherServi
     private ActivityMoviesInfoBinding activityMoviesInfoBinding;
     private MainViewModel mainViewModel;
     public static final String PROGRESS_UPDATE = "progress_update";
-    private TMDbService TMDbService;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private String ApiKey = BuildConfig.ApiKey;
+    private TMDbService tMDbService;
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    final String ApiKey = BuildConfigs.apiKey;
     private ReviewsAdapter reviewsAdapter;
-    private ReviewsList reviews = new ReviewsList();
+    private final ReviewsList reviews = new ReviewsList();
     private CastsList casts = new CastsList();
     private SparkButton sparkButton;
     private LinearLayoutManager linearLayoutManagerReviews;
@@ -93,7 +94,7 @@ public class MoviesInfo extends AppCompatActivity implements TorrentFetcherServi
         Toolbar toolbar = findViewById(R.id.toolbar);
         View parentLayout = findViewById(android.R.id.content);
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        TMDbService = RetrofitInstance.getTMDbService(MoviesInfo.this);
+        tMDbService = RetrofitInstance.getTMDbService(MoviesInfo.this);
         activityMoviesInfoBinding = DataBindingUtil.setContentView(MoviesInfo.this, R.layout.activity_movies_info);
         linearLayoutManagerReviews = new LinearLayoutManager(MoviesInfo.this);
         reviewsAdapter = new ReviewsAdapter(reviews);
@@ -178,7 +179,7 @@ public class MoviesInfo extends AppCompatActivity implements TorrentFetcherServi
     }
 
     public void getFullInformation() {
-        Observable<Movie> movieObservable = TMDbService.getFullMovieInformation(movie.getId(), BuildConfig.ApiKey);
+        Observable<Movie> movieObservable = tMDbService.getFullMovieInformation(movie.getId(), BuildConfigs.apiKey);
         compositeDisposable.add(movieObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeWith(new DisposableObserver<Movie>() {
             @Override
             public void onNext(Movie moviex) {
@@ -240,7 +241,7 @@ public class MoviesInfo extends AppCompatActivity implements TorrentFetcherServi
     }
 
     public void getCasts() {
-        Observable<CastsList> castsList = TMDbService.getCasts(movie.getId(), ApiKey).doOnError(new Consumer<Throwable>() {
+        Observable<CastsList> castsList = tMDbService.getCasts(movie.getId(), ApiKey).doOnError(new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
                 getParcelableData();
@@ -271,7 +272,7 @@ public class MoviesInfo extends AppCompatActivity implements TorrentFetcherServi
     }
 
     public void getReviews(int pageNo) {
-        Observable<ReviewsList> reviewsList = TMDbService.getReviews(movie.getId(), ApiKey, pageNo).doOnError(new Consumer<Throwable>() {
+        Observable<ReviewsList> reviewsList = tMDbService.getReviews(movie.getId(), ApiKey, pageNo).doOnError(new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
                 getParcelableData();

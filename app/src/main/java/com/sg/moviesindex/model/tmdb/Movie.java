@@ -490,4 +490,13 @@ public class Movie extends BaseObservable implements Parcelable {
                     oldItem.reviewsList.equals(newItem.reviewsList);
         }
     };
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "title='" + title + '\'' +
+                ", originalLanguage='" + originalLanguage + '\'' +
+
+                '}';
+    }
 }

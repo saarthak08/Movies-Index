@@ -5,8 +5,8 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sg.moviesindex.BuildConfig;
 import com.sg.moviesindex.adapter.MoviesAdapter;
+import com.sg.moviesindex.config.BuildConfigs;
 import com.sg.moviesindex.model.tmdb.Discover;
 import com.sg.moviesindex.model.tmdb.DiscoversList;
 import com.sg.moviesindex.model.tmdb.Movie;
@@ -26,15 +26,14 @@ import io.reactivex.schedulers.Schedulers;
 
 public class FetchMoreDataService {
     private Observable<MoviesList> observableMovie;
-    private Observable<DiscoversList> observableDB;
-    private RecyclerView recyclerView;
+    private final RecyclerView recyclerView;
     private ArrayList<Movie> movieList;
     private int totalPages;
     private int totalPagesGenre;
     private ArrayList<Discover> discovers = new ArrayList<>();
-    private CompositeDisposable compositeDisposable;
-    private MoviesAdapter moviesAdapter;
-    private Context context;
+    private final CompositeDisposable compositeDisposable;
+    private final MoviesAdapter moviesAdapter;
+    private final Context context;
 
     public FetchMoreDataService(RecyclerView recyclerView, ArrayList<Movie> movieList, CompositeDisposable compositeDisposable, Context context, MoviesAdapter moviesAdapter) {
         this.recyclerView = recyclerView;
@@ -46,14 +45,14 @@ public class FetchMoreDataService {
 
     public void loadMore(int a, final int pages) {
         final TMDbService TMDbService = RetrofitInstance.getTMDbService(context);
-        String ApiKey = BuildConfig.ApiKey;
+        String ApiKey = BuildConfigs.apiKey;
         if (a == 0) {
             observableMovie = TMDbService.getPopularMoviesWithRx(ApiKey, pages);
-        } else if (a == 1) {
+        } else if (a == 3) {
             observableMovie = TMDbService.getTopRatedMoviesWithRx(ApiKey, pages);
-        } else if (a == 4) {
+        } else if (a == 2) {
             observableMovie = TMDbService.getUpcomingMoviesWithRx(ApiKey, pages, MainActivity.region);
-        } else if (a == 5) {
+        } else if (a == 1) {
             observableMovie = TMDbService.getNowPlayingWithRx(ApiKey, pages, MainActivity.region);
         }
         compositeDisposable.add(observableMovie.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -91,8 +90,8 @@ public class FetchMoreDataService {
 
     public void loadMoreGenres(final int pages) {
         final TMDbService TMDbService = RetrofitInstance.getTMDbService(context);
-        String ApiKey = BuildConfig.ApiKey;
-        observableDB = TMDbService.discover(ApiKey, Long.toString(MainActivity.genreid), false, false, pages, "popularity.desc");
+        String ApiKey = BuildConfigs.apiKey;
+        Observable<DiscoversList> observableDB = TMDbService.discover(ApiKey, Long.toString(MainActivity.genreid), false, false, pages, "popularity.desc", null, null, null, null);
         compositeDisposable.add(
                 observableDB.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

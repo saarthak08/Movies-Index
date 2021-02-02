@@ -43,7 +43,7 @@ import retrofit2.Response;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class TorrentDownloaderService extends IntentService {
-    private Torrent torrent;
+    private final Torrent torrent;
     private File directory;
     private NotificationCompat.Builder notificationBuilder;
     private NotificationManager notificationManager;

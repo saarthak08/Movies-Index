@@ -19,9 +19,9 @@ import java.util.ArrayList;
 
 
 public class SearchAdapter extends CursorAdapter {
-    private LayoutInflater mLayoutInflater;
-    private Context mContext;
-    private ArrayList<Movie> movies;
+    private final LayoutInflater mLayoutInflater;
+    private final Context mContext;
+    private final ArrayList<Movie> movies;
 
     public SearchAdapter(Context context, Cursor c, boolean autoRequery, ArrayList<Movie> movies) {
         super(context, c, autoRequery);

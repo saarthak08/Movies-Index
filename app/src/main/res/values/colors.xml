@@ -7,4 +7,5 @@
     <color name="heart_primary_color">#da4439</color>
     <color name="heart_secondary_color">#8a098c</color>
     <color name="chip_color">#cae9f5</color>
+    <color name="tmdb_text_color">#63D675</color>
 </resources>
