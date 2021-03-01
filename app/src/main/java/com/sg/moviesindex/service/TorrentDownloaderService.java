@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -31,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -119,40 +122,80 @@ public class TorrentDownloaderService extends IntentService {
     }
 
 
-    @SuppressWarnings("deprecation")
     private boolean downloadFile(ResponseBody body, String filename) {
         boolean downloadComplete = false;
-        try {
-            directory = new File(Environment.getExternalStorageDirectory() + "/" + getApplicationContext().getString(R.string.app_name));
-            if ((!directory.exists()) && (!directory.mkdirs())) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q) {
+            ContentValues contentValues = new ContentValues();
+
+            contentValues.put(MediaStore.Downloads.DISPLAY_NAME, filename);
+            contentValues.put(MediaStore.Downloads.MIME_TYPE, "application/x-bittorrent");
+            contentValues.put(MediaStore.Downloads.IS_PENDING, true);
+            contentValues.put(MediaStore.Downloads.RELATIVE_PATH, "Download/" + "Movies-Index");
+
+            Uri uri = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+            Uri itemUri = getContentResolver().insert(uri, contentValues);
+
+            if (itemUri != null) {
+                try {
+                    OutputStream outputStream = getContentResolver().openOutputStream(itemUri);
+                    int count;
+                    byte[] data = new byte[1024 * 4];
+                    long fileSize = body.contentLength();
+                    InputStream inputStream = new BufferedInputStream(body.byteStream(), 1024 * 8);
+                    long total = 0;
+                    while ((count = inputStream.read(data)) != -1) {
+                        total += count;
+                        int progress = (int) ((double) (total * 100) / (double) fileSize);
+                        updateNotification(progress, filename);
+                        outputStream.write(data, 0, count);
+                        downloadComplete = true;
+                    }
+                    onDownloadComplete(downloadComplete, filename,itemUri);
+                    outputStream.flush();
+                    outputStream.close();
+                    inputStream.close();
+                    contentValues.put(MediaStore.Images.Media.IS_PENDING, false);
+                    getContentResolver().update(itemUri, contentValues, null, null);
+                    return true;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+            return false;
+        } else {
+            try {
+                directory = new File(Environment.getExternalStorageDirectory() + "/" + getApplicationContext().getString(R.string.app_name));
+                if ((!directory.exists()) && (!directory.mkdirs())) {
+                    return false;
+                }
+                File finalSavedFile = new File(directory.getAbsolutePath() + File.separator + filename);
+                if (finalSavedFile.exists()) {
+                    finalSavedFile.delete();
+                }
+                int count;
+                byte[] data = new byte[1024 * 4];
+                long fileSize = body.contentLength();
+                InputStream inputStream = new BufferedInputStream(body.byteStream(), 1024 * 8);
+                OutputStream outputStream = new FileOutputStream(finalSavedFile);
+                long total = 0;
+                while ((count = inputStream.read(data)) != -1) {
+                    total += count;
+                    int progress = (int) ((double) (total * 100) / (double) fileSize);
+                    updateNotification(progress, filename);
+                    outputStream.write(data, 0, count);
+                    downloadComplete = true;
+                }
+                onDownloadComplete(downloadComplete, filename,null);
+                outputStream.flush();
+                outputStream.close();
+                inputStream.close();
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 return false;
             }
-            File finalSavedFile = new File(directory.getAbsolutePath() + File.separator + filename);
-            if (finalSavedFile.exists()) {
-                finalSavedFile.delete();
-            }
-            int count;
-            byte[] data = new byte[1024 * 4];
-            long fileSize = body.contentLength();
-            InputStream inputStream = new BufferedInputStream(body.byteStream(), 1024 * 8);
-            OutputStream outputStream = new FileOutputStream(finalSavedFile);
-            long total = 0;
-            while ((count = inputStream.read(data)) != -1) {
-                total += count;
-                int progress = (int) ((double) (total * 100) / (double) fileSize);
-                updateNotification(progress, filename);
-                outputStream.write(data, 0, count);
-                downloadComplete = true;
-            }
-            onDownloadComplete(downloadComplete, filename);
-            outputStream.flush();
-            outputStream.close();
-            inputStream.close();
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            return false;
+            return true;
         }
-        return true;
 
     }
 
@@ -171,7 +214,7 @@ public class TorrentDownloaderService extends IntentService {
         LocalBroadcastManager.getInstance(TorrentDownloaderService.this).sendBroadcast(intent);
     }
 
-    private void onDownloadComplete(boolean downloadComplete, String filename) {
+    private void onDownloadComplete(boolean downloadComplete, String filename, Uri itemUri) {
         sendProgressUpdate(downloadComplete);
         notificationManager.cancel(0);
         notificationBuilder.setProgress(0, 0, false);
@@ -184,11 +227,14 @@ public class TorrentDownloaderService extends IntentService {
         notificationBuilder.setSmallIcon(android.R.drawable.stat_sys_download_done);
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
-        File file = new File(directory.getAbsolutePath() + File.separator + filename);
-        Uri uri = FileProvider.getUriForFile(
-                getApplicationContext(),
-                getApplicationContext()
-                        .getPackageName() + ".provider", file);
+        Uri uri=itemUri;
+        if (Build.VERSION.SDK_INT<Build.VERSION_CODES.Q) {
+            File file = new File(directory.getAbsolutePath() + File.separator + filename);
+            uri = FileProvider.getUriForFile(
+                    getApplicationContext(),
+                    getApplicationContext()
+                            .getPackageName() + ".provider", file);
+        }
         intent.setDataAndType(uri, "application/x-bittorrent");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
