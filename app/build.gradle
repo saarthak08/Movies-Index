@@ -50,7 +50,7 @@ android {
         }
     }
     buildFeatures {
-        dataBinding=true;
+        dataBinding=true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11

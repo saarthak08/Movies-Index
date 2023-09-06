@@ -26,10 +26,10 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private Context context;
-    private ArrayList<Movie> movies;
-    private static int VIEW_TYPE_ITEM = 0;
-    private static int VIEW_TYPE_LOADING = 1;
+    private final Context context;
+    private final ArrayList<Movie> movies;
+    private static final int VIEW_TYPE_ITEM = 0;
+    private static final int VIEW_TYPE_LOADING = 1;
 
     public MoviesAdapter(Context context, ArrayList<Movie> movies) {
         this.context = context;
@@ -80,7 +80,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     class MoviesViewHolder extends RecyclerView.ViewHolder {
-        private MovieListItemBinding movieListItemBinding;
+        private final MovieListItemBinding movieListItemBinding;
 
         MoviesViewHolder(@NonNull final MovieListItemBinding movieListItemBinding) {
             super(movieListItemBinding.getRoot());

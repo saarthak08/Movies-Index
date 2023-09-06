@@ -11,7 +11,7 @@ import com.sg.moviesindex.model.tmdb.Movie;
 import java.util.List;
 
 public class Repository {
-    private FavouriteMoviesDAO favouriteMoviesDAO;
+    private final FavouriteMoviesDAO favouriteMoviesDAO;
 
     public Repository(Application application) {
         Database database = Database.getInstance(application);

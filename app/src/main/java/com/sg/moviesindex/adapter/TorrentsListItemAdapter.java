@@ -26,9 +26,9 @@ import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 
 
 public class TorrentsListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<Torrent> torrentList;
-    private CircularProgressButton button;
-    private TorrentFetcherService.OnCompleteListener completeListener;
+    private final List<Torrent> torrentList;
+    private final CircularProgressButton button;
+    private final TorrentFetcherService.OnCompleteListener completeListener;
 
     public TorrentsListItemAdapter(List<Torrent> torrentList, CircularProgressButton button, TorrentFetcherService.OnCompleteListener completeListener) {
         this.torrentList = torrentList;
@@ -66,9 +66,9 @@ public class TorrentsListItemAdapter extends RecyclerView.Adapter<RecyclerView.V
 
 
     static class TorrentListItemViewHolder extends RecyclerView.ViewHolder {
-        private TorrentListItemsLayoutBinding torrentListItemsLayoutBinding;
-        private CircularProgressButton button;
-        private TorrentFetcherService.OnCompleteListener completeListener;
+        private final TorrentListItemsLayoutBinding torrentListItemsLayoutBinding;
+        private final CircularProgressButton button;
+        private final TorrentFetcherService.OnCompleteListener completeListener;
 
         TorrentListItemViewHolder(@NonNull final TorrentListItemsLayoutBinding torrentListItemsLayoutBinding, CircularProgressButton button, TorrentFetcherService.OnCompleteListener completeListener) {
             super(torrentListItemsLayoutBinding.getRoot());

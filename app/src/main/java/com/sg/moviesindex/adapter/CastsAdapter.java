@@ -21,9 +21,9 @@ import com.sg.moviesindex.model.tmdb.CastsList;
 
 
 public class CastsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private CastsList castsList;
-    private static int VIEW_TYPE_ITEM = 0;
-    private static int VIEW_TYPE_LOADING = 1;
+    private final CastsList castsList;
+    private static final int VIEW_TYPE_ITEM = 0;
+    private static final int VIEW_TYPE_LOADING = 1;
 
     public CastsAdapter(CastsList castsList) {
         this.castsList = castsList;
@@ -62,7 +62,7 @@ public class CastsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     class CastsViewHolder extends RecyclerView.ViewHolder {
-        private CastListItemBinding castListItemBinding;
+        private final CastListItemBinding castListItemBinding;
 
         CastsViewHolder(@NonNull final CastListItemBinding castListItemBinding) {
             super(castListItemBinding.getRoot());

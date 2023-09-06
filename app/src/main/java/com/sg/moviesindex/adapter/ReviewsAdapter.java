@@ -14,7 +14,7 @@ import com.sg.moviesindex.model.tmdb.Review;
 import com.sg.moviesindex.model.tmdb.ReviewsList;
 
 public class ReviewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private ReviewsList reviewsList;
+    private final ReviewsList reviewsList;
 
     public ReviewsAdapter(ReviewsList reviewsList) {
         this.reviewsList = reviewsList;
@@ -38,7 +38,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     static class ReviewsViewHolder extends RecyclerView.ViewHolder {
-        private ReviewListItemBinding reviewListViewBinding;
+        private final ReviewListItemBinding reviewListViewBinding;
 
         ReviewsViewHolder(@NonNull final ReviewListItemBinding reviewListViewBinding) {
             super(reviewListViewBinding.getRoot());

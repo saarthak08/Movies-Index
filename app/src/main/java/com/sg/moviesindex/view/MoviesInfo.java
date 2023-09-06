@@ -333,7 +333,7 @@ public class MoviesInfo extends AppCompatActivity implements TorrentFetcherServi
             } else {
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
                 new MaterialAlertDialogBuilder(MoviesInfo.this).setTitle("Permission Required")
-                        .setMessage("You need to give storage permission in order to download the torrent file.\nIf permission is denied permanently, then you need to \'Go to Settings\' and manually grant the storage permission.")
+                        .setMessage("You need to give storage permission in order to download the torrent file.\nIf permission is denied permanently, then you need to 'Go to Settings' and manually grant the storage permission.")
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -375,7 +375,7 @@ public class MoviesInfo extends AppCompatActivity implements TorrentFetcherServi
         bManager.registerReceiver(mBroadcastReceiver, intentFilter);
     }
 
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 

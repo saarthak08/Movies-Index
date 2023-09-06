@@ -6,7 +6,7 @@ import com.sg.moviesindex.db.FavouriteMoviesDAO;
 import com.sg.moviesindex.model.tmdb.Movie;
 
 public class AddFavouriteMovie extends AsyncTask<Movie, Void, Void> {
-    private FavouriteMoviesDAO favouriteMoviesDAO;
+    private final FavouriteMoviesDAO favouriteMoviesDAO;
 
     public AddFavouriteMovie(FavouriteMoviesDAO favouriteMoviesDAO) {
         this.favouriteMoviesDAO = favouriteMoviesDAO;

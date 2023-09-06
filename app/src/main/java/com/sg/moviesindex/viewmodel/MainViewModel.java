@@ -12,7 +12,7 @@ import com.sg.moviesindex.repository.Repository;
 import java.util.List;
 
 public class MainViewModel extends AndroidViewModel {
-    private Repository repository;
+    private final Repository repository;
 
     public MainViewModel(@NonNull Application application) {
         super(application);

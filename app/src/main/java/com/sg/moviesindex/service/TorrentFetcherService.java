@@ -35,7 +35,7 @@ public class TorrentFetcherService {
     private com.sg.moviesindex.model.yts.Movie resultantMovie;
 
     public interface OnCompleteListener {
-        public void onComplete(boolean error);
+        void onComplete(boolean error);
     }
 
     private final OnCompleteListener mListener;

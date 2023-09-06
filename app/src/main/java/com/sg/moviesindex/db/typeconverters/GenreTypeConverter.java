@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class GenreTypeConverter {
 
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
     @TypeConverter
     public static ArrayList<Genre> gettingListFromString(String data) {

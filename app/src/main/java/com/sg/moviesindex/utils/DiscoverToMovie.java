@@ -6,8 +6,8 @@ import com.sg.moviesindex.model.tmdb.Movie;
 import java.util.ArrayList;
 
 public class DiscoverToMovie {
-    private ArrayList<Discover> discovers;
-    private ArrayList<Movie> movies;
+    private final ArrayList<Discover> discovers;
+    private final ArrayList<Movie> movies;
 
     public DiscoverToMovie(ArrayList<Discover> discovers) {
         this.discovers = discovers;

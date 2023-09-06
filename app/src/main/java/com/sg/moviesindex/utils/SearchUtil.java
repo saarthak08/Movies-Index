@@ -44,7 +44,7 @@ public class SearchUtil {
     private MatrixCursor cursor;
     private final LinearLayout linearLayoutError;
     private final Button refreshButtonError;
-    private FetchFirstTimeDataService fetchFirstTimeDataService;
+    private final FetchFirstTimeDataService fetchFirstTimeDataService;
 
 
     public SearchUtil(LinearLayout linearLayout, Button button, CompositeDisposable compositeDisposable, FragmentManager fragmentManager, Context context, ProgressBar progressBar, FetchFirstTimeDataService fetchFirstTimeDataService) {
