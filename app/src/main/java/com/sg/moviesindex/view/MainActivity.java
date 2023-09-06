@@ -1,5 +1,9 @@
 package com.sg.moviesindex.view;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +16,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
@@ -56,6 +62,8 @@ public class MainActivity extends AppCompatActivity
     public FetchGenresListService genresList;
     private FetchFirstTimeDataService fetchFirstTimeDataService;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    final static int MY_PERMISSIONS_REQUESTS_NOTIFICATION_PERMISSIONS = 4;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +87,17 @@ public class MainActivity extends AppCompatActivity
         navigationView.getMenu().getItem(0).setChecked(true);
         fetchFirstTimeDataService = new FetchFirstTimeDataService(linearLayoutError, refreshButtonError, progressBar, compositeDisposable, fragmentManager, MainActivity.this);
         fetchFirstTimeDataService.getDataFirst();
-        genresList=new FetchGenresListService(linearLayoutError,refreshButtonError, MainActivity.this,compositeDisposable,fetchFirstTimeDataService,progressBar);
+        genresList = new FetchGenresListService(linearLayoutError, refreshButtonError, MainActivity.this, compositeDisposable, fetchFirstTimeDataService, progressBar);
+        requestNotificationPermissions();
+    }
+
+    @TargetApi(Build.VERSION_CODES.TIRAMISU)
+    public void requestNotificationPermissions() {
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS}, MY_PERMISSIONS_REQUESTS_NOTIFICATION_PERMISSIONS);
+        }
     }
 
     @Override

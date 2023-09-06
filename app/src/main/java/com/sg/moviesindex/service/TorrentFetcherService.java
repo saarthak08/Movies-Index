@@ -53,7 +53,7 @@ public class TorrentFetcherService {
         final YTSService ytsService = RetrofitInstance.getYTSService(context);
         String movieId = movieTMDb.getImdbId();
         if (movieId == null || movieId.equals("")) {
-            Toast.makeText(context, "No Torrents Found!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "No Torrents Found! Please try again!", Toast.LENGTH_SHORT).show();
             mListener.onComplete(true);
             button.revertAnimation();
             button.stopAnimation();
@@ -71,7 +71,7 @@ public class TorrentFetcherService {
                     @Override
                     public void onError(@NotNull Throwable e) {
                         Log.e("Torrent Fetch", e.toString());
-                        Toast.makeText(context, "Error in fetching torrent files! Try using a VPN.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Error in fetching torrent files! Please try again using a VPN.", Toast.LENGTH_SHORT).show();
                         mListener.onComplete(true);
                         button.revertAnimation();
                         button.stopAnimation();
@@ -84,7 +84,7 @@ public class TorrentFetcherService {
                         button.stopAnimation();
                         if(response!=null) {
                             if (response.getData().getMovieCount() == 0) {
-                                Toast.makeText(context, "No Torrents Found!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "No Torrents Found! Please try again", Toast.LENGTH_SHORT).show();
 
                             } else {
                                 resultantMovie = response.getData().getMovies().get(0);

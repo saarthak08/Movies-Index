@@ -237,7 +237,7 @@ public class TorrentDownloaderService extends IntentService {
         }
         intent.setDataAndType(uri, "application/x-bittorrent");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         notificationBuilder.setContentIntent(pIntent);
         notificationManager.notify(0, notificationBuilder.build());
     }
