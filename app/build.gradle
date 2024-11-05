@@ -2,12 +2,6 @@ plugins {
   id 'com.android.application'
 }
 
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-  localProperties.load(new FileInputStream(localPropertiesFile))
-}
-
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('keys/key.properties')
 if (keystorePropertiesFile.exists()) {
@@ -17,8 +11,6 @@ if (keystorePropertiesFile.exists()) {
 android {
   namespace 'com.sg.moviesindex'
   compileSdk 35
-  ndkVersion localProperties['ndkVersion']
-
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_17
     targetCompatibility JavaVersion.VERSION_17
