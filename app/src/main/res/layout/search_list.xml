@@ -7,11 +7,11 @@
     app:cardElevation="8dp">
 
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:textColor="@color/design_default_color_on_secondary"
-        android:textSize="18sp" />
+  <TextView
+      android:id="@+id/textView2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:padding="12dp"
+      android:textColor="@color/design_default_color_on_secondary"
+      android:textSize="18sp" />
 </androidx.cardview.widget.CardView>

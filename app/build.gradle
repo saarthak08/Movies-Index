@@ -1,103 +1,128 @@
-apply plugin: 'com.android.application'
+plugins {
+  id 'com.android.application'
+}
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+  localProperties.load(new FileInputStream(localPropertiesFile))
+}
 
 def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('key.properties')
+def keystorePropertiesFile = rootProject.file('keys/key.properties')
 if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+  keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 android {
-    compileSdk 34
-    defaultConfig {
-        applicationId "com.sg.moviesindex"
-        minSdkVersion 21
-        compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_8
-            targetCompatibility JavaVersion.VERSION_1_8
-        }
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
-        }
-        multiDexEnabled true
-        targetSdkVersion 34
-        versionCode 14
-        versionName "1.4.3"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  namespace 'com.sg.moviesindex'
+  compileSdk 35
+  ndkVersion localProperties['ndkVersion']
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+
+  defaultConfig {
+    applicationId "com.sg.moviesindex"
+    minSdkVersion 21
+    multiDexEnabled true
+    targetSdkVersion 35
+    versionCode 14
+    versionName "1.4.3"
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    javaCompileOptions {
+      annotationProcessorOptions {
+        arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+      }
     }
-    sourceSets {
-        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+    buildConfigField "String", "ApiKey", keystoreProperties['apiKey']
+  }
+
+  sourceSets {
+    androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+  }
+
+  signingConfigs {
+    release {
+      keyAlias keystoreProperties['keyAlias']
+      keyPassword keystoreProperties['keyPassword']
+      storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+      storePassword keystoreProperties['storePassword']
     }
-    signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
-        }
+  }
+
+  buildTypes {
+    release {
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+      signingConfig signingConfigs.release
     }
-    buildTypes {
-        debug {
-            buildConfigField "String", "ApiKey", TMDB_API_KEY
-        }
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro -keep class android.support.v7.widget.SearchView { *; }\n' +
-                    ''
-            buildConfigField "String", "ApiKey", TMDB_API_KEY
-            signingConfig signingConfigs.release
-        }
+  }
+
+  flavorDimensions += "env"
+
+  productFlavors {
+    dev {
+      dimension "env"
+      applicationIdSuffix ".dev"
+      versionNameSuffix "-dev"
+      buildConfigField 'String', 'FLAVOR', '"dev"'
+      resValue "string", "app_name", "[DEV] Movies Index"
     }
-    buildFeatures {
-        dataBinding=true
+
+    prod {
+      dimension "env"
+      buildConfigField 'String', 'FLAVOR', '"prod"'
+      resValue "string", "app_name", "Movies Index"
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-    dependenciesInfo {
-        includeInApk false
-        includeInBundle false
-    }
-    buildToolsVersion '34.0.0'
-    ndkVersion '25.2.9519653'
-    namespace 'com.sg.moviesindex'
+  }
+
+  buildFeatures {
+    dataBinding = true
+    buildConfig true
+  }
+
+  dependenciesInfo {
+    includeInApk false
+    includeInBundle false
+  }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    def room_version = "2.6.0-beta01"
-    def lifecycle_version = "2.2.0"
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
-    implementation 'androidx.appcompat:appcompat:1.7.0-alpha03'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    implementation 'br.com.simplepass:loading-button-android:2.2.0'
-    implementation 'com.github.varunest:sparkbutton:1.0.6'
-    implementation "io.reactivex.rxjava2:rxjava:2.2.10"
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation 'com.github.antonKozyriatskyi:CircularProgressIndicator:1.3.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test:runner:1.5.2'
-    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    implementation 'com.google.android.material:material:1.3.0-rc01'
-    implementation 'androidx.recyclerview:recyclerview:1.3.1'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.jakewharton.rxbinding3:rxbinding:3.1.0'
-    implementation 'com.jakewharton.rxbinding3:rxbinding-core:3.1.0'
-    implementation 'com.jakewharton.rxbinding3:rxbinding-appcompat:3.1.0'
-    implementation 'com.jakewharton.rxbinding3:rxbinding-drawerlayout:3.1.0'
-    implementation 'com.jakewharton.rxbinding3:rxbinding-recyclerview:3.1.0'
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+  def room_version = "2.6.1"
+  def lifecycle_version = "2.2.0"
+  implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+  implementation 'androidx.appcompat:appcompat:1.7.0'
+  implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+  implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+  implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
+  implementation 'com.github.bumptech.glide:glide:4.12.0'
+  implementation 'com.github.leandroborgesferreira:loading-button-android:2.3.0'
+  implementation 'com.github.varunest:sparkbutton:1.0.6'
+  implementation "io.reactivex.rxjava2:rxjava:2.2.10"
+  implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+  implementation 'com.github.antonKozyriatskyi:CircularProgressIndicator:1.3.0'
+  implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+  annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+  implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+  implementation "androidx.room:room-runtime:$room_version"
+  annotationProcessor "androidx.room:room-compiler:$room_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.11.3"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.11.3"
+  androidTestImplementation 'androidx.test:runner:1.6.2'
+  implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+  androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+  implementation 'com.google.android.material:material:1.12.0'
+  implementation 'androidx.recyclerview:recyclerview:1.3.2'
+  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+  implementation 'androidx.core:core-ktx:1.15.0'
+  implementation 'androidx.cardview:cardview:1.0.0'
+  implementation 'com.jakewharton.rxbinding3:rxbinding:3.1.0'
+  implementation 'com.jakewharton.rxbinding3:rxbinding-core:3.1.0'
+  implementation 'com.jakewharton.rxbinding3:rxbinding-appcompat:3.1.0'
+  implementation 'com.jakewharton.rxbinding3:rxbinding-drawerlayout:3.1.0'
+  implementation 'com.jakewharton.rxbinding3:rxbinding-recyclerview:3.1.0'
 }

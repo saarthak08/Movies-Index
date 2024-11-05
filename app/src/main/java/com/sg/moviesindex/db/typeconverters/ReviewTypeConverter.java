@@ -11,23 +11,23 @@ import java.util.ArrayList;
 
 public class ReviewTypeConverter {
 
-    private static final Gson gson = new Gson();
+  private static final Gson gson = new Gson();
 
-    @TypeConverter
-    public static ArrayList<Review> gettingListFromString(String data) {
-        if (data == null) {
-            return new ArrayList<Review>();
-        }
-
-        Type listType = new TypeToken<ArrayList<Review>>() {
-        }.getType();
-
-        return gson.fromJson(data, listType);
+  @TypeConverter
+  public static ArrayList<Review> gettingListFromString(String data) {
+    if (data == null) {
+      return new ArrayList<Review>();
     }
 
-    @TypeConverter
-    public static String gettingStringFromList(ArrayList<Review> someObjects) {
-        return gson.toJson(someObjects);
-    }
+    Type listType = new TypeToken<ArrayList<Review>>() {
+    }.getType();
+
+    return gson.fromJson(data, listType);
+  }
+
+  @TypeConverter
+  public static String gettingStringFromList(ArrayList<Review> someObjects) {
+    return gson.toJson(someObjects);
+  }
 
 }

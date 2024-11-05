@@ -31,80 +31,80 @@ import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class FetchGenresListService implements Serializable {
-    private Observable<MoviesList> observableMovie;
-    private Observable<DiscoversList> observableDB;
-    private final Context context;
-    private final ProgressBar progressBar;
-    private final LinearLayout linearLayoutError;
-    private final Button refreshButtonError;
-    private final CompositeDisposable compositeDisposable;
-    private final FetchFirstTimeDataService fetchFirstTimeDataService;
+  private final Context context;
+  private final ProgressBar progressBar;
+  private final LinearLayout linearLayoutError;
+  private final Button refreshButtonError;
+  private final CompositeDisposable compositeDisposable;
+  private final FetchFirstTimeDataService fetchFirstTimeDataService;
+  private Observable<MoviesList> observableMovie;
+  private Observable<DiscoversList> observableDB;
 
-    public FetchGenresListService(LinearLayout linearLayout, Button button, Context context, CompositeDisposable compositeDisposable, FetchFirstTimeDataService fetchFirstTimeDataService, ProgressBar progressBar) {
-        this.context = context;
-        this.linearLayoutError = linearLayout;
-        this.refreshButtonError = button;
-        this.compositeDisposable = compositeDisposable;
-        this.fetchFirstTimeDataService = fetchFirstTimeDataService;
-        this.progressBar = progressBar;
+  public FetchGenresListService(LinearLayout linearLayout, Button button, Context context, CompositeDisposable compositeDisposable, FetchFirstTimeDataService fetchFirstTimeDataService, ProgressBar progressBar) {
+    this.context = context;
+    this.linearLayoutError = linearLayout;
+    this.refreshButtonError = button;
+    this.compositeDisposable = compositeDisposable;
+    this.fetchFirstTimeDataService = fetchFirstTimeDataService;
+    this.progressBar = progressBar;
+  }
+
+  public void getGenresList() {
+    final TMDbService TMDbService = RetrofitInstance.getTMDbService(context);
+    String ApiKey = BuildConfigs.apiKey;
+    MainActivity.drawer = 4;
+    Observable<GenresList> genresListObservable = TMDbService.getGenresList(ApiKey);
+    try {
+      compositeDisposable.add(
+          genresListObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+              .subscribeWith(new DisposableObserver<GenresList>() {
+                @Override
+                public void onNext(@NotNull GenresList genresList) {
+                  if (genresList.getGenres() != null) {
+                    MainActivity.genres = (ArrayList<Genre>) genresList.getGenres();
+                    String[] a = new String[MainActivity.genres.size()];
+                    for (int i = 0; i < MainActivity.genres.size(); i++) {
+                      a[i] = MainActivity.genres.get(i).getName();
+                    }
+                    Dialog dialog = new MaterialAlertDialogBuilder(context).setTitle("Choose a Category").setSingleChoiceItems(a, -1, new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+                        MainActivity.selected = which;
+                        MainActivity.genreid = MainActivity.genres.get(which).getId();
+                        fetchFirstTimeDataService.getFirstGenreData();
+                        dialog.dismiss();
+                      }
+                    }).setCancelable(false).show();
+                  }
+
+                }
+
+                @Override
+                public void onError(@NotNull Throwable e) {
+                  progressBar.setIndeterminate(false);
+                  progressBar.setVisibility(View.GONE);
+                  linearLayoutError.setVisibility(View.VISIBLE);
+                  refreshButtonError.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                      progressBar.setIndeterminate(true);
+                      progressBar.setVisibility(View.VISIBLE);
+                      linearLayoutError.setVisibility(View.GONE);
+                      getGenresList();
+                    }
+                  });
+                  Log.d("Check Your Internet", e.getMessage());
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+              })
+      );
+    } catch (Exception e) {
+      Log.d("FetchGenresListService", e.getMessage());
     }
-
-    public void getGenresList() {
-        final TMDbService TMDbService = RetrofitInstance.getTMDbService(context);
-        String ApiKey = BuildConfigs.apiKey;
-        MainActivity.drawer = 4;
-        Observable<GenresList> genresListObservable = TMDbService.getGenresList(ApiKey);
-        try {
-            compositeDisposable.add(
-                    genresListObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                            .subscribeWith(new DisposableObserver<GenresList>() {
-                                @Override
-                                public void onNext(@NotNull GenresList genresList) {
-                                    if (genresList.getGenres() != null) {
-                                        MainActivity.genres = (ArrayList<Genre>) genresList.getGenres();
-                                        String[] a = new String[MainActivity.genres.size()];
-                                        for (int i = 0; i < MainActivity.genres.size(); i++) {
-                                            a[i] = MainActivity.genres.get(i).getName();
-                                        }
-                                        Dialog dialog = new MaterialAlertDialogBuilder(context).setTitle("Choose a Category").setSingleChoiceItems(a, -1, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                MainActivity.selected = which;
-                                                MainActivity.genreid = MainActivity.genres.get(which).getId();
-                                                fetchFirstTimeDataService.getFirstGenreData();
-                                                dialog.dismiss();
-                                            }
-                                        }).setCancelable(false).show();
-                                    }
-
-                                }
-
-                                @Override
-                                public void onError(@NotNull Throwable e) {
-                                    progressBar.setIndeterminate(false);
-                                    progressBar.setVisibility(View.GONE);
-                                    linearLayoutError.setVisibility(View.VISIBLE);
-                                    refreshButtonError.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            progressBar.setIndeterminate(true);
-                                            progressBar.setVisibility(View.VISIBLE);
-                                            linearLayoutError.setVisibility(View.GONE);
-                                            getGenresList();
-                                        }
-                                    });
-                                    Log.d("Check Your Internet", e.getMessage());
-                                }
-
-                                @Override
-                                public void onComplete() {
-
-                                }
-                            })
-            );
-        } catch (Exception e) {
-            Log.d("FetchGenresListService", e.getMessage());
-        }
-    }
+  }
 
 }

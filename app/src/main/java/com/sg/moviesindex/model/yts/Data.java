@@ -12,103 +12,103 @@ import java.util.List;
 
 public class Data implements Serializable, Parcelable {
 
-    @SerializedName("movie_count")
-    @Expose
-    private Long movieCount;
-    @SerializedName("limit")
-    @Expose
-    private Long limit;
-    @SerializedName("page_number")
-    @Expose
-    private Long pageNumber;
-    @SerializedName("movies")
-    @Expose
-    private List<Movie> movies = null;
-    public final static Parcelable.Creator<Data> CREATOR = new Creator<Data>() {
+  public final static Parcelable.Creator<Data> CREATOR = new Creator<Data>() {
 
 
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public Data createFromParcel(Parcel in) {
-            return new Data(in);
-        }
-
-        public Data[] newArray(int size) {
-            return (new Data[size]);
-        }
-
-    };
-    private final static long serialVersionUID = 8675435186511918158L;
-
-    protected Data(Parcel in) {
-        this.movieCount = ((Long) in.readValue((Long.class.getClassLoader())));
-        this.limit = ((Long) in.readValue((Long.class.getClassLoader())));
-        this.pageNumber = ((Long) in.readValue((Long.class.getClassLoader())));
-        in.readList(this.movies, (com.sg.moviesindex.model.yts.Movie.class.getClassLoader()));
+    @SuppressWarnings({
+        "unchecked"
+    })
+    public Data createFromParcel(Parcel in) {
+      return new Data(in);
     }
 
-    /**
-     * No args constructor for use in serialization
-     */
-    public Data() {
+    public Data[] newArray(int size) {
+      return (new Data[size]);
     }
 
-    /**
-     * @param movies
-     * @param pageNumber
-     * @param movieCount
-     * @param limit
-     */
-    public Data(Long movieCount, Long limit, Long pageNumber, List<Movie> movies) {
-        super();
-        this.movieCount = movieCount;
-        this.limit = limit;
-        this.pageNumber = pageNumber;
-        this.movies = movies;
-    }
+  };
+  private final static long serialVersionUID = 8675435186511918158L;
+  @SerializedName("movie_count")
+  @Expose
+  private Long movieCount;
+  @SerializedName("limit")
+  @Expose
+  private Long limit;
+  @SerializedName("page_number")
+  @Expose
+  private Long pageNumber;
+  @SerializedName("movies")
+  @Expose
+  private List<Movie> movies = null;
 
-    public Long getMovieCount() {
-        return movieCount;
-    }
+  protected Data(Parcel in) {
+    this.movieCount = ((Long) in.readValue((Long.class.getClassLoader())));
+    this.limit = ((Long) in.readValue((Long.class.getClassLoader())));
+    this.pageNumber = ((Long) in.readValue((Long.class.getClassLoader())));
+    in.readList(this.movies, (com.sg.moviesindex.model.yts.Movie.class.getClassLoader()));
+  }
 
-    public void setMovieCount(Long movieCount) {
-        this.movieCount = movieCount;
-    }
+  /**
+   * No args constructor for use in serialization
+   */
+  public Data() {
+  }
 
-    public Long getLimit() {
-        return limit;
-    }
+  /**
+   * @param movies
+   * @param pageNumber
+   * @param movieCount
+   * @param limit
+   */
+  public Data(Long movieCount, Long limit, Long pageNumber, List<Movie> movies) {
+    super();
+    this.movieCount = movieCount;
+    this.limit = limit;
+    this.pageNumber = pageNumber;
+    this.movies = movies;
+  }
 
-    public void setLimit(Long limit) {
-        this.limit = limit;
-    }
+  public Long getMovieCount() {
+    return movieCount;
+  }
 
-    public Long getPageNumber() {
-        return pageNumber;
-    }
+  public void setMovieCount(Long movieCount) {
+    this.movieCount = movieCount;
+  }
 
-    public void setPageNumber(Long pageNumber) {
-        this.pageNumber = pageNumber;
-    }
+  public Long getLimit() {
+    return limit;
+  }
 
-    public List<Movie> getMovies() {
-        return movies;
-    }
+  public void setLimit(Long limit) {
+    this.limit = limit;
+  }
 
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
-    }
+  public Long getPageNumber() {
+    return pageNumber;
+  }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(movieCount);
-        dest.writeValue(limit);
-        dest.writeValue(pageNumber);
-        dest.writeList(movies);
-    }
+  public void setPageNumber(Long pageNumber) {
+    this.pageNumber = pageNumber;
+  }
 
-    public int describeContents() {
-        return 0;
-    }
+  public List<Movie> getMovies() {
+    return movies;
+  }
+
+  public void setMovies(List<Movie> movies) {
+    this.movies = movies;
+  }
+
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeValue(movieCount);
+    dest.writeValue(limit);
+    dest.writeValue(pageNumber);
+    dest.writeList(movies);
+  }
+
+  public int describeContents() {
+    return 0;
+  }
 
 }

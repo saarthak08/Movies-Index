@@ -10,85 +10,85 @@ import java.util.List;
 
 public class DiscoversList implements Parcelable {
 
-    @SerializedName("page")
-    @Expose
-    private Integer page;
-    @SerializedName("total_results")
-    @Expose
-    private Integer totalResults;
-    @SerializedName("total_pages")
-    @Expose
-    private Integer totalPages;
-    @SerializedName("results")
-    @Expose
-    private List<Discover> discovers = null;
-    public final static Parcelable.Creator<DiscoversList> CREATOR = new Creator<DiscoversList>() {
+  public final static Parcelable.Creator<DiscoversList> CREATOR = new Creator<DiscoversList>() {
 
 
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public DiscoversList createFromParcel(Parcel in) {
-            return new DiscoversList(in);
-        }
-
-        public DiscoversList[] newArray(int size) {
-            return (new DiscoversList[size]);
-        }
-
-    };
-
-    protected DiscoversList(Parcel in) {
-        this.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.totalResults = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        in.readList(this.discovers, (Discover.class.getClassLoader()));
+    @SuppressWarnings({
+        "unchecked"
+    })
+    public DiscoversList createFromParcel(Parcel in) {
+      return new DiscoversList(in);
     }
 
-    public DiscoversList() {
+    public DiscoversList[] newArray(int size) {
+      return (new DiscoversList[size]);
     }
 
-    public Integer getPage() {
-        return page;
-    }
+  };
+  @SerializedName("page")
+  @Expose
+  private Integer page;
+  @SerializedName("total_results")
+  @Expose
+  private Integer totalResults;
+  @SerializedName("total_pages")
+  @Expose
+  private Integer totalPages;
+  @SerializedName("results")
+  @Expose
+  private List<Discover> discovers = null;
 
-    public void setPage(Integer page) {
-        this.page = page;
-    }
+  protected DiscoversList(Parcel in) {
+    this.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
+    this.totalResults = ((Integer) in.readValue((Integer.class.getClassLoader())));
+    this.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
+    in.readList(this.discovers, (Discover.class.getClassLoader()));
+  }
 
-    public Integer getTotalResults() {
-        return totalResults;
-    }
+  public DiscoversList() {
+  }
 
-    public void setTotalResults(Integer totalResults) {
-        this.totalResults = totalResults;
-    }
+  public Integer getPage() {
+    return page;
+  }
 
-    public Integer getTotalPages() {
-        return totalPages;
-    }
+  public void setPage(Integer page) {
+    this.page = page;
+  }
 
-    public void setTotalPages(Integer totalPages) {
-        this.totalPages = totalPages;
-    }
+  public Integer getTotalResults() {
+    return totalResults;
+  }
 
-    public List<Discover> getResults() {
-        return discovers;
-    }
+  public void setTotalResults(Integer totalResults) {
+    this.totalResults = totalResults;
+  }
 
-    public void setResults(List<Discover> discovers) {
-        this.discovers = discovers;
-    }
+  public Integer getTotalPages() {
+    return totalPages;
+  }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(page);
-        dest.writeValue(totalResults);
-        dest.writeValue(totalPages);
-        dest.writeList(discovers);
-    }
+  public void setTotalPages(Integer totalPages) {
+    this.totalPages = totalPages;
+  }
 
-    public int describeContents() {
-        return 0;
-    }
+  public List<Discover> getResults() {
+    return discovers;
+  }
+
+  public void setResults(List<Discover> discovers) {
+    this.discovers = discovers;
+  }
+
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeValue(page);
+    dest.writeValue(totalResults);
+    dest.writeValue(totalPages);
+    dest.writeList(discovers);
+  }
+
+  public int describeContents() {
+    return 0;
+  }
 
 }

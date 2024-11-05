@@ -11,62 +11,60 @@ import java.util.List;
 
 public class CastsList implements Serializable, Parcelable {
 
-    @SerializedName("id")
-    @Expose
-    private Integer id;
+  public final static Parcelable.Creator<CastsList> CREATOR = new Creator<CastsList>() {
 
 
-    @SerializedName("cast")
-    @Expose
-    private List<Cast> cast = null;
-    public final static Parcelable.Creator<CastsList> CREATOR = new Creator<CastsList>() {
-
-
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public CastsList createFromParcel(Parcel in) {
-            return new CastsList(in);
-        }
-
-        public CastsList[] newArray(int size) {
-            return (new CastsList[size]);
-        }
-
-    };
-    private final static long serialVersionUID = -6389819486142662649L;
-
-    protected CastsList(Parcel in) {
-        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        in.readList(this.cast, (Cast.class.getClassLoader()));
+    @SuppressWarnings({
+        "unchecked"
+    })
+    public CastsList createFromParcel(Parcel in) {
+      return new CastsList(in);
     }
 
-    public CastsList() {
+    public CastsList[] newArray(int size) {
+      return (new CastsList[size]);
     }
 
-    public Integer getId() {
-        return id;
-    }
+  };
+  private final static long serialVersionUID = -6389819486142662649L;
+  @SerializedName("id")
+  @Expose
+  private Integer id;
+  @SerializedName("cast")
+  @Expose
+  private List<Cast> cast = null;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  protected CastsList(Parcel in) {
+    this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
+    in.readList(this.cast, (Cast.class.getClassLoader()));
+  }
 
-    public List<Cast> getCast() {
-        return cast;
-    }
+  public CastsList() {
+  }
 
-    public void setCast(List<Cast> cast) {
-        this.cast = cast;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(id);
-        dest.writeList(cast);
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public int describeContents() {
-        return 0;
-    }
+  public List<Cast> getCast() {
+    return cast;
+  }
+
+  public void setCast(List<Cast> cast) {
+    this.cast = cast;
+  }
+
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeValue(id);
+    dest.writeList(cast);
+  }
+
+  public int describeContents() {
+    return 0;
+  }
 
 }

@@ -1,5 +1,7 @@
 package com.sg.moviesindex.db;
 
+import static androidx.room.OnConflictStrategy.REPLACE;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -10,22 +12,20 @@ import com.sg.moviesindex.model.tmdb.Movie;
 
 import java.util.List;
 
-import static androidx.room.OnConflictStrategy.REPLACE;
-
 @Dao
 public interface FavouriteMoviesDAO {
 
-    @Insert(onConflict = REPLACE)
-    void insertFMovie(Movie movie);
+  @Insert(onConflict = REPLACE)
+  void insertFMovie(Movie movie);
 
-    @Delete
-    void deleteFMovie(Movie movie);
+  @Delete
+  void deleteFMovie(Movie movie);
 
-    @Query("select * from favourite_movies")
-    LiveData<List<Movie>> getAllFMovies();
+  @Query("select * from favourite_movies")
+  LiveData<List<Movie>> getAllFMovies();
 
-    @Query("select * from favourite_movies where title==:title")
-    Movie getMovie(String title);
+  @Query("select * from favourite_movies where title==:title")
+  Movie getMovie(String title);
 
 
 }

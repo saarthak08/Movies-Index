@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3700B3</color>
-    <color name="colorPrimaryDark">#35207B</color>
-    <color name="colorAccent">#D81B60</color>
-    <color name="colorBackground">#4c4c4c</color>
-    <color name="heart_primary_color">#da4439</color>
-    <color name="heart_secondary_color">#8a098c</color>
-    <color name="chip_color">#cae9f5</color>
-    <color name="tmdb_text_color">#63D675</color>
+  <color name="colorPrimary">#3700B3</color>
+  <color name="colorPrimaryDark">#35207B</color>
+  <color name="colorAccent">#D81B60</color>
+  <color name="colorBackground">#4c4c4c</color>
+  <color name="heart_primary_color">#da4439</color>
+  <color name="heart_secondary_color">#8a098c</color>
+  <color name="chip_color">#cae9f5</color>
+  <color name="tmdb_text_color">#63D675</color>
 </resources>

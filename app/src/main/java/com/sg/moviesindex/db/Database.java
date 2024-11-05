@@ -16,22 +16,21 @@ import com.sg.moviesindex.model.tmdb.Movie;
 @androidx.room.Database(entities = Movie.class, version = 2)
 @TypeConverters({CastTypeConverter.class, ReviewTypeConverter.class, GenreTypeConverter.class})
 public abstract class Database extends RoomDatabase {
-    public abstract FavouriteMoviesDAO getFDAO();
-
-    private static Database instance;
-
-    public static synchronized Database getInstance(Context context) {
-        if (instance == null) {
-            instance = Room.databaseBuilder(context.getApplicationContext(), Database.class, "TMDB").addCallback(callback).allowMainThreadQueries().fallbackToDestructiveMigration()
-                    .build();
-        }
-        return instance;
+  private static final RoomDatabase.Callback callback = new RoomDatabase.Callback() {
+    @Override
+    public void onCreate(@NonNull SupportSQLiteDatabase db) {
+      super.onCreate(db);
     }
+  };
+  private static Database instance;
 
-    private static final RoomDatabase.Callback callback = new RoomDatabase.Callback() {
-        @Override
-        public void onCreate(@NonNull SupportSQLiteDatabase db) {
-            super.onCreate(db);
-        }
-    };
+  public static synchronized Database getInstance(Context context) {
+    if (instance == null) {
+      instance = Room.databaseBuilder(context.getApplicationContext(), Database.class, "TMDB").addCallback(callback).allowMainThreadQueries().fallbackToDestructiveMigration()
+          .build();
+    }
+    return instance;
+  }
+
+  public abstract FavouriteMoviesDAO getFDAO();
 }

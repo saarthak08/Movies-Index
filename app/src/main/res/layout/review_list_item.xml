@@ -2,61 +2,64 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <data>
-        <variable
-            name="review"
-            type="com.sg.moviesindex.model.tmdb.Review"/>
-    </data>
-    <androidx.cardview.widget.CardView
-        android:orientation="vertical"
+
+  <data>
+
+    <variable
+        name="review"
+        type="com.sg.moviesindex.model.tmdb.Review" />
+  </data>
+
+  <androidx.cardview.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:elevation="4dp"
+      android:orientation="vertical"
+      tools:targetApi="lollipop">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="4dp"
-        tools:targetApi="lollipop">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
 
-            <TextView
-                android:id="@+id/tvReviewName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center|start"
-                android:paddingStart="8dp"
-                android:paddingLeft="8dp"
-                android:paddingTop="8dp"
-                android:textColor="@android:color/black"
-                android:text="@{review.author}"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/tvReviewContent"
-                tools:ignore="RtlSymmetry" />
+      <TextView
+          android:id="@+id/tvReviewName"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center|start"
+          android:paddingStart="8dp"
 
-            <TextView
-                android:id="@+id/tvReviewContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingLeft="8dp"
-                android:paddingTop="2dp"
-                android:paddingRight="8dp"
-                android:paddingEnd="8dp"
-                android:fontFamily="@font/roboto"
-                app:layout_constraintVertical_weight="1"
-                android:text="@{review.content}"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tvReviewName"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:ignore="RtlSymmetry" />
+          android:paddingTop="8dp"
+          android:text="@{review.author}"
+          android:textColor="@android:color/black"
+          android:textSize="18sp"
+          android:textStyle="bold"
+          app:layout_constraintBottom_toTopOf="@id/tvReviewContent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          tools:ignore="RtlSymmetry" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+      <TextView
+          android:id="@+id/tvReviewContent"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/roboto"
+          android:paddingStart="8dp"
+          android:paddingLeft="8dp"
+          android:paddingTop="2dp"
+          android:paddingEnd="8dp"
+          android:paddingRight="8dp"
+          android:text="@{review.content}"
+          android:textSize="14sp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="@+id/tvReviewName"
+          app:layout_constraintVertical_weight="1"
+          tools:ignore="RtlSymmetry" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </androidx.cardview.widget.CardView>
 </layout>

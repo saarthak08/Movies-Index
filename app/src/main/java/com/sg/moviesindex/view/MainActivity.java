@@ -39,155 +39,154 @@ import io.reactivex.disposables.CompositeDisposable;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+    implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ProgressBar progressBar;
-    public static ArrayList<Movie> movieList = new ArrayList<>();
-    private FragmentManager fragmentManager;
-    public static int totalPages;
-    public static int totalPagesGenres;
-    public static int drawer = 0;
-    public static int imageup = 0;
-    public static long genreid;
-    public static String region = "";
-    public static int selected;
-    public static ArrayList<Discover> discovers;
-    public static ArrayList<Genre> genres;
-    public static ArrayList<Discover> search;
-    public static ArrayList<Movie> moviesearch;
-    public static String queryM;
-    private LinearLayout linearLayoutError;
-    private Button refreshButtonError;
-    private NavigationView navigationView;
-    public FetchGenresListService genresList;
-    private FetchFirstTimeDataService fetchFirstTimeDataService;
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    final static int MY_PERMISSIONS_REQUESTS_NOTIFICATION_PERMISSIONS = 4;
+  final static int MY_PERMISSIONS_REQUESTS_NOTIFICATION_PERMISSIONS = 4;
+  public static ArrayList<Movie> movieList = new ArrayList<>();
+  public static int totalPages;
+  public static int totalPagesGenres;
+  public static int drawer = 0;
+  public static int imageup = 0;
+  public static long genreid;
+  public static String region = "";
+  public static int selected;
+  public static ArrayList<Discover> discovers;
+  public static ArrayList<Genre> genres;
+  public static ArrayList<Discover> search;
+  public static ArrayList<Movie> moviesearch;
+  public static String queryM;
+  private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+  public FetchGenresListService genresList;
+  private ProgressBar progressBar;
+  private FragmentManager fragmentManager;
+  private LinearLayout linearLayoutError;
+  private Button refreshButtonError;
+  private NavigationView navigationView;
+  private FetchFirstTimeDataService fetchFirstTimeDataService;
 
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    fragmentManager = getSupportFragmentManager();
+    navigationView = findViewById(R.id.nav_view);
+    progressBar = findViewById(R.id.progressBar);
+    Toolbar toolbar = findViewById(R.id.toolbar);
+    setSupportActionBar(toolbar);
+    DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+    drawerLayout.addDrawerListener(toggle);
+    toggle.syncState();
+    navigationView.setNavigationItemSelectedListener(this);
+    progressBar.animate().alpha(1).setDuration(500);
+    progressBar.setIndeterminate(true);
+    linearLayoutError = findViewById(R.id.llError);
+    refreshButtonError = findViewById(R.id.buttonllError);
+    navigationView.getMenu().getItem(0).setChecked(true);
+    fetchFirstTimeDataService = new FetchFirstTimeDataService(linearLayoutError, refreshButtonError, progressBar, compositeDisposable, fragmentManager, MainActivity.this);
+    fetchFirstTimeDataService.getDataFirst();
+    genresList = new FetchGenresListService(linearLayoutError, refreshButtonError, MainActivity.this, compositeDisposable, fetchFirstTimeDataService, progressBar);
+    requestNotificationPermissions();
+  }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        fragmentManager = getSupportFragmentManager();
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        progressBar = findViewById(R.id.progressBar);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
-        progressBar.animate().alpha(1).setDuration(500);
-        progressBar.setIndeterminate(true);
-        linearLayoutError = findViewById(R.id.llError);
-        refreshButtonError = findViewById(R.id.buttonllError);
-        navigationView.getMenu().getItem(0).setChecked(true);
-        fetchFirstTimeDataService = new FetchFirstTimeDataService(linearLayoutError, refreshButtonError, progressBar, compositeDisposable, fragmentManager, MainActivity.this);
-        fetchFirstTimeDataService.getDataFirst();
-        genresList = new FetchGenresListService(linearLayoutError, refreshButtonError, MainActivity.this, compositeDisposable, fetchFirstTimeDataService, progressBar);
-        requestNotificationPermissions();
+  @TargetApi(Build.VERSION_CODES.TIRAMISU)
+  public void requestNotificationPermissions() {
+    if (ContextCompat.checkSelfPermission(MainActivity.this,
+        Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+      ActivityCompat.requestPermissions(MainActivity.this,
+          new String[]{Manifest.permission.POST_NOTIFICATIONS}, MY_PERMISSIONS_REQUESTS_NOTIFICATION_PERMISSIONS);
+    }
+  }
+
+  @Override
+  public void onBackPressed() {
+    DrawerLayout drawer = findViewById(R.id.drawer_layout);
+    if (drawer.isDrawerOpen(GravityCompat.START)) {
+      drawer.closeDrawer(GravityCompat.START);
+    } else if (MainActivity.drawer != 0) {
+      MainActivity.drawer = 0;
+      for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+        getSupportFragmentManager().popBackStack();
+      }
+      navigationView.getMenu().getItem(0).setChecked(true);
+      fetchFirstTimeDataService.getDataFirst();
+    } else {
+      super.onBackPressed();
+      finish();
+    }
+  }
+
+  @Override
+  public boolean onNavigationItemSelected(MenuItem item) {
+    // Handle navigation view item clicks here.
+    progressBar.setIndeterminate(true);
+    progressBar.setVisibility(View.VISIBLE);
+    linearLayoutError.setVisibility(View.GONE);
+
+    int id = item.getItemId();
+
+    if (id == R.id.movies) {
+      drawer = 0;
+      for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+        getSupportFragmentManager().popBackStack();
+      }
+      fetchFirstTimeDataService.getDataFirst();
+    } else if (id == R.id.favmovies) {
+      FragmentTransaction fragmentTransaction1;
+      for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+        getSupportFragmentManager().popBackStack();
+      }
+      drawer = 5;
+      fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
+      fragmentTransaction1.addToBackStack(null);
+      fragmentTransaction1.replace(R.id.frame_layout, FavouriteMovies.newInstance()).commit();
+    } else if (id == R.id.toprated) {
+      drawer = 3;
+      for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+        getSupportFragmentManager().popBackStack();
+      }
+      fetchFirstTimeDataService.getDataFirst();
+    } else if (id == R.id.genres) {
+      drawer = 4;
+      for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+        getSupportFragmentManager().popBackStack();
+      }
+      genresList.getGenresList();
+    } else if (id == R.id.upcoming_movies) {
+      drawer = 2;
+      for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+        getSupportFragmentManager().popBackStack();
+      }
+      fetchFirstTimeDataService.getDataFirst();
+    } else if (id == R.id.now_playing) {
+      drawer = 1;
+      for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+        getSupportFragmentManager().popBackStack();
+      }
+      fetchFirstTimeDataService.getDataFirst();
     }
 
-    @TargetApi(Build.VERSION_CODES.TIRAMISU)
-    public void requestNotificationPermissions() {
-        if (ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.POST_NOTIFICATIONS}, MY_PERMISSIONS_REQUESTS_NOTIFICATION_PERMISSIONS);
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else if (MainActivity.drawer != 0) {
-            MainActivity.drawer = 0;
-            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                getSupportFragmentManager().popBackStack();
-            }
-            navigationView.getMenu().getItem(0).setChecked(true);
-            fetchFirstTimeDataService.getDataFirst();
-        } else {
-            super.onBackPressed();
-            finish();
-        }
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        progressBar.setIndeterminate(true);
-        progressBar.setVisibility(View.VISIBLE);
-        linearLayoutError.setVisibility(View.GONE);
-
-        int id = item.getItemId();
-
-        if (id == R.id.movies) {
-            drawer = 0;
-            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                getSupportFragmentManager().popBackStack();
-            }
-            fetchFirstTimeDataService.getDataFirst();
-        } else if (id == R.id.favmovies) {
-            FragmentTransaction fragmentTransaction1;
-            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                getSupportFragmentManager().popBackStack();
-            }
-            drawer = 5;
-            fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction1.addToBackStack(null);
-            fragmentTransaction1.replace(R.id.frame_layout, FavouriteMovies.newInstance()).commit();
-        } else if (id == R.id.toprated) {
-            drawer = 3;
-            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                getSupportFragmentManager().popBackStack();
-            }
-            fetchFirstTimeDataService.getDataFirst();
-        } else if (id == R.id.genres) {
-            drawer = 4;
-            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                getSupportFragmentManager().popBackStack();
-            }
-            genresList.getGenresList();
-        } else if (id == R.id.upcoming_movies) {
-            drawer = 2;
-            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                getSupportFragmentManager().popBackStack();
-            }
-            fetchFirstTimeDataService.getDataFirst();
-        } else if (id == R.id.now_playing) {
-            drawer = 1;
-            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                getSupportFragmentManager().popBackStack();
-            }
-            fetchFirstTimeDataService.getDataFirst();
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
+    DrawerLayout drawer = findViewById(R.id.drawer_layout);
+    drawer.closeDrawer(GravityCompat.START);
+    return true;
+  }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search_view, menu);
-        MenuItem menuItem = menu.findItem(R.id.app_bar_search);
-        SearchView searchView = (SearchView) menuItem.getActionView();
-        SearchUtil searchUtil = new SearchUtil(linearLayoutError, refreshButtonError, compositeDisposable, fragmentManager, MainActivity.this, progressBar, fetchFirstTimeDataService);
-        searchUtil.search(searchView);
-        return true;
-    }
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.search_view, menu);
+    MenuItem menuItem = menu.findItem(R.id.app_bar_search);
+    SearchView searchView = (SearchView) menuItem.getActionView();
+    SearchUtil searchUtil = new SearchUtil(linearLayoutError, refreshButtonError, compositeDisposable, fragmentManager, MainActivity.this, progressBar, fetchFirstTimeDataService);
+    searchUtil.search(searchView);
+    return true;
+  }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        compositeDisposable.clear();
-    }
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    compositeDisposable.clear();
+  }
 
 }

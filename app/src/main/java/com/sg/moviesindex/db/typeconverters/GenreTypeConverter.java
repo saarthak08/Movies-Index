@@ -11,24 +11,24 @@ import java.util.ArrayList;
 
 public class GenreTypeConverter {
 
-    private static final Gson gson = new Gson();
+  private static final Gson gson = new Gson();
 
-    @TypeConverter
-    public static ArrayList<Genre> gettingListFromString(String data) {
-        if (data == null) {
-            return new ArrayList<Genre>();
-        }
-
-        Type listType = new TypeToken<ArrayList<Genre>>() {
-        }.getType();
-
-        return gson.fromJson(data, listType);
+  @TypeConverter
+  public static ArrayList<Genre> gettingListFromString(String data) {
+    if (data == null) {
+      return new ArrayList<Genre>();
     }
 
-    @TypeConverter
-    public static String gettingStringFromList(ArrayList<Genre> someObjects) {
-        return gson.toJson(someObjects);
-    }
+    Type listType = new TypeToken<ArrayList<Genre>>() {
+    }.getType();
+
+    return gson.fromJson(data, listType);
+  }
+
+  @TypeConverter
+  public static String gettingStringFromList(ArrayList<Genre> someObjects) {
+    return gson.toJson(someObjects);
+  }
 
 }
 

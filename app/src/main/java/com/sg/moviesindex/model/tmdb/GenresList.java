@@ -11,46 +11,46 @@ import java.util.List;
 
 public class GenresList implements Parcelable {
 
-    @SerializedName("genres")
-    @Expose
-    private List<Genre> genres = null;
-    public final static Parcelable.Creator<GenresList> CREATOR = new Creator<GenresList>() {
+  public final static Parcelable.Creator<GenresList> CREATOR = new Creator<GenresList>() {
 
 
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public GenresList createFromParcel(Parcel in) {
-            return new GenresList(in);
-        }
-
-        public GenresList[] newArray(int size) {
-            return (new GenresList[size]);
-        }
-
-    };
-
-    protected GenresList(Parcel in) {
-        in.readList(this.genres, (Genre.class.getClassLoader()));
+    @SuppressWarnings({
+        "unchecked"
+    })
+    public GenresList createFromParcel(Parcel in) {
+      return new GenresList(in);
     }
 
-    public GenresList() {
+    public GenresList[] newArray(int size) {
+      return (new GenresList[size]);
     }
 
-    public List<Genre> getGenres() {
-        return genres;
-    }
+  };
+  @SerializedName("genres")
+  @Expose
+  private List<Genre> genres = null;
 
-    public void setGenres(List<Genre> genres) {
-        this.genres = genres;
-    }
+  protected GenresList(Parcel in) {
+    in.readList(this.genres, (Genre.class.getClassLoader()));
+  }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(genres);
-    }
+  public GenresList() {
+  }
 
-    public int describeContents() {
-        return 0;
-    }
+  public List<Genre> getGenres() {
+    return genres;
+  }
+
+  public void setGenres(List<Genre> genres) {
+    this.genres = genres;
+  }
+
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeList(genres);
+  }
+
+  public int describeContents() {
+    return 0;
+  }
 
 }

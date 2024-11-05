@@ -1,27 +1,27 @@
 <resources>
-    <string name="app_name">Movies Index</string>
-    <string name="title_activity_movies_info">Movies Index</string>
-    <string name="favourite_movies">Favourite Movies</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="title_activity_main">Movies Index</string>
-    <string name="popular_movies">Popular Movies</string>
-    <string name="made_with_love">Made with</string>
-    <string name="in_india">in</string>
-    <string name="categories">Categories</string>
-    <string name="movies_index">Movies Index</string>
-    <string name="top_rated_movies">Top Rated Movies</string>
-    <string name="upcoming_movies">Upcoming Movies</string>
-    <string name="now_playing">Now Playing</string>
-    <string name="genres">Filter By Genres</string>
-    <string name="search_any_movie">Search Any Movie</string>
-    <string name="download">Download</string>
-    <string name="sort_by_popularity">Sort By Popularity</string>
-    <string name="sort_by_rating">Sort By Rating</string>
-    <string name="play_dumb_charades">Play Dumb Charades</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+  <string name="app_name">Movies Index</string>
+  <string name="title_activity_movies_info">Movies Index</string>
+  <string name="favourite_movies">Favourite Movies</string>
+  <string name="navigation_drawer_open">Open navigation drawer</string>
+  <string name="navigation_drawer_close">Close navigation drawer</string>
+  <string name="nav_header_desc">Navigation header</string>
+  <string name="title_activity_main">Movies Index</string>
+  <string name="popular_movies">Popular Movies</string>
+  <string name="made_with_love">Made with</string>
+  <string name="in_india">in</string>
+  <string name="categories">Categories</string>
+  <string name="movies_index">Movies Index</string>
+  <string name="top_rated_movies">Top Rated Movies</string>
+  <string name="upcoming_movies">Upcoming Movies</string>
+  <string name="now_playing">Now Playing</string>
+  <string name="genres">Filter By Genres</string>
+  <string name="search_any_movie">Search Any Movie</string>
+  <string name="download">Download</string>
+  <string name="sort_by_popularity">Sort By Popularity</string>
+  <string name="sort_by_rating">Sort By Rating</string>
+  <string name="play_dumb_charades">Play Dumb Charades</string>
+  <!-- TODO: Remove or change this placeholder text -->
+  <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

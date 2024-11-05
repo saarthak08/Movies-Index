@@ -1,68 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/apk/res-auto">
-<data>
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
     <variable
         name="movie"
-        type="com.sg.moviesindex.model.tmdb.Movie">
-    </variable>
-</data>
+        type="com.sg.moviesindex.model.tmdb.Movie"></variable>
+  </data>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cvMovie"
+  <androidx.cardview.widget.CardView
+      android:id="@+id/cvMovie"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="4dp"
+      android:elevation="4dp"
+      bind:cardCornerRadius="2dp"
+      tools:targetApi="lollipop">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:elevation="4dp"
-        bind:cardCornerRadius="2dp"
-        tools:targetApi="lollipop">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+      <ImageView
+          android:id="@+id/ivMovie"
+          android:layout_width="match_parent"
+          android:layout_height="200dp"
+          android:background="?attr/selectableItemBackgroundBorderless"
+          android:scaleType="fitXY"
+          android:src="@drawable/loading"
+          bind:imageUrl="@{`https://image.tmdb.org/t/p/w500`+ movie.posterPath}"
+          tools:ignore="contentDescription" />
 
-            <ImageView
-                android:id="@+id/ivMovie"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:src="@drawable/loading"
-                bind:imageUrl="@{`https://image.tmdb.org/t/p/w500`+ movie.posterPath}"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:scaleType="fitXY"
-                tools:ignore="contentDescription" />
+      <TextView
+          android:id="@+id/tvTitle"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/open_sans"
+          android:paddingLeft="12dp"
+          android:paddingTop="8dp"
+          android:paddingRight="12dp"
+          android:text="@{movie.originalTitle}"
+          android:textColor="@color/colorPrimary"
+          android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:fontFamily="@font/open_sans"
-                android:paddingTop="8dp"
-                android:text="@{movie.originalTitle}"
-                android:textColor="@color/colorPrimary"
-                android:textSize="16sp"/>
+      <TextView
+          android:id="@+id/tvRating"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="bottom"
+          android:fontFamily="@font/quicksand_medium"
+          android:gravity="bottom"
+          android:paddingLeft="12dp"
+          android:paddingRight="12dp"
+          android:paddingBottom="4dp"
+          android:text="@{``+movie.voteAverage}"
+          android:textColor="@color/colorAccent"
+          android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/tvRating"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:gravity="bottom"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:fontFamily="@font/quicksand_medium"
-                android:paddingBottom="4dp"
-                android:text="@{``+movie.voteAverage}"
-                android:textColor="@color/colorAccent"
-                android:textSize="12sp" />
-
-        </LinearLayout>
+    </LinearLayout>
 
 
-    </androidx.cardview.widget.CardView>
+  </androidx.cardview.widget.CardView>
 
 </layout>
