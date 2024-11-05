@@ -21,7 +21,7 @@ android {
     minSdkVersion 21
     multiDexEnabled true
     targetSdkVersion 35
-    versionCode 15
+    versionCode 16
     versionName "1.4.4"
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -48,6 +48,7 @@ android {
 
   buildTypes {
     release {
+      minifyEnabled true
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
       signingConfig signingConfigs.release
     }
