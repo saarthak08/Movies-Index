@@ -76,12 +76,12 @@ public class TorrentFetcherService {
             mListener.onComplete(true);
             button.revertAnimation();
             button.stopAnimation();
-            if (response != null) {
-              if (response.getData().getMovieCount() == 0) {
-                Toast.makeText(context, "No Torrents Found! Please try again", Toast.LENGTH_SHORT).show();
-
+            if (response != null && response.getData() != null) {
+              if (response.getData().getMovieCount() == 0) {Toast.makeText(context, "No Torrents Found! Please try again", Toast.LENGTH_SHORT).show();
               } else {
-                resultantMovie = response.getData().getMovies().get(0);
+                if (response.getData().getMovies() != null && !response.getData().getMovies().isEmpty()) {
+                  resultantMovie = response.getData().getMovies().get(0);
+                }
                 showMaterialDialog(movieTMDb, button);
               }
             }

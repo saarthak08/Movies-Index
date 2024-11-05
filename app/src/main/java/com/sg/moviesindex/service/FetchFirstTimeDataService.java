@@ -126,52 +126,53 @@ public class FetchFirstTimeDataService implements Parcelable {
   }
 
   private void fetchData() {
-    int a = MainActivity.drawer;
-    compositeDisposable.add(
-        observableMovie.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-            .subscribeWith(new DisposableObserver<MoviesList>() {
-              @Override
-              public void onNext(@NotNull MoviesList moviesList) {
-                if (moviesList.getMovies() != null) {
-                  MainActivity.movieList = (ArrayList<Movie>) moviesList.getMovies();
-                  MainActivity.totalPages = moviesList.getTotalPages();
-                  if (progressBar != null) {
-                    progressBar.setIndeterminate(false);
+    if (compositeDisposable != null && observableMovie != null) {
+      compositeDisposable.add(
+          observableMovie.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+              .subscribeWith(new DisposableObserver<MoviesList>() {
+                @Override
+                public void onNext(@NotNull MoviesList moviesList) {
+                  if (moviesList.getMovies() != null) {
+                    MainActivity.movieList = (ArrayList<Movie>) moviesList.getMovies();
+                    MainActivity.totalPages = moviesList.getTotalPages();
+                    if (progressBar != null) {
+                      progressBar.setIndeterminate(false);
+                    }
+                    if (fragmentManager.getFragments().isEmpty()) {
+                      fragmentTransaction = fragmentManager.beginTransaction();
+                      fragmentTransaction.addToBackStack(null);
+                      fragmentTransaction.add(R.id.frame_layout, Movies.newInstance(FetchFirstTimeDataService.this, searchUtil)).commit();
+                    } else {
+                      fragmentTransaction = fragmentManager.beginTransaction();
+                      fragmentTransaction.addToBackStack(null);
+                      fragmentTransaction.replace(R.id.frame_layout, Movies.newInstance(FetchFirstTimeDataService.this, searchUtil)).commit();
+                    }
                   }
-                  if (fragmentManager.getFragments().isEmpty()) {
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.add(R.id.frame_layout, Movies.newInstance(FetchFirstTimeDataService.this, searchUtil)).commit();
-                  } else {
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.replace(R.id.frame_layout, Movies.newInstance(FetchFirstTimeDataService.this, searchUtil)).commit();
-                  }
+
                 }
 
-              }
+                @Override
+                public void onError(Throwable e) {
+                  progressBar.setIndeterminate(false);
+                  progressBar.setVisibility(View.GONE);
+                  linearLayoutError.setVisibility(View.VISIBLE);
+                  refreshButtonError.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                      progressBar.setIndeterminate(true);
+                      progressBar.setVisibility(View.VISIBLE);
+                      linearLayoutError.setVisibility(View.GONE);
+                      getDataFirst();
+                    }
+                  });
+                  Log.d("Check Your Internet", e.getMessage());
+                }
 
-              @Override
-              public void onError(Throwable e) {
-                progressBar.setIndeterminate(false);
-                progressBar.setVisibility(View.GONE);
-                linearLayoutError.setVisibility(View.VISIBLE);
-                refreshButtonError.setOnClickListener(new View.OnClickListener() {
-                  @Override
-                  public void onClick(View v) {
-                    progressBar.setIndeterminate(true);
-                    progressBar.setVisibility(View.VISIBLE);
-                    linearLayoutError.setVisibility(View.GONE);
-                    getDataFirst();
-                  }
-                });
-                Log.d("Check Your Internet", e.getMessage());
-              }
-
-              @Override
-              public void onComplete() {
-              }
-            }));
+                @Override
+                public void onComplete() {
+                }
+              }));
+    }
   }
 
 

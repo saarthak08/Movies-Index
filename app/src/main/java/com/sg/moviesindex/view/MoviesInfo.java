@@ -178,7 +178,6 @@ public class MoviesInfo extends AppCompatActivity implements TorrentFetcherServi
           activityMoviesInfoBinding.secondaryLayout.sparkButton.playAnimation();
           activityMoviesInfoBinding.secondaryLayout.sparkButton.setInactiveImage(R.drawable.ic_heart_on);
           activityMoviesInfoBinding.secondaryLayout.sparkButton.setChecked(true);
-
         }
       }
     });
@@ -186,12 +185,7 @@ public class MoviesInfo extends AppCompatActivity implements TorrentFetcherServi
 
   public void setProgressBar() {
     CircularProgressIndicator circleProgressBar = activityMoviesInfoBinding.secondaryLayout.circularProgress;
-    new Handler().postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        circleProgressBar.setProgress(movie.getVoteAverage(), 10.0);
-      }
-    }, 1500);
+    new Handler().postDelayed(() -> circleProgressBar.setProgress(movie != null && movie.getVoteAverage() != null ? movie.getVoteAverage() : 0, 10.0), 1500);
   }
 
   public void getFullInformation() {
