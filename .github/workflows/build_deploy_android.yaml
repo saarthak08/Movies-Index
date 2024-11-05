@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - dev
 
 jobs:
   build-android:
@@ -19,19 +18,19 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Test and check code for linting errors
-        run: ./gradlew check
-
       - name: Create release key and release key properties from secrets
         env:
           RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
           RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
         run: |
-          echo -n "${RELEASE_KEYSTORE}" | base64 -d > keys/key.properties
-          echo "${RELEASE_KEYSTORE_PROPERTIES}" > keys/upload-keystore.jks
+          mkdir keys
+          echo -n "${RELEASE_KEYSTORE}" | base64 -d > keys/upload-keystore.jks
+          echo "${RELEASE_KEYSTORE_PROPERTIES}" > keys/key.properties
+      - name: Test and check code for linting errors
+        run: ./gradlew check
 
       - name: Run build
-        run: ./gradlew assembleProdRelease
+        run: ./gradlew bundleProdRelease
 
       - name: Upload build files as artifact
         uses: actions/upload-artifact@v4
@@ -51,12 +50,9 @@ jobs:
         with:
           name: movies-index
           path: artifact
-
       - uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: com.sg.moviesindex
-          releaseFiles: artifact/outputs/bundle/prodRelease/app-prod-release.aab
+          releaseFiles: artifact/app-prod-release.aab
           track: internal
-          mappingFile: artifact/outputs/mapping/prodRelease/mapping.txt
-          debugSymbols: artifact/intermediates/merged_native_libs/prodRelease/out/lib/merged_native_libs.zip

@@ -18,6 +18,12 @@ jobs:
                 cache: gradle
             - name: Setup Android SDK
               uses: android-actions/setup-android@v3
+            - name: Create release key properties from secrets
+              env:
+                RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
+              run: |
+                mkdir keys
+                echo "${RELEASE_KEYSTORE_PROPERTIES}" > keys/key.properties
             - name: Ensure code is properly formatted
               run: ./gradlew lint
             - name: Run tests
