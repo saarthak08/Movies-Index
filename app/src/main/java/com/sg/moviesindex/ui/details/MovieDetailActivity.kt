@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -149,21 +150,16 @@ class MovieDetailActivity :
     rvReviews.itemAnimator = DefaultItemAnimator()
     rvReviews.adapter = reviewsAdapter
 
-    rvReviews.addOnScrollListener(
-      object : PaginationScrollListener(
-        rvReviews.layoutManager as LinearLayoutManager,
-      ) {
-        override fun onLoadMore(
-          page: Int,
-          totalItemsCount: Int,
-          view: RecyclerView,
-        ) {
-          if (page + 1 <= reviewsList.totalPages!!) {
-            movie?.id?.let { detailViewModel.fetchReviews(it, page + 1) }
-          }
+    val nestedScrollView = activityMoviesInfoBinding.secondaryLayout.root as NestedScrollView
+    
+    nestedScrollView.setOnScrollChangeListener { v: NestedScrollView, _, scrollY, _, oldScrollY ->
+      if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight && scrollY > oldScrollY) {
+        val page = (reviewsList.results?.size ?: 0) / 20 + 1
+        if (page <= (reviewsList.totalPages ?: 1)) {
+          movie?.id?.let { detailViewModel.fetchReviews(it, page) }
         }
-      },
-    )
+      }
+    }
 
     castsAdapter = CastsAdapter()
     val rvCasts = activityMoviesInfoBinding.secondaryLayout.rvCasts

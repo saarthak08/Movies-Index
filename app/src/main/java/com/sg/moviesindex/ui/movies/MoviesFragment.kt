@@ -28,6 +28,7 @@ class MoviesFragment : Fragment() {
   private val compositeDisposable = CompositeDisposable()
   private lateinit var gridLayoutManager: GridLayoutManager
   private lateinit var moviesAdapter: MoviesAdapter
+  private lateinit var paginationScrollListener: PaginationScrollListener
   private lateinit var fragmentMoviesBinding: FragmentMoviesBinding
   private lateinit var viewModel: MainViewModel
 
@@ -55,43 +56,7 @@ class MoviesFragment : Fragment() {
     val recyclerView = fragmentMoviesBinding.rv2
     val swipeRefreshLayout = fragmentMoviesBinding.swiperefresh2
 
-    viewModel.drawer.observe(viewLifecycleOwner) { updateTitle() }
-    viewModel.region.observe(viewLifecycleOwner) { updateTitle() }
-    viewModel.searchQuery.observe(viewLifecycleOwner) { updateTitle() }
-    viewModel.selectedGenreIndex.observe(viewLifecycleOwner) { updateTitle() }
-    viewModel.genres.observe(viewLifecycleOwner) { updateTitle() }
-
     moviesAdapter = MoviesAdapter(requireContext())
-    viewModel.movieList.observe(viewLifecycleOwner) { movies ->
-      moviesAdapter.submitList(ArrayList(movies))
-    }
-
-    swipeRefreshLayout.setColorSchemeColors(
-      Color.BLUE,
-      Color.DKGRAY,
-      Color.RED,
-      Color.GREEN,
-      Color.MAGENTA,
-      Color.BLACK,
-      Color.CYAN,
-    )
-    swipeRefreshLayout.setOnRefreshListener {
-      requireActivity().supportFragmentManager.popBackStack(
-        null,
-        androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE,
-      )
-
-      val drawer = viewModel.drawer.value ?: 0
-      if (drawer != 4 && drawer != 6) {
-        viewModel.fetchMovies(drawer, 1)
-      } else if (drawer == 4) {
-        viewModel.fetchGenres()
-      } else {
-        viewModel.drawer.value = 0
-        viewModel.fetchMovies(0, 1)
-      }
-      swipeRefreshLayout.isRefreshing = false
-    }
 
     gridLayoutManager = GridLayoutManager(context, 2)
     gridLayoutManager.spanSizeLookup =
@@ -104,11 +69,7 @@ class MoviesFragment : Fragment() {
           }
       }
 
-    recyclerView.layoutManager = gridLayoutManager
-    recyclerView.adapter = moviesAdapter
-    recyclerView.itemAnimator = DefaultItemAnimator()
-
-    val paginationScrollListener =
+    paginationScrollListener =
       object : PaginationScrollListener(gridLayoutManager) {
         override fun onLoadMore(
           page: Int,
@@ -135,6 +96,64 @@ class MoviesFragment : Fragment() {
           }
         }
       }
+
+    viewModel.drawer.observe(viewLifecycleOwner) { 
+      updateTitle() 
+      paginationScrollListener.resetState()
+    }
+    viewModel.region.observe(viewLifecycleOwner) { 
+      updateTitle()
+      paginationScrollListener.resetState()
+    }
+    viewModel.searchQuery.observe(viewLifecycleOwner) { 
+      updateTitle()
+      paginationScrollListener.resetState()
+    }
+    viewModel.selectedGenreIndex.observe(viewLifecycleOwner) { 
+      updateTitle()
+      paginationScrollListener.resetState()
+    }
+    viewModel.genres.observe(viewLifecycleOwner) { 
+      updateTitle()
+      paginationScrollListener.resetState()
+    }
+
+    viewModel.movieList.observe(viewLifecycleOwner) { movies ->
+      moviesAdapter.submitList(ArrayList(movies))
+    }
+
+    swipeRefreshLayout.setColorSchemeColors(
+      Color.BLUE,
+      Color.DKGRAY,
+      Color.RED,
+      Color.GREEN,
+      Color.MAGENTA,
+      Color.BLACK,
+      Color.CYAN,
+    )
+    swipeRefreshLayout.setOnRefreshListener {
+      requireActivity().supportFragmentManager.popBackStack(
+        null,
+        androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE,
+      )
+
+      paginationScrollListener.resetState()
+
+      val drawer = viewModel.drawer.value ?: 0
+      if (drawer != 4 && drawer != 6) {
+        viewModel.fetchMovies(drawer, 1)
+      } else if (drawer == 4) {
+        viewModel.fetchGenres()
+      } else {
+        viewModel.drawer.value = 0
+        viewModel.fetchMovies(0, 1)
+      }
+      swipeRefreshLayout.isRefreshing = false
+    }
+
+    recyclerView.layoutManager = gridLayoutManager
+    recyclerView.adapter = moviesAdapter
+    recyclerView.itemAnimator = DefaultItemAnimator()
     recyclerView.addOnScrollListener(paginationScrollListener)
   }
 
