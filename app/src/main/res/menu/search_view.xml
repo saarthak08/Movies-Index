@@ -10,5 +10,5 @@
       android:title="@string/app_name"
       android:visible="true"
       app:actionViewClass="androidx.appcompat.widget.SearchView"
-      app:showAsAction="always"></item>
+      app:showAsAction="always" />
 </menu>

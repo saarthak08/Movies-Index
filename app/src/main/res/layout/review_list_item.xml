@@ -7,7 +7,7 @@
 
     <variable
         name="review"
-        type="com.sg.moviesindex.model.tmdb.Review" />
+        type="com.sg.moviesindex.data.remote.Review" />
   </data>
 
   <androidx.cardview.widget.CardView
@@ -15,7 +15,7 @@
       android:layout_height="wrap_content"
       android:elevation="4dp"
       android:orientation="vertical"
-      tools:targetApi="lollipop">
+      >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

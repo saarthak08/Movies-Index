@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-  <group
-      android:id="@+id/group1"
-      android:checkableBehavior="single">
+  <group android:checkableBehavior="single">
     <item
         android:id="@+id/movies"
         android:icon="@drawable/ic_menu_slideshow"
@@ -42,5 +40,3 @@
   </group>
 
 </menu>
-
-

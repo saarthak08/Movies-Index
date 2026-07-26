@@ -1,47 +1,56 @@
-## Movies Index
+# Movies Index
 
-> An android application which shows the list & information of movies
-> from [The Movie Database](https://www.themoviedb.org) (TMDb) & allows to download their torrent
-> files from [YIFY](https://yts.mx/).
+> An Android application which shows the list & information of movies from [The Movie Database](https://www.themoviedb.org) (TMDb) & allows downloading their torrent files from [YTS](https://yts.mx/).
 
-### APK Link:
+## Features
 
-https://play.google.com/store/apps/details?id=com.sg.moviesindex
+- **Torrent Downloads**: Download torrent files of movies in different resolutions from YTS.
+- **Movie Information**: Search any movie & get its information: Original Title, Original Language, Genre, Rating, Release Date, Runtime, Status, Synopsis, Cast & Reviews.
+- **Movie Lists**:
+  - Most Popular Movies
+  - Top Rated Movies
+  - Upcoming Movies
+  - Now Playing Movies
+- **Discover**: Discover movies according to different genres.
+- **Favourites**: Mark a movie as a favourite & save it for future preferences.
 
-### Features:
+## Architecture & Technologies
 
-- Download torrent files of movies in different resolutions from YIFY.
-- Search any movie & get its information: Original Title, Original Language, Genre, Rating, Release
-  Date, Runtime, Status, Synposis, Casts & Reviews.
-- Get a list of Most Popular Movies of the current time on TMDb.
-- Get a list of Top Rated Movies on TMDb.
-- Get a list of Upcoming Movies & Now Playing Movies (Movies Currently Playing in Cinemas).
-- Discover movies according to different genres.
-- Mark a movie as favourite & save it for future preferences.
+The application is built using the **MVVM (Model-View-ViewModel)** architectural pattern to provide a clean separation of concerns and a testable codebase. 
 
-### Libraries Used:
+Key technologies and libraries used:
+- **[Kotlin](https://kotlinlang.org/)**: The application is written entirely in Kotlin.
+- **[Hilt](https://dagger.dev/hilt/)**: Used for Dependency Injection, making it easier to provide dependencies across the app.
+- **[RxJava 2](https://github.com/ReactiveX/RxJava/tree/2.x)**: For reactive programming and handling asynchronous operations seamlessly.
+- **[Retrofit](https://github.com/square/retrofit) & [OkHttp](https://github.com/square/okhttp)**: Used for making robust and type-safe HTTP network requests to the TMDb and YTS APIs.
+- **[Moshi](https://github.com/square/moshi)**: A modern JSON library for Android and Kotlin, used to parse JSON responses from APIs.
+- **[Room](https://developer.android.com/topic/libraries/architecture/room)**: Provides a local SQLite database abstraction for saving favourite movies offline.
+- **[Glide](https://github.com/bumptech/glide)**: For efficient image loading and caching.
+- **[Android Architecture Components](https://developer.android.com/topic/libraries/architecture)**: LiveData and Data Binding to ensure the UI state is robustly managed and reactive.
 
-- [Glide](https://github.com/bumptech/glide)
-- [Retrofit](https://github.com/square/retrofit)
-- [OkHttp](https://github.com/square/okhttp)
-- [Material Dialogs](https://github.com/afollestad/material-dialogs)
-- [Room](https://developer.android.com/topic/libraries/architecture/room)
-- [SparkButton](https://github.com/varunest/SparkButton)
-- [LoadingAndroidButton](https://github.com/leandroBorgesFerreira/LoadingButtonAndroid)
-- [CircularProgressIndicator](https://github.com/antonKozyriatskyi/CircularProgressIndicator)
-- [MVVM, Live Data & Data Binding (Android Architectural Components)](https://developer.android.com/topic/libraries/architecture)
-- [RxJava](https://github.com/ReactiveX/RxJava)
+## How to Build and Run
 
-### Note:
+To build the project on your local machine, follow these steps:
 
-In order to build the project, create a folder named `keys` in the root directory of the project.
-Then, add a file `key.properties` with following content:
-```
-storePassword=android
-keyPassword=androiddebugkey
-keyAlias=android
-storeFile=keystore
-apiKey=\"YOUR_OWN_API_KEY\"
-```
-Replace the value of `apiKey` with your own API key value in order to make the app work correctly.
-If you want to create a release build of the app, replace the values of `storePassword, keyPassword, keyAlias, storeFile` with your own keystore values.
+1. Clone the repository.
+2. Open the project in **Android Studio**.
+3. In the root directory of the project, create a folder named `keys`.
+4. Inside the `keys` folder, create a file named `key.properties` with the following content:
+
+   ```properties
+   storePassword=android
+   keyPassword=androiddebugkey
+   keyAlias=android
+   storeFile=keystore
+   apiKey="YOUR_OWN_API_KEY"
+   ```
+
+5. Replace `"YOUR_OWN_API_KEY"` with your valid TMDb API key. You can get one by registering at [The Movie Database (TMDb)](https://www.themoviedb.org/documentation/api).
+6. Sync the project with Gradle files.
+7. Click the **Run** button in Android Studio or use the command `./gradlew assembleDebug` to build the APK.
+
+*Note: If you want to create a release build of the app, replace the values of `storePassword`, `keyPassword`, `keyAlias`, and `storeFile` with your own keystore credentials.*
+
+## APK Link
+
+[Download from Google Play Store](https://play.google.com/store/apps/details?id=com.sg.moviesindex)

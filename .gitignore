@@ -78,3 +78,6 @@ app/.settings/
 *.DS_Store
 keys/key.properties
 keys/upload-keystore.jks
+
+.artifacts
+.kotlin

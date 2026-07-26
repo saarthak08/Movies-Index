@@ -8,17 +8,23 @@
 
     <variable
         name="movie"
-        type="com.sg.moviesindex.model.tmdb.Movie"></variable>
+        type="com.sg.moviesindex.data.local.Movie" />
+
+    <variable
+        name="locale"
+        type="String" />
   </data>
 
   <androidx.coordinatorlayout.widget.CoordinatorLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:fitsSystemWindows="true"
       tools:context=".view.MoviesInfo">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
 
@@ -27,7 +33,7 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:fitsSystemWindows="true"
-          app:contentScrim="?attr/colorPrimary"
+          app:contentScrim="@color/colorPrimary"
           app:expandedTitleMarginEnd="64dp"
           app:expandedTitleMarginStart="48dp"
           app:expandedTitleTextAppearance="@android:color/transparent"
@@ -59,7 +65,8 @@
     <include
         android:id="@+id/secondary_layout"
         layout="@layout/content_movies_info"
-        bind:contentMovie="@{movie}" />
+        bind:contentMovie="@{movie}"
+        bind:locale="@{locale}" />
 
 
   </androidx.coordinatorlayout.widget.CoordinatorLayout>

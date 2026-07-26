@@ -1,0 +1,95 @@
+[versions]
+activity = "1.13.0"
+agp = "9.3.1"
+appcompat = "1.7.1"
+kotlin = "2.4.10"
+ksp = "2.3.10"
+cardview = "1.0.0"
+circularprogressindicator = "1.3.0"
+constraintlayout = "2.2.1"
+core = "3.3.0"
+dagger = "2.60.1"
+espressoCore = "3.7.0"
+glide = "5.0.9"
+googleDaggerHiltAndroid = "2.60.1"
+jupiter = "6.1.2"
+legacySupportV4 = "1.0.0"
+lifecycle = "2.11.0"
+loadingButtonAndroid = "2.3.0"
+material = "1.14.0"
+okhttp = "5.4.0"
+recyclerview = "1.4.0"
+retrofit2 = "3.0.0"
+room = "2.8.4"
+runner = "1.7.0"
+rxandroid = "2.1.1"
+rxbinding3 = "3.1.0"
+rxjava = "2.2.21"
+sparkbutton = "1.0.6"
+spotless = "8.8.0"
+androidxTestCore = "1.7.0"
+androidxTestExtJunit = "1.3.0"
+androidxTestRules = "1.7.0"
+archCoreTesting = "2.2.0"
+mockk = "1.14.11"
+espressoIntents = "3.7.0"
+
+[libraries]
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+adapter-rxjava2 = { group = "com.squareup.retrofit2", name = "adapter-rxjava2", version.ref = "retrofit2" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
+circularprogressindicator = { group = "com.github.antonKozyriatskyi", name = "CircularProgressIndicator", version.ref = "circularprogressindicator" }
+compiler = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glide" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit2" }
+core = { group = "com.afollestad.material-dialogs", name = "core", version.ref = "core" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "espressoCore" }
+espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espressoIntents" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "dagger" }
+hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "dagger" }
+junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "jupiter" }
+junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "jupiter" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version = "6.1.2" }
+legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
+lifecycle-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata", version.ref = "lifecycle" }
+lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime", version.ref = "lifecycle" }
+lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "lifecycle" }
+loading-button-android = { group = "com.github.leandroborgesferreira", name = "loading-button-android", version.ref = "loadingButtonAndroid" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version = "1.15.1" }
+moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version = "1.15.1" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit2" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-rxjava2 = { group = "androidx.room", name = "room-rxjava2", version.ref = "room" }
+runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+rules = { group = "androidx.test", name = "rules", version.ref = "androidxTestRules" }
+test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
+test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJunit" }
+fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version = "1.8.9" }
+arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "archCoreTesting" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
+rxandroid = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "rxandroid" }
+rxbinding = { group = "com.jakewharton.rxbinding3", name = "rxbinding", version.ref = "rxbinding3" }
+rxbinding-appcompat = { group = "com.jakewharton.rxbinding3", name = "rxbinding-appcompat", version.ref = "rxbinding3" }
+rxbinding-core = { group = "com.jakewharton.rxbinding3", name = "rxbinding-core", version.ref = "rxbinding3" }
+rxbinding-drawerlayout = { group = "com.jakewharton.rxbinding3", name = "rxbinding-drawerlayout", version.ref = "rxbinding3" }
+rxbinding-recyclerview = { group = "com.jakewharton.rxbinding3", name = "rxbinding-recyclerview", version.ref = "rxbinding3" }
+rxjava = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rxjava" }
+sparkbutton = { group = "com.github.varunest", name = "sparkbutton", version.ref = "sparkbutton" }
+mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "googleDaggerHiltAndroid" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

@@ -1,0 +1,133 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "12a7aaa531c2ab21420ebf547a073bcb",
+    "entities": [
+      {
+        "tableName": "favourite_movies",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`adult` INTEGER, `backdrop_path` TEXT, `budget` INTEGER, `genres` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `imdb_id` TEXT, `original_language` TEXT, `original_title` TEXT, `overview` TEXT, `popularity` REAL, `poster_path` TEXT, `release_date` TEXT, `revenue` INTEGER, `runtime` INTEGER, `status` TEXT, `tagline` TEXT, `title` TEXT, `video` INTEGER, `vote_average` REAL, `casts_list` TEXT NOT NULL, `reviews_list` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "adult",
+            "columnName": "adult",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "backdropPath",
+            "columnName": "backdrop_path",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "budget",
+            "columnName": "budget",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "genres",
+            "columnName": "genres",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "imdbId",
+            "columnName": "imdb_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "originalLanguage",
+            "columnName": "original_language",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "originalTitle",
+            "columnName": "original_title",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "overview",
+            "columnName": "overview",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "popularity",
+            "columnName": "popularity",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "posterPath",
+            "columnName": "poster_path",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "releaseDate",
+            "columnName": "release_date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "revenue",
+            "columnName": "revenue",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "runtime",
+            "columnName": "runtime",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "tagline",
+            "columnName": "tagline",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "video",
+            "columnName": "video",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "voteAverage",
+            "columnName": "vote_average",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "castsList",
+            "columnName": "casts_list",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reviewsList",
+            "columnName": "reviews_list",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '12a7aaa531c2ab21420ebf547a073bcb')"
+    ]
+  }
+}

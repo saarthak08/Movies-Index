@@ -1,5 +1,9 @@
 plugins {
-  id 'com.android.application'
+  alias libs.plugins.android.application
+  alias libs.plugins.google.dagger.hilt.android
+  alias libs.plugins.kotlin.parcelize
+  alias libs.plugins.kotlin.ksp
+  alias libs.plugins.spotless
 }
 
 def keystoreProperties = new Properties()
@@ -9,114 +13,163 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-  namespace 'com.sg.moviesindex'
-  compileSdk 35
+  namespace = 'com.sg.moviesindex'
+  compileSdk = 37
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_17
-    targetCompatibility JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
   }
 
   defaultConfig {
-    applicationId "com.sg.moviesindex"
-    minSdkVersion 21
-    multiDexEnabled true
-    targetSdkVersion 35
-    versionCode 18
-    versionName "1.4.4"
-    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    applicationId = "com.sg.moviesindex"
+    minSdk = 23
+    multiDexEnabled = true
+    targetSdk = 37
+    versionCode = 18
+    versionName = "1.4.4"
+    testInstrumentationRunner = "com.sg.moviesindex.HiltTestRunner"
 
-    javaCompileOptions {
-      annotationProcessorOptions {
-        arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
-      }
+    ksp {
+      arg("room.schemaLocation", layout.projectDirectory.dir("schemas").asFile.absolutePath)
     }
-    buildConfigField "String", "ApiKey", keystoreProperties['apiKey']
+    buildConfigField "String", "ApiKey", (keystoreProperties['apiKey'] ?: '""')
   }
 
   sourceSets {
-    androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+    named("androidTest") {
+      assets.srcDirs += [layout.projectDirectory.dir("schemas")]
+    }
   }
 
   signingConfigs {
     release {
-      keyAlias keystoreProperties['keyAlias']
-      keyPassword keystoreProperties['keyPassword']
-      storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-      storePassword keystoreProperties['storePassword']
+      keyAlias = keystoreProperties['keyAlias']
+      keyPassword = keystoreProperties['keyPassword']
+      storeFile = keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+      storePassword = keystoreProperties['storePassword']
     }
   }
 
   buildTypes {
     release {
-      minifyEnabled true
-      shrinkResources true
+      minifyEnabled = true
+      shrinkResources = true
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-      signingConfig signingConfigs.release
+      signingConfig = signingConfigs.release
     }
   }
 
-  flavorDimensions += "env"
+  flavorDimensions += ["env"]
 
   productFlavors {
     dev {
-      dimension "env"
-      applicationIdSuffix ".dev"
-      versionNameSuffix "-dev"
-      buildConfigField 'String', 'FLAVOR', '"dev"'
+      dimension = "env"
+      applicationIdSuffix = ".dev"
+      versionNameSuffix = "-dev"
+      buildConfigField "String", "FLAVOR", '"dev"'
       resValue "string", "app_name", "[DEV] Movies Index"
     }
 
     prod {
-      dimension "env"
-      buildConfigField 'String', 'FLAVOR', '"prod"'
+      dimension = "env"
+      buildConfigField "String", "FLAVOR", '"prod"'
       resValue "string", "app_name", "Movies Index"
     }
   }
 
   buildFeatures {
     dataBinding = true
-    buildConfig true
+    buildConfig = true
+    resValues = true
   }
 
   dependenciesInfo {
-    includeInApk false
-    includeInBundle false
+    includeInApk = false
+    includeInBundle = false
+  }
+  
+  testOptions {
+    unitTests.all {
+      useJUnitPlatform()
+    }
+  }
+}
+
+spotless {
+  kotlin {
+    target "**/*.kt"
+    ktlint()
+    trimTrailingWhitespace()
+    endWithNewline()
+  }
+  format 'xml', {
+    target "**/*.xml"
+    trimTrailingWhitespace()
+    endWithNewline()
   }
 }
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
-  def room_version = "2.6.1"
-  def lifecycle_version = "2.2.0"
-  implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
-  implementation 'androidx.appcompat:appcompat:1.7.0'
-  implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
-  implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-  implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
-  implementation 'com.github.bumptech.glide:glide:4.12.0'
-  implementation 'com.github.leandroborgesferreira:loading-button-android:2.3.0'
-  implementation 'com.github.varunest:sparkbutton:1.0.6'
-  implementation "io.reactivex.rxjava2:rxjava:2.2.10"
-  implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-  implementation 'com.github.antonKozyriatskyi:CircularProgressIndicator:1.3.0'
-  implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
-  annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
-  implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-  implementation "androidx.room:room-runtime:$room_version"
-  annotationProcessor "androidx.room:room-compiler:$room_version"
-  testImplementation "org.junit.jupiter:junit-jupiter-api:5.11.3"
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.11.3"
-  androidTestImplementation 'androidx.test:runner:1.6.2'
-  implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
-  androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-  implementation 'com.google.android.material:material:1.12.0'
-  implementation 'androidx.recyclerview:recyclerview:1.3.2'
-  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-  implementation 'androidx.core:core-ktx:1.15.0'
-  implementation 'androidx.cardview:cardview:1.0.0'
-  implementation 'com.jakewharton.rxbinding3:rxbinding:3.1.0'
-  implementation 'com.jakewharton.rxbinding3:rxbinding-core:3.1.0'
-  implementation 'com.jakewharton.rxbinding3:rxbinding-appcompat:3.1.0'
-  implementation 'com.jakewharton.rxbinding3:rxbinding-drawerlayout:3.1.0'
-  implementation 'com.jakewharton.rxbinding3:rxbinding-recyclerview:3.1.0'
+  implementation libs.kotlin.stdlib
+  implementation libs.lifecycle.viewmodel
+  implementation libs.lifecycle.livedata
+  implementation libs.lifecycle.runtime
+  implementation libs.activity
+  implementation libs.appcompat
+  implementation libs.constraintlayout
+  implementation libs.retrofit
+  implementation libs.okhttp
+  implementation libs.glide
+  implementation libs.loading.button.android
+  implementation libs.sparkbutton
+  implementation libs.rxjava
+  implementation libs.rxandroid
+  implementation libs.circularprogressindicator
+  implementation libs.adapter.rxjava2
+  ksp libs.compiler
+  implementation libs.converter.moshi
+  implementation libs.moshi.kotlin
+  ksp libs.moshi.kotlin.codegen
+  implementation libs.room.runtime
+  implementation libs.room.rxjava2
+  ksp libs.room.compiler
+  
+  // Hilt
+  implementation libs.hilt.android
+  ksp libs.hilt.compiler
+  
+  // Test dependencies in implementation to force version consistency
+  implementation libs.test.core
+
+  testImplementation libs.junit.jupiter.api
+  testRuntimeOnly libs.junit.jupiter.engine
+  testRuntimeOnly libs.junit.platform.launcher
+  testImplementation libs.mockk
+  testImplementation libs.arch.core.testing
+  testImplementation libs.mockwebserver
+  
+  androidTestImplementation libs.runner
+  androidTestImplementation libs.test.core
+  androidTestImplementation libs.test.ext.junit
+  androidTestImplementation libs.rules
+  androidTestImplementation libs.arch.core.testing
+  debugImplementation libs.fragment.testing
+  androidTestImplementation libs.hilt.android.testing
+  androidTestImplementation libs.espresso.core
+  androidTestImplementation libs.espresso.contrib
+  androidTestImplementation libs.espresso.intents
+  androidTestImplementation libs.mockk.android
+  kspAndroidTest libs.hilt.compiler
+
+  implementation libs.core
+  implementation libs.material
+  implementation libs.recyclerview
+  implementation libs.legacy.support.v4
+  implementation libs.cardview
+  implementation libs.rxbinding
+  implementation libs.rxbinding.core
+  implementation libs.rxbinding.appcompat
+  implementation libs.rxbinding.drawerlayout
+  implementation libs.rxbinding.recyclerview
 }

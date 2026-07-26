@@ -27,11 +27,10 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="Oops! You don't have any favourite movies currently."
+        android:text="@string/no_favourite_movies"
         android:textColor="@android:color/white" />
 
   </FrameLayout>
 
 
 </layout>
-

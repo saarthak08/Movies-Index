@@ -17,7 +17,8 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/colorPrimary" />
 
     <LinearLayout
         android:id="@+id/llError"
@@ -31,6 +32,7 @@
       <ImageView
           android:layout_width="96dp"
           android:layout_height="96dp"
+          android:importantForAccessibility="no"
           android:src="@drawable/ic_bug_report_black_48dp" />
 
       <TextView
@@ -41,7 +43,7 @@
           android:layout_marginEnd="4dp"
           android:fontFamily="@font/quicksand_medium"
           android:gravity="center"
-          android:text="Oops! An error occurred."
+          android:text="@string/error_occurred"
           android:textSize="24sp" />
 
       <TextView
@@ -52,7 +54,7 @@
           android:layout_marginEnd="4dp"
           android:fontFamily="@font/quicksand_medium"
           android:gravity="center"
-          android:text="Check your internet connection or try again."
+          android:text="@string/check_internet"
           android:textSize="24sp" />
 
 

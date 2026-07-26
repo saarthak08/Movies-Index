@@ -65,6 +65,7 @@
           android:layout_width="24dp"
           android:layout_height="24dp"
           android:layout_marginTop="2dp"
+          android:importantForAccessibility="no"
           app:srcCompat="@drawable/ic_heart_on" />
 
       <TextView
@@ -84,10 +85,10 @@
           android:layout_width="24dp"
           android:layout_height="24dp"
           android:layout_marginTop="2dp"
+          android:importantForAccessibility="no"
           app:srcCompat="@drawable/india" />
     </LinearLayout>
 
 
   </LinearLayout>
 </layout>
-

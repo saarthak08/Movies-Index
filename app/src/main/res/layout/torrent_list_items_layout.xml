@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -12,7 +11,7 @@
 
     <variable
         name="torrent"
-        type="com.sg.moviesindex.model.yts.Torrent"></variable>
+        type="com.sg.moviesindex.data.remote.Torrent" />
   </data>
 
   <androidx.cardview.widget.CardView
@@ -116,7 +115,7 @@
           app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintVertical_bias="0.463"
           app:srcCompat="@drawable/ic_cloud_download_black_48dp"
-          tools:targetApi="lollipop" />
+           />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

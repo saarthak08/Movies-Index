@@ -7,11 +7,11 @@
 
     <variable
         name="cast"
-        type="com.sg.moviesindex.model.tmdb.Cast"></variable>
+        type="com.sg.moviesindex.data.remote.Cast" />
 
     <variable
         name="gender"
-        type="String"></variable>
+        type="String" />
 
   </data>
 
@@ -22,7 +22,7 @@
       android:layout_margin="4dp"
       android:elevation="4dp"
       bind:cardCornerRadius="2dp"
-      tools:targetApi="lollipop">
+      >
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -38,7 +38,6 @@
           android:gravity="center_horizontal"
           android:paddingHorizontal="4dp"
           android:scaleType="fitXY"
-          android:src="@drawable/loading"
           bind:profileUrl="@{`https://image.tmdb.org/t/p/w500`+ cast.profilePath}"
           tools:ignore="contentDescription" />
 

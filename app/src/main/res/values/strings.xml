@@ -9,22 +9,54 @@
   <string name="popular_movies">Popular Movies</string>
   <string name="made_with_love">Made with</string>
   <string name="in_india">in</string>
-  <string name="categories">Categories</string>
-  <string name="movies_index">Movies Index</string>
+    <string name="movies_index">Movies Index</string>
   <string name="top_rated_movies">Top Rated Movies</string>
   <string name="upcoming_movies">Upcoming Movies</string>
   <string name="now_playing">Now Playing</string>
   <string name="genres">Filter By Genres</string>
   <string name="search_any_movie">Search Any Movie</string>
   <string name="download">Download</string>
-  <string name="sort_by_popularity">Sort By Popularity</string>
-  <string name="sort_by_rating">Sort By Rating</string>
-  <string name="play_dumb_charades">Play Dumb Charades</string>
-  <!-- TODO: Remove or change this placeholder text -->
-  <string name="hello_blank_fragment">Hello blank fragment</string>
-
-
+  <string name="hello">Hello</string>
+  <string name="error_occurred">Oops! An error occurred.</string>
+  <string name="check_internet">Check your internet connection or try again.</string>
+  <string name="rating">Rating</string>
+  <string name="download_torrent">Download Torrent</string>
+  <string name="overview">Overview:</string>
+  <string name="genre">Genre:</string>
+  <string name="casts">Casts:</string>
+  <string name="button">Button</string>
+  <string name="reviews">Reviews:</string>
+  <string name="no_favourite_movies">Oops! You don\'t have any favourite movies currently.</string>
+  <string name="error_internet_connection">Error! Check your internet connection.</string>
+  <string name="error_fetching_genres">Error fetching genres.</string>
+  <string name="error_searching_movies">Error searching movies.</string>
+  <string name="choose_region">Choose a Region</string>
+  <string name="choose_category">Choose a Category</string>
+  <string name="region_all">All</string>
+  <string name="region_india">India</string>
+  <string name="region_usa">USA</string>
+  <string name="region_uk">UK</string>
+  <string name="file_download_completed">File download completed</string>
+  <string name="unmarked_as_favourite">Unmarked as Favourite</string>
+  <string name="marked_as_favourite">Marked as Favourite</string>
+  <string name="permission_denied">Permission Denied</string>
+  <string name="genre_format">Genre: %1$s</string>
+  <string name="search_results_format">Search Results: %1$s</string>
+  <string name="upcoming_movies_format">Upcoming Movies: %1$s</string>
+  <string name="now_playing_format">Now Playing: %1$s</string>
+  <string name="file_saving_failed">File saving failed!</string>
+  <string name="error_downloading_torrent">Error in downloading torrent file!</string>
+  <string name="no_torrents_found">No Torrents Found! Please try again!</string>
+  <string name="error_fetching_torrents">Error in fetching torrent files! Please try again using a VPN.</string>
+  <string name="download_notification_channel_name">Download Notification</string>
+  <string name="download_title">Download</string>
+  <string name="downloading_file">Downloading File</string>
+  <string name="download_progress_format">Downloaded: %1$d%%</string>
+  <string name="file_downloaded_format">File Downloaded: %1$s</string>
+  <string name="torrent_files_dialog_title">Torrent Files</string>
+  <string name="torrent_dialog_message">Note: If the torrent file isn\'t working, try using a VPN or check the torrent\'s seeds.\nYou need a torrent downloader to download the original file from the torrent file.</string>
+  <string name="download_notification_channel_id">download_channel</string>
+  <string name="download_notification_description">No sound for download notifications</string>
+  <string name="download_relative_path">Download/Movies-Index</string>
+  <string name="scroll_left">Scroll Left</string>
 </resources>
-
-
-
