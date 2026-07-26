@@ -97,23 +97,23 @@ class MoviesFragment : Fragment() {
         }
       }
 
-    viewModel.drawer.observe(viewLifecycleOwner) { 
-      updateTitle() 
-      paginationScrollListener.resetState()
-    }
-    viewModel.region.observe(viewLifecycleOwner) { 
+    viewModel.drawer.observe(viewLifecycleOwner) {
       updateTitle()
       paginationScrollListener.resetState()
     }
-    viewModel.searchQuery.observe(viewLifecycleOwner) { 
+    viewModel.region.observe(viewLifecycleOwner) {
       updateTitle()
       paginationScrollListener.resetState()
     }
-    viewModel.selectedGenreIndex.observe(viewLifecycleOwner) { 
+    viewModel.searchQuery.observe(viewLifecycleOwner) {
       updateTitle()
       paginationScrollListener.resetState()
     }
-    viewModel.genres.observe(viewLifecycleOwner) { 
+    viewModel.selectedGenreIndex.observe(viewLifecycleOwner) {
+      updateTitle()
+      paginationScrollListener.resetState()
+    }
+    viewModel.genres.observe(viewLifecycleOwner) {
       updateTitle()
       paginationScrollListener.resetState()
     }

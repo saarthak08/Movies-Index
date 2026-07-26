@@ -151,7 +151,7 @@ class MovieDetailActivity :
     rvReviews.adapter = reviewsAdapter
 
     val nestedScrollView = activityMoviesInfoBinding.secondaryLayout.root as NestedScrollView
-    
+
     nestedScrollView.setOnScrollChangeListener { v: NestedScrollView, _, scrollY, _, oldScrollY ->
       if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight && scrollY > oldScrollY) {
         val page = (reviewsList.results?.size ?: 0) / 20 + 1
