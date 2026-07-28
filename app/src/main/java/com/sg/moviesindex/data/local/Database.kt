@@ -46,6 +46,7 @@ abstract class Database : RoomDatabase() {
             com.sg.moviesindex.data.local.Database::class.java,
             "TMDB",
           ).addCallback(callback)
+          .fallbackToDestructiveMigration(true)
           .allowMainThreadQueries()
           .build()
           .also { instance = it }

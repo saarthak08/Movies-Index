@@ -22,6 +22,7 @@ object DatabaseModule {
     Room
       .databaseBuilder(context, Database::class.java, "TMDB")
       .allowMainThreadQueries()
+      .fallbackToDestructiveMigration(true)
       .build()
 
   @Provides
