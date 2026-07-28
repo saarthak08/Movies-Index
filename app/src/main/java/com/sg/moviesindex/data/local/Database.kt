@@ -1,6 +1,7 @@
 package com.sg.moviesindex.data.local
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -13,7 +14,10 @@ import com.sg.moviesindex.data.local.typeconverters.ReviewTypeConverter
  * The Room database for this app.
  * Contains the [Movie] entity and provides access to [FavouriteMoviesDAO].
  */
-@Database(entities = [Movie::class], version = 2)
+@Database(
+  entities = [Movie::class],
+  version = 3,
+)
 @TypeConverters(CastTypeConverter::class, ReviewTypeConverter::class, GenreTypeConverter::class)
 abstract class Database : RoomDatabase() {
   /**
