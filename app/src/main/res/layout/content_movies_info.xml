@@ -92,7 +92,7 @@
             app:drawDot="true"
             app:enableProgressAnimation="true"
             app:fillBackground="false"
-            app:formattingPattern="&#37;.01f"
+            app:formattingPattern="&#37;.1f"
             app:gradientEndColor="@color/colorAccent"
             app:gradientType="linear"
             app:progressBackgroundColor="?colorAccent"

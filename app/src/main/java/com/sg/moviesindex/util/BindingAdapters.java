@@ -11,7 +11,8 @@ import androidx.databinding.BindingAdapter;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
-
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 public class BindingAdapters {
 
     @BindingAdapter("imageUrl")
@@ -23,7 +24,10 @@ public class BindingAdapters {
 
         Glide.with(view.getContext())
                 .load(url)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(circularProgressDrawable)
+                .error(com.sg.moviesindex.R.drawable.bg_image_error)
                 .into(view);
     }
 
@@ -36,7 +40,10 @@ public class BindingAdapters {
 
         Glide.with(view.getContext())
                 .load(url)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(circularProgressDrawable)
+                .error(com.sg.moviesindex.R.drawable.bg_image_error)
                 .into(view);
     }
 
