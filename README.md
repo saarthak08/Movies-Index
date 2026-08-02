@@ -1,6 +1,6 @@
 # Movies Index
 
-> An Android application which shows the list & information of movies from [The Movie Database](https://www.themoviedb.org) (TMDb) & allows downloading their torrent files from [YTS](https://yts.mx/).
+> An android application which shows the list & information of movies from [The Movie Database](https://www.themoviedb.org) (TMDb) & allows downloading their torrent files from [YTS](https://yts.mx/).
 
 ## Features
 

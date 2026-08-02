@@ -21,7 +21,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
 import com.google.android.material.chip.Chip
@@ -36,7 +35,6 @@ import com.sg.moviesindex.data.remote.YTSService
 import com.sg.moviesindex.databinding.ActivityMoviesInfoBinding
 import com.sg.moviesindex.service.TorrentDownloaderService
 import com.sg.moviesindex.service.TorrentFetcherService
-import com.sg.moviesindex.ui.common.PaginationScrollListener
 import com.sg.moviesindex.ui.main.MainViewModel
 import com.varunest.sparkbutton.SparkButton
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,6 +69,8 @@ class MovieDetailActivity :
   private lateinit var castsAdapter: CastsAdapter
   private val reviewsList = ReviewsList()
   private val castsList = CastsList()
+  private var currentReviewsPage = 1
+  private var isLoadingReviews = false
   private lateinit var downloadButton: CircularProgressButton
   private lateinit var chipGroup: ChipGroup
   private lateinit var torrentFetcherService: TorrentFetcherService
@@ -154,9 +154,9 @@ class MovieDetailActivity :
 
     nestedScrollView.setOnScrollChangeListener { v: NestedScrollView, _, scrollY, _, oldScrollY ->
       if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight && scrollY > oldScrollY) {
-        val page = (reviewsList.results?.size ?: 0) / 20 + 1
-        if (page <= (reviewsList.totalPages ?: 1)) {
-          movie?.id?.let { detailViewModel.fetchReviews(it, page) }
+        if (!isLoadingReviews && currentReviewsPage <= (reviewsList.totalPages ?: 1)) {
+          isLoadingReviews = true
+          movie?.id?.let { detailViewModel.fetchReviews(it, currentReviewsPage) }
         }
       }
     }
@@ -204,6 +204,8 @@ class MovieDetailActivity :
         reviewsList.totalPages = reviews.totalPages
         reviewsList.results?.addAll(reviews.results!!)
         reviewsAdapter.submitList(ArrayList(reviewsList.results!!))
+        currentReviewsPage++
+        isLoadingReviews = false
       }
     }
   }

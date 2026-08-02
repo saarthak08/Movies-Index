@@ -47,15 +47,10 @@ public class BindingAdapters {
                 .into(view);
     }
 
-    @BindingAdapter("boldText")
-    public static void setBoldText(TextView textView, String boldText) {
-        setBoldAndNormalText(textView, boldText, "");
-    }
-
     @BindingAdapter(value = {"boldText", "normalText"}, requireAll = false)
     public static void setBoldAndNormalText(TextView textView, String boldText, String normalText) {
-        String bText = boldText != null ? boldText : "";
-        String nText = normalText != null ? normalText : "";
+        String bText = (boldText != null && !boldText.equals("null")) ? boldText : "";
+        String nText = (normalText != null && !normalText.equals("null")) ? normalText : "";
         SpannableString str = new SpannableString(bText + nText);
         str.setSpan(
                 new StyleSpan(Typeface.BOLD),
