@@ -28,8 +28,8 @@
   <string name="reviews">Reviews:</string>
   <string name="no_favourite_movies">Oops! You don\'t have any favourite movies currently.</string>
   <string name="error_internet_connection">Error! Check your internet connection.</string>
-  <string name="error_fetching_genres">Error fetching genres.</string>
-  <string name="error_searching_movies">Error searching movies.</string>
+  <string name="error_fetching_genres">An error occurred while fetching genres</string>
+  <string name="error_searching_movies">An error occurred while searching movies</string>
   <string name="choose_region">Choose a Region</string>
   <string name="choose_category">Choose a Category</string>
   <string name="region_all">All</string>
@@ -39,14 +39,14 @@
   <string name="file_download_completed">File download completed</string>
   <string name="unmarked_as_favourite">Unmarked as Favourite</string>
   <string name="marked_as_favourite">Marked as Favourite</string>
-  <string name="permission_denied">Permission Denied</string>
+  <string name="permission_denied">Permission denied</string>
   <string name="genre_format">Genre: %1$s</string>
   <string name="search_results_format">Search Results: %1$s</string>
   <string name="upcoming_movies_format">Upcoming Movies: %1$s</string>
   <string name="now_playing_format">Now Playing: %1$s</string>
   <string name="file_saving_failed">File saving failed!</string>
   <string name="error_downloading_torrent">Error in downloading torrent file!</string>
-  <string name="no_torrents_found">No Torrents Found! Please try again!</string>
+  <string name="no_torrents_found">No torrents found!</string>
   <string name="error_fetching_torrents">Error in fetching torrent files! Please try again using a VPN.</string>
   <string name="download_notification_channel_name">Download Notification</string>
   <string name="download_title">Download</string>
