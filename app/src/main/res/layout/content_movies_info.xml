@@ -43,7 +43,7 @@
           android:layout_marginEnd="104dp"
           android:fontFamily="@font/montserrat"
           android:padding="16dp"
-          android:text="@{`Original Title:\n`+contentMovie.title}"
+          android:text="@{`Original Title:\n`+(contentMovie.title ?? ``)}"
           android:textColor="@android:color/black"
           android:textSize="20sp"
           android:textStyle="bold"
@@ -117,7 +117,7 @@
           android:paddingTop="4dp"
           android:paddingEnd="16dp"
           android:paddingBottom="4dp"
-          android:text="@{`Status: `+contentMovie.status}"
+          android:text="@{`Status: `+(contentMovie.status ?? ``)}"
           android:textSize="20sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/tvMovieTitle" />
@@ -132,7 +132,7 @@
           android:paddingTop="4dp"
           android:paddingEnd="16dp"
           android:paddingBottom="4dp"
-          android:text="@{`Release Date: `+contentMovie.releaseDate}"
+          android:text="@{`Release Date: `+(contentMovie.releaseDate ?? ``)}"
           android:textSize="20sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/tvStatus" />
@@ -160,7 +160,7 @@
           android:paddingTop="4dp"
           android:paddingEnd="16dp"
           android:paddingBottom="4dp"
-          android:text="@{`Original Language: `+ locale }"
+          android:text="@{`Original Language: `+ (locale ?? ``) }"
           android:textSize="20sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/tvPopularity" />
