@@ -21,7 +21,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
 import com.google.android.material.chip.Chip
@@ -36,7 +35,6 @@ import com.sg.moviesindex.data.remote.YTSService
 import com.sg.moviesindex.databinding.ActivityMoviesInfoBinding
 import com.sg.moviesindex.service.TorrentDownloaderService
 import com.sg.moviesindex.service.TorrentFetcherService
-import com.sg.moviesindex.ui.common.PaginationScrollListener
 import com.sg.moviesindex.ui.main.MainViewModel
 import com.varunest.sparkbutton.SparkButton
 import dagger.hilt.android.AndroidEntryPoint
