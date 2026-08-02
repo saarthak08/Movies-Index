@@ -31,7 +31,7 @@ class FavouriteMoviesDAOTest {
           Database::class.java,
         ).allowMainThreadQueries()
         .build()
-    dao = db.favouriteMoviesDAO()
+    dao = db.getFDAO()
   }
 
   @After
@@ -45,14 +45,13 @@ class FavouriteMoviesDAOTest {
   fun writeMovieAndReadInList() {
     val movie =
       Movie(
-        id = "123",
+        id = 123,
         title = "Test Movie",
         overview = "Test Overview",
         posterPath = "/poster.jpg",
         backdropPath = "/backdrop.jpg",
         releaseDate = "2024-01-01",
         voteAverage = 8.5,
-        voteCount = 100,
       )
 
     dao.insertFMovie(movie)
