@@ -16,13 +16,14 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.just
+import io.mockk.verify
 import io.reactivex.Observable
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito.verify
 
 @ExtendWith(InstantExecutorExtension::class, RxImmediateSchedulerRule::class, MockKExtension::class)
 class RepositoryTest {
@@ -47,7 +48,8 @@ class RepositoryTest {
     val result = repository.getAllFMovies()
 
     assertEquals(liveData, result)
-    verify { favouriteMoviesDAO.getAllFMovies() }
+    val verificationResult = verify { favouriteMoviesDAO.getAllFMovies() }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -58,7 +60,8 @@ class RepositoryTest {
     val result = repository.getMovie("1")
 
     assertEquals(movie, result)
-    verify { favouriteMoviesDAO.getMovie("1") }
+    val verificationResult = verify { favouriteMoviesDAO.getMovie("1") }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -68,7 +71,8 @@ class RepositoryTest {
     val result = repository.getMovie("99")
 
     assertNull(result)
-    verify { favouriteMoviesDAO.getMovie("99") }
+    val verificationResult = verify { favouriteMoviesDAO.getMovie("99") }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -78,7 +82,8 @@ class RepositoryTest {
 
     repository.addMovie(movie)
 
-    verify { favouriteMoviesDAO.insertFMovie(movie) }
+    val verificationResult = verify { favouriteMoviesDAO.insertFMovie(movie) }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -88,7 +93,8 @@ class RepositoryTest {
 
     repository.deleteMovie(movie)
 
-    verify { favouriteMoviesDAO.deleteFMovie(movie) }
+    val verificationResult = verify { favouriteMoviesDAO.deleteFMovie(movie) }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -99,7 +105,8 @@ class RepositoryTest {
     val observer = repository.getPopularMovies("key", 1).test()
 
     observer.assertValue(response)
-    verify { tmDbService.getPopularMoviesWithRx("key", 1) }
+    val verificationResult = verify { tmDbService.getPopularMoviesWithRx("key", 1) }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -110,7 +117,8 @@ class RepositoryTest {
     val observer = repository.getTopRatedMovies("key", 1).test()
 
     observer.assertValue(response)
-    verify { tmDbService.getTopRatedMoviesWithRx("key", 1) }
+    val verificationResult = verify { tmDbService.getTopRatedMoviesWithRx("key", 1) }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -122,7 +130,8 @@ class RepositoryTest {
     val observer = repository.getUpcomingMovies("key", 1, "US").test()
 
     observer.assertValue(response)
-    verify { tmDbService.getUpcomingMoviesWithRx("key", 1, "US") }
+    val verificationResult = verify { tmDbService.getUpcomingMoviesWithRx("key", 1, "US") }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -134,7 +143,8 @@ class RepositoryTest {
     val observer = repository.getUpcomingMovies("key", 1, null).test()
 
     observer.assertValue(response)
-    verify { tmDbService.getUpcomingMoviesWithRx("key", 1, "") }
+    val verificationResult = verify { tmDbService.getUpcomingMoviesWithRx("key", 1, "") }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -145,7 +155,8 @@ class RepositoryTest {
     val observer = repository.getNowPlayingMovies("key", 1, "US").test()
 
     observer.assertValue(response)
-    verify { tmDbService.getNowPlayingWithRx("key", 1, "US") }
+    val verificationResult = verify { tmDbService.getNowPlayingWithRx("key", 1, "US") }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -155,34 +166,36 @@ class RepositoryTest {
       tmDbService.discover(
         "key",
         "28",
-        false,
-        false,
-        1,
-        "popularity.desc",
-        null,
-        null,
-        null,
-        null,
+        adult = false,
+        video = false,
+        pageIndex = 1,
+        sortBy = "popularity.desc",
+        region = null,
+        language = null,
+        releaseDateGTE = null,
+        releaseDateLTE = null,
       )
     } returns Observable.just(response)
 
     val observer = repository.discoverMovies("key", "28", 1).test()
 
     observer.assertValue(response)
-    verify {
-      tmDbService.discover(
-        "key",
-        "28",
-        false,
-        false,
-        1,
-        "popularity.desc",
-        null,
-        null,
-        null,
-        null,
-      )
-    }
+    val verificationResult =
+      verify {
+        tmDbService.discover(
+          "key",
+          "28",
+          false,
+          video = false,
+          pageIndex = 1,
+          sortBy = "popularity.desc",
+          region = null,
+          language = null,
+          releaseDateGTE = null,
+          releaseDateLTE = null,
+        )
+      }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -193,7 +206,8 @@ class RepositoryTest {
     val observer = repository.getGenresList("key").test()
 
     observer.assertValue(response)
-    verify { tmDbService.getGenresList("key") }
+    val verificationResult = verify { tmDbService.getGenresList("key") }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -204,7 +218,8 @@ class RepositoryTest {
     val observer = repository.searchMovies("key", "query", 1).test()
 
     observer.assertValue(response)
-    verify { tmDbService.search("key", false, "query", 1) }
+    val verificationResult = verify { tmDbService.search("key", false, "query", 1) }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -215,7 +230,8 @@ class RepositoryTest {
     val observer = repository.getFullMovieInformation(1L, "key").test()
 
     observer.assertValue(movie)
-    verify { tmDbService.getFullMovieInformation(1L, "key") }
+    val verificationResult = verify { tmDbService.getFullMovieInformation(1L, "key") }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -226,7 +242,8 @@ class RepositoryTest {
     val observer = repository.getCasts(1L, "key").test()
 
     observer.assertValue(response)
-    verify { tmDbService.getCasts(1L, "key") }
+    val verificationResult = verify { tmDbService.getCasts(1L, "key") }
+    assertNotNull(verificationResult)
   }
 
   @Test
@@ -237,6 +254,7 @@ class RepositoryTest {
     val observer = repository.getReviews(1L, "key", 1).test()
 
     observer.assertValue(response)
-    verify { tmDbService.getReviews(1L, "key", 1) }
+    val verificationResult = verify { tmDbService.getReviews(1L, "key", 1) }
+    assertNotNull(verificationResult)
   }
 }

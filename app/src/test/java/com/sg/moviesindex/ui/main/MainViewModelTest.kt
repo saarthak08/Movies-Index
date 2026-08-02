@@ -11,9 +11,7 @@ import com.sg.moviesindex.data.remote.Genre
 import com.sg.moviesindex.data.remote.GenresList
 import com.sg.moviesindex.data.remote.MoviesList
 import com.sg.moviesindex.data.repository.Repository
-import io.mockk.Runs
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import io.reactivex.Observable
@@ -310,7 +308,7 @@ class MainViewModelTest {
 
   @Test
   fun `getAllMovies returns LiveData from repository`() {
-    val liveData = MutableLiveData<List<Movie>>(listOf(Movie(id = 1L)))
+    val liveData = MutableLiveData(listOf(Movie(id = 1L)))
     every { repository.getAllFMovies() } returns liveData
 
     val result = viewModel.getAllMovies()
