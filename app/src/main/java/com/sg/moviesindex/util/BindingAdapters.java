@@ -47,11 +47,6 @@ public class BindingAdapters {
                 .into(view);
     }
 
-    @BindingAdapter("boldText")
-    public static void setBoldText(TextView textView, String boldText) {
-        setBoldAndNormalText(textView, boldText, "");
-    }
-
     @BindingAdapter(value = {"boldText", "normalText"}, requireAll = false)
     public static void setBoldAndNormalText(TextView textView, String boldText, String normalText) {
         String bText = (boldText != null && !boldText.equals("null")) ? boldText : "";
