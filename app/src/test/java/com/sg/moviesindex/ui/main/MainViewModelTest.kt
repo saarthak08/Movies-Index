@@ -409,4 +409,49 @@ class MainViewModelTest {
 
     verify { repository.removeWatchlistMovie(1L) }
   }
+
+  // --- Navigation & Filter State tests ---
+
+  @Test
+  fun `drawer state updates correctly for bottom navigation tabs`() {
+    assertEquals(0, viewModel.drawer.value) // Default is Popular (0)
+
+    viewModel.drawer.value = 1 // Now Playing
+    assertEquals(1, viewModel.drawer.value)
+
+    viewModel.drawer.value = 3 // Top Rated
+    assertEquals(3, viewModel.drawer.value)
+
+    viewModel.drawer.value = 4 // Genres
+    assertEquals(4, viewModel.drawer.value)
+
+    viewModel.drawer.value = 5 // Library / Favorites
+    assertEquals(5, viewModel.drawer.value)
+
+    // Reverting back to popular
+    viewModel.drawer.value = 0
+    assertEquals(0, viewModel.drawer.value)
+  }
+
+  @Test
+  fun `region selection state updates correctly`() {
+    assertEquals("", viewModel.region.value) // Default is empty ("All")
+
+    viewModel.region.value = "IN"
+    assertEquals("IN", viewModel.region.value)
+
+    viewModel.region.value = "US"
+    assertEquals("US", viewModel.region.value)
+
+    viewModel.region.value = "GB"
+    assertEquals("GB", viewModel.region.value)
+  }
+
+  @Test
+  fun `selectedGenreIndex state updates correctly`() {
+    assertEquals(0, viewModel.selectedGenreIndex.value)
+
+    viewModel.selectedGenreIndex.value = 3
+    assertEquals(3, viewModel.selectedGenreIndex.value)
+  }
 }

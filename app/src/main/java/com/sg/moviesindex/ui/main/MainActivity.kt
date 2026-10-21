@@ -16,9 +16,12 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sg.moviesindex.R
+import com.sg.moviesindex.data.remote.Genre
 import com.sg.moviesindex.ui.favorites.FavouriteMoviesFragment
 import com.sg.moviesindex.ui.movies.MoviesFragment
 import com.sg.moviesindex.ui.search.SearchUtil
@@ -45,6 +48,9 @@ class MainActivity : AppCompatActivity() {
   private lateinit var refreshButtonError: View
   private lateinit var bottomNavigationView: BottomNavigationView
   private var searchMenuItem: MenuItem? = null
+  private var isRevertingNavigation = false
+  private var pendingGenresObserver: Observer<ArrayList<Genre>>? = null
+  private var pendingErrorObserver: Observer<String?>? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -66,7 +72,9 @@ class MainActivity : AppCompatActivity() {
       false
 
     bottomNavigationView.setOnItemSelectedListener { item ->
-      val newDrawer =
+      if (isRevertingNavigation) return@setOnItemSelectedListener true
+
+      val targetDrawer =
         when (item.itemId) {
           R.id.nav_popular -> 0
           R.id.nav_now_playing -> 1
@@ -75,11 +83,39 @@ class MainActivity : AppCompatActivity() {
           R.id.nav_favorites -> 5
           else -> 0
         }
-      if (viewModel.drawer.value != newDrawer) {
-        viewModel.drawer.value = newDrawer
-        handleNavigation(newDrawer)
+
+      val currentDrawer = viewModel.drawer.value ?: 0
+      if (targetDrawer == currentDrawer) {
+        return@setOnItemSelectedListener true
       }
-      true
+
+      clearPendingGenreObservers()
+
+      when (targetDrawer) {
+        1 -> {
+          showRegionDialog(targetDrawer, previousDrawer = currentDrawer)
+          true
+        }
+
+        4 -> {
+          showGenreDialog(previousDrawer = currentDrawer)
+          true
+        }
+
+        else -> {
+          viewModel.drawer.value = targetDrawer
+          handleNavigation(targetDrawer)
+          true
+        }
+      }
+    }
+
+    bottomNavigationView.setOnItemReselectedListener { item ->
+      when (item.itemId) {
+        R.id.nav_now_playing -> showRegionDialog(1, previousDrawer = 1)
+        R.id.nav_genres -> showGenreDialog(previousDrawer = 4)
+        else -> Unit
+      }
     }
 
     progressBar.animate().alpha(1f).duration = 500
@@ -93,13 +129,23 @@ class MainActivity : AppCompatActivity() {
         override fun handleOnBackPressed() {
           val currentDrawer = viewModel.drawer.value
           if (currentDrawer != null && currentDrawer != 0) {
+            clearPendingGenreObservers()
             viewModel.drawer.value = 0
             searchMenuItem?.isVisible = true
             supportFragmentManager.popBackStack(
               null,
               FragmentManager.POP_BACK_STACK_INCLUSIVE,
             )
+            isRevertingNavigation = true
             bottomNavigationView.selectedItemId = R.id.nav_popular
+            isRevertingNavigation = false
+            val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+            if (currentFragment !is MoviesFragment) {
+              supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.frame_layout, MoviesFragment.newInstance())
+                .commit()
+            }
             viewModel.fetchMovies(0, 1)
           } else {
             isEnabled = false
@@ -114,9 +160,9 @@ class MainActivity : AppCompatActivity() {
     if (savedInstanceState == null) {
       viewModel.fetchMovies(0, 1)
     } else {
-      val currentDrawer = viewModel.drawer.value ?: 0
-      handleNavigation(currentDrawer)
+      restoreNavigationState()
     }
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       requestNotificationPermissions()
     }
@@ -138,7 +184,12 @@ class MainActivity : AppCompatActivity() {
         linearLayoutError.visibility = View.VISIBLE
         refreshButtonError.setOnClickListener {
           linearLayoutError.visibility = View.GONE
-          handleNavigation(viewModel.drawer.value ?: 0)
+          val currentDrawer = viewModel.drawer.value ?: 0
+          if (currentDrawer == 4) {
+            viewModel.fetchGenreMovies(1)
+          } else if (currentDrawer != 5) {
+            viewModel.fetchMovies(currentDrawer, 1)
+          }
         }
       } else {
         linearLayoutError.visibility = View.GONE
@@ -146,7 +197,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     viewModel.movieList.observe(this) { movies ->
-      if (!movies.isNullOrEmpty()) {
+      if (!movies.isNullOrEmpty() && viewModel.drawer.value != 5) {
         val currentFragment = fragmentManager.findFragmentById(R.id.frame_layout)
         if (currentFragment == null) {
           fragmentManager
@@ -156,12 +207,71 @@ class MainActivity : AppCompatActivity() {
         } else if (currentFragment !is MoviesFragment) {
           fragmentManager
             .beginTransaction()
-            .addToBackStack(null)
             .replace(R.id.frame_layout, MoviesFragment.newInstance())
             .commit()
         }
       }
     }
+  }
+
+  /**
+   * Restores the navigation tab and fragment state across configuration changes (such as theme toggle).
+   */
+  private fun restoreNavigationState() {
+    val currentDrawer = viewModel.drawer.value ?: 0
+    val targetBottomId = getNavIdForDrawer(currentDrawer)
+    if (bottomNavigationView.selectedItemId != targetBottomId) {
+      isRevertingNavigation = true
+      bottomNavigationView.selectedItemId = targetBottomId
+      isRevertingNavigation = false
+    }
+    searchMenuItem?.isVisible = (currentDrawer != 4 && currentDrawer != 5)
+
+    val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+    if (currentDrawer == 5) {
+      if (currentFragment !is FavouriteMoviesFragment) {
+        supportFragmentManager
+          .beginTransaction()
+          .replace(R.id.frame_layout, FavouriteMoviesFragment.newInstance())
+          .commit()
+      }
+    } else {
+      if (currentFragment !is MoviesFragment) {
+        supportFragmentManager
+          .beginTransaction()
+          .replace(R.id.frame_layout, MoviesFragment.newInstance())
+          .commit()
+      }
+    }
+  }
+
+  private fun getNavIdForDrawer(drawer: Int): Int =
+    when (drawer) {
+      0 -> R.id.nav_popular
+      1 -> R.id.nav_now_playing
+      3 -> R.id.nav_top_rated
+      4 -> R.id.nav_genres
+      5 -> R.id.nav_favorites
+      else -> R.id.nav_popular
+    }
+
+  private fun revertTab(previousDrawer: Int) {
+    isRevertingNavigation = true
+    try {
+      viewModel.drawer.value = previousDrawer
+      val previousNavId = getNavIdForDrawer(previousDrawer)
+      bottomNavigationView.selectedItemId = previousNavId
+      searchMenuItem?.isVisible = (previousDrawer != 4 && previousDrawer != 5)
+    } finally {
+      isRevertingNavigation = false
+    }
+  }
+
+  private fun clearPendingGenreObservers() {
+    pendingGenresObserver?.let { viewModel.genres.removeObserver(it) }
+    pendingGenresObserver = null
+    pendingErrorObserver?.let { viewModel.errorMessage.removeObserver(it) }
+    pendingErrorObserver = null
   }
 
   /**
@@ -188,47 +298,52 @@ class MainActivity : AppCompatActivity() {
    */
   private fun handleNavigation(drawer: Int) {
     searchMenuItem?.isVisible = (drawer != 4 && drawer != 5)
-    val bottomId =
-      when (drawer) {
-        0 -> R.id.nav_popular
-        1 -> R.id.nav_now_playing
-        3 -> R.id.nav_top_rated
-        4 -> R.id.nav_genres
-        5 -> R.id.nav_favorites
-        else -> null
-      }
-    if (bottomId != null && bottomNavigationView.selectedItemId != bottomId) {
+    val bottomId = getNavIdForDrawer(drawer)
+    if (bottomNavigationView.selectedItemId != bottomId) {
+      isRevertingNavigation = true
       bottomNavigationView.selectedItemId = bottomId
+      isRevertingNavigation = false
     }
+
+    supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
     when (drawer) {
       5 -> {
-        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        supportFragmentManager
-          .beginTransaction()
-          .addToBackStack(null)
-          .replace(R.id.frame_layout, FavouriteMoviesFragment.newInstance())
-          .commit()
-      }
-
-      4 -> {
-        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        observeGenres()
-        viewModel.fetchGenres()
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+        if (currentFragment !is FavouriteMoviesFragment) {
+          supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.frame_layout, FavouriteMoviesFragment.newInstance())
+            .commit()
+        }
       }
 
       1, 2 -> {
-        showRegionDialog(drawer)
+        // Now Playing is handled via showRegionDialog
+      }
+
+      4 -> {
+        // Genres is handled via showGenreDialog
       }
 
       else -> {
-        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+        if (currentFragment !is MoviesFragment) {
+          supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.frame_layout, MoviesFragment.newInstance())
+            .commit()
+        }
         viewModel.fetchMovies(drawer, 1)
       }
     }
   }
 
-  private fun showRegionDialog(drawer: Int) {
+  private fun showRegionDialog(
+    drawer: Int,
+    previousDrawer: Int,
+  ) {
+    var itemSelected = false
     val regions =
       arrayOf(
         getString(R.string.region_all),
@@ -236,42 +351,144 @@ class MainActivity : AppCompatActivity() {
         getString(R.string.region_usa),
         getString(R.string.region_uk),
       )
-    com.google.android.material.dialog
-      .MaterialAlertDialogBuilder(this)
+    val currentRegion = viewModel.region.value ?: ""
+    val selectedIndex =
+      when (currentRegion) {
+        "IN" -> 1
+        "US" -> 2
+        "GB" -> 3
+        else -> 0
+      }
+
+    MaterialAlertDialogBuilder(this)
       .setTitle(R.string.choose_region)
-      .setSingleChoiceItems(regions, -1) { dialog, which ->
-        val regionCode =
-          when (which) {
-            1 -> "IN"
-            2 -> "US"
-            3 -> "GB"
-            else -> ""
-          }
-        viewModel.region.value = regionCode
-        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        viewModel.fetchMovies(drawer, 1)
+      .setSingleChoiceItems(regions, selectedIndex) { dialog, which ->
+        itemSelected = true
         dialog.dismiss()
-      }.setCancelable(false)
+        onRegionSelected(drawer, which)
+      }.setNegativeButton(android.R.string.cancel) { dialog, _ ->
+        dialog.dismiss()
+      }.setOnDismissListener {
+        if (!itemSelected) {
+          revertTab(previousDrawer)
+        }
+      }.setCancelable(true)
       .show()
   }
 
-  private fun observeGenres() {
-    viewModel.genres.observe(this) { genres ->
-      if (!genres.isNullOrEmpty()) {
-        val genreNames = genres.map { it.name }.toTypedArray()
-        com.google.android.material.dialog
-          .MaterialAlertDialogBuilder(this)
-          .setTitle(R.string.choose_category)
-          .setSingleChoiceItems(genreNames, -1) { dialog, which ->
-            viewModel.selectedGenreIndex.value = which
-            viewModel.genreId.value = genres[which].id
-            viewModel.fetchGenreMovies(1)
-            dialog.dismiss()
-          }.setCancelable(false)
-          .show()
-        viewModel.genres.removeObservers(this)
+  private fun onRegionSelected(
+    drawer: Int,
+    which: Int,
+  ) {
+    val regionCode =
+      when (which) {
+        1 -> "IN"
+        2 -> "US"
+        3 -> "GB"
+        else -> ""
       }
+    viewModel.region.value = regionCode
+    viewModel.drawer.value = drawer
+    searchMenuItem?.isVisible = true
+    if (bottomNavigationView.selectedItemId != R.id.nav_now_playing) {
+      isRevertingNavigation = true
+      bottomNavigationView.selectedItemId = R.id.nav_now_playing
+      isRevertingNavigation = false
     }
+    supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+    if (currentFragment !is MoviesFragment) {
+      supportFragmentManager
+        .beginTransaction()
+        .replace(R.id.frame_layout, MoviesFragment.newInstance())
+        .commit()
+    }
+    viewModel.fetchMovies(drawer, 1)
+  }
+
+  private fun showGenreDialog(previousDrawer: Int) {
+    val existingGenres = viewModel.genres.value
+    if (!existingGenres.isNullOrEmpty()) {
+      displayGenrePickerDialog(existingGenres, previousDrawer)
+      return
+    }
+
+    clearPendingGenreObservers()
+
+    val genresObserver =
+      object : Observer<ArrayList<Genre>> {
+        override fun onChanged(value: ArrayList<Genre>) {
+          if (!value.isNullOrEmpty()) {
+            clearPendingGenreObservers()
+            displayGenrePickerDialog(value, previousDrawer)
+          }
+        }
+      }
+
+    val errorObserver =
+      object : Observer<String?> {
+        override fun onChanged(value: String?) {
+          if (value != null) {
+            clearPendingGenreObservers()
+            revertTab(previousDrawer)
+          }
+        }
+      }
+
+    pendingGenresObserver = genresObserver
+    pendingErrorObserver = errorObserver
+
+    viewModel.genres.observe(this, genresObserver)
+    viewModel.errorMessage.observe(this, errorObserver)
+    viewModel.fetchGenres()
+  }
+
+  private fun displayGenrePickerDialog(
+    genres: List<Genre>,
+    previousDrawer: Int,
+  ) {
+    var itemSelected = false
+    val genreNames = genres.map { it.name }.toTypedArray()
+    val currentSelected = viewModel.selectedGenreIndex.value ?: -1
+
+    MaterialAlertDialogBuilder(this)
+      .setTitle(R.string.choose_category)
+      .setSingleChoiceItems(genreNames, currentSelected) { dialog, which ->
+        itemSelected = true
+        dialog.dismiss()
+        onGenreSelected(genres, which)
+      }.setNegativeButton(android.R.string.cancel) { dialog, _ ->
+        dialog.dismiss()
+      }.setOnDismissListener {
+        if (!itemSelected) {
+          revertTab(previousDrawer)
+        }
+      }.setCancelable(true)
+      .show()
+  }
+
+  private fun onGenreSelected(
+    genres: List<Genre>,
+    which: Int,
+  ) {
+    viewModel.drawer.value = 4
+    viewModel.selectedGenreIndex.value = which
+    viewModel.genreId.value = genres[which].id
+    searchMenuItem?.isVisible = false
+    if (bottomNavigationView.selectedItemId != R.id.nav_genres) {
+      isRevertingNavigation = true
+      bottomNavigationView.selectedItemId = R.id.nav_genres
+      isRevertingNavigation = false
+    }
+    supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+    if (currentFragment !is MoviesFragment) {
+      supportFragmentManager
+        .beginTransaction()
+        .replace(R.id.frame_layout, MoviesFragment.newInstance())
+        .commit()
+    }
+    viewModel.fetchGenreMovies(1)
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -311,6 +528,7 @@ class MainActivity : AppCompatActivity() {
 
   override fun onDestroy() {
     super.onDestroy()
+    clearPendingGenreObservers()
     compositeDisposable.clear()
   }
 }
