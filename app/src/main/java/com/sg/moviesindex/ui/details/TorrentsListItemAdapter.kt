@@ -9,11 +9,13 @@ import com.sg.moviesindex.R
 import com.sg.moviesindex.data.remote.Torrent
 import com.sg.moviesindex.databinding.TorrentListItemsLayoutBinding
 import com.sg.moviesindex.service.TorrentFetcherService
+import com.sg.moviesindex.util.MagnetUtil
 
 class TorrentsListItemAdapter(
   private val torrentList: List<Torrent>?,
   private val button: CircularProgressButton,
   private val completeListener: TorrentFetcherService.OnCompleteListener,
+  private val movieTitle: String = "",
 ) : RecyclerView.Adapter<TorrentsListItemAdapter.TorrentListItemViewHolder>() {
   companion object;
 
@@ -28,7 +30,12 @@ class TorrentsListItemAdapter(
         parent,
         false,
       )
-    return TorrentListItemViewHolder(torrentListItemsLayoutBinding, button, completeListener)
+    return TorrentListItemViewHolder(
+      torrentListItemsLayoutBinding,
+      button,
+      completeListener,
+      movieTitle,
+    )
   }
 
   override fun onBindViewHolder(
@@ -45,12 +52,49 @@ class TorrentsListItemAdapter(
     val torrentListItemsLayoutBinding: TorrentListItemsLayoutBinding,
     button: CircularProgressButton,
     completeListener: TorrentFetcherService.OnCompleteListener,
+    movieTitle: String,
   ) : RecyclerView.ViewHolder(torrentListItemsLayoutBinding.root) {
     init {
       torrentListItemsLayoutBinding.ivDownloadButton.setOnClickListener {
         completeListener.onComplete(false, torrentListItemsLayoutBinding.torrent)
-        button.revertAnimation()
+        button.revertAnimation {
+          button.layoutParams =
+            android.widget.FrameLayout.LayoutParams(
+              android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+              android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+              android.view.Gravity.CENTER,
+            )
+        }
         button.stopAnimation()
+      }
+
+      torrentListItemsLayoutBinding.btnMagnet.setOnClickListener {
+        val torrent = torrentListItemsLayoutBinding.torrent ?: return@setOnClickListener
+        val hash = torrent.hash
+        if (!hash.isNullOrEmpty()) {
+          val context = it.context
+          val magnetUri = MagnetUtil.buildMagnetUri(hash, movieTitle)
+          MagnetUtil.openInTorrentClient(context, magnetUri)
+          button.revertAnimation {
+            button.layoutParams =
+              android.widget.FrameLayout.LayoutParams(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.Gravity.CENTER,
+              )
+          }
+          button.stopAnimation()
+        }
+      }
+
+      torrentListItemsLayoutBinding.btnCopyMagnet.setOnClickListener {
+        val torrent = torrentListItemsLayoutBinding.torrent ?: return@setOnClickListener
+        val hash = torrent.hash
+        if (!hash.isNullOrEmpty()) {
+          val context = it.context
+          val magnetUri = MagnetUtil.buildMagnetUri(hash, movieTitle)
+          MagnetUtil.copyToClipboard(context, magnetUri)
+        }
       }
     }
   }

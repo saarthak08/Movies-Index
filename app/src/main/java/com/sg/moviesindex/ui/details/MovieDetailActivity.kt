@@ -1,20 +1,27 @@
 package com.sg.moviesindex.ui.details
 
 import android.Manifest
+import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
@@ -35,6 +42,7 @@ import com.sg.moviesindex.data.remote.YTSService
 import com.sg.moviesindex.databinding.ActivityMoviesInfoBinding
 import com.sg.moviesindex.service.TorrentDownloaderService
 import com.sg.moviesindex.service.TorrentFetcherService
+import com.sg.moviesindex.ui.common.MoviesAdapter
 import com.sg.moviesindex.ui.main.MainViewModel
 import com.varunest.sparkbutton.SparkButton
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,6 +75,10 @@ class MovieDetailActivity :
   private var movie: Movie? = null
   private lateinit var reviewsAdapter: ReviewsAdapter
   private lateinit var castsAdapter: CastsAdapter
+  private lateinit var recommendationsAdapter: RecommendationsAdapter
+  private lateinit var watchProvidersAdapter: WatchProvidersAdapter
+  private var currentWatchProviderLink: String? = null
+  private var isMovieInWatchlist = false
   private val reviewsList = ReviewsList()
   private val castsList = CastsList()
   private var currentReviewsPage = 1
@@ -102,6 +114,7 @@ class MovieDetailActivity :
 
     val toolbar: Toolbar = findViewById(R.id.toolbar)
     setSupportActionBar(toolbar)
+    supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
     mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
     detailViewModel = ViewModelProvider(this)[MovieDetailViewModel::class.java]
@@ -127,11 +140,16 @@ class MovieDetailActivity :
 
       movie?.let {
         activityMoviesInfoBinding.movie = it
+        activityMoviesInfoBinding.ctbMovie.title = it.title ?: it.originalTitle
         observeViewModel()
         detailViewModel.fetchFullInformation(it.id!!)
         detailViewModel.fetchCasts(it.id!!)
         detailViewModel.fetchReviews(it.id!!, 1)
-        checkIsFavourite()
+        detailViewModel.fetchVideos(it.id!!)
+        detailViewModel.fetchRecommendations(it.id!!)
+        detailViewModel.fetchWatchProviders(it.id!!)
+        observeFavoriteStatus()
+        observeWatchlistStatus()
       }
     }
 
@@ -161,16 +179,47 @@ class MovieDetailActivity :
       }
     }
 
-    castsAdapter = CastsAdapter()
+    castsAdapter =
+      CastsAdapter { cast ->
+        val intent =
+          Intent(this, com.sg.moviesindex.ui.person.PersonDetailActivity::class.java).apply {
+            putExtra("person_id", cast.id)
+            putExtra("person_name", cast.name)
+            putExtra("person_profile", cast.profilePath)
+          }
+        startActivity(intent)
+      }
     val rvCasts = activityMoviesInfoBinding.secondaryLayout.rvCasts
     rvCasts.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
     rvCasts.itemAnimator = DefaultItemAnimator()
     rvCasts.adapter = castsAdapter
+
+    watchProvidersAdapter =
+      WatchProvidersAdapter {
+        val url = currentWatchProviderLink ?: "https://www.themoviedb.org/movie/${movie?.id}/watch"
+        try {
+          val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+          startActivity(browserIntent)
+        } catch (e: Exception) {
+          // Ignore if no browser available
+        }
+      }
+    val rvWatchProviders = activityMoviesInfoBinding.secondaryLayout.rvWatchProviders
+    rvWatchProviders.layoutManager =
+      LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+    rvWatchProviders.itemAnimator = DefaultItemAnimator()
+    rvWatchProviders.adapter = watchProvidersAdapter
+
+    recommendationsAdapter = RecommendationsAdapter(this)
+    val rvRecs = activityMoviesInfoBinding.secondaryLayout.rvRecommendations
+    rvRecs.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+    rvRecs.itemAnimator = DefaultItemAnimator()
+    rvRecs.adapter = recommendationsAdapter
   }
 
   /**
    * Observes LiveData from [MovieDetailViewModel] to update the UI
-   * when full movie details, casts, or reviews are fetched.
+   * when full movie details, casts, reviews, trailers, or recommendations are fetched.
    */
   private fun observeViewModel() {
     detailViewModel.fullMovieInfo.observe(this) { fullInfo ->
@@ -178,9 +227,10 @@ class MovieDetailActivity :
         movie = fullInfo
         formatReleaseDate()
         activityMoviesInfoBinding.movie = movie
+        activityMoviesInfoBinding.ctbMovie.title = movie?.title ?: movie?.originalTitle
 
         val languageCode = fullInfo.originalLanguage ?: ""
-        val locale = Locale(languageCode)
+        val locale = Locale.forLanguageTag(languageCode)
         val languageName =
           locale.getDisplayLanguage(Locale.US).replaceFirstChar {
             if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
@@ -208,6 +258,74 @@ class MovieDetailActivity :
         isLoadingReviews = false
       }
     }
+
+    detailViewModel.videos.observe(this) { videosList ->
+      val trailer =
+        videosList?.results?.firstOrNull {
+          it.site.equals("YouTube", ignoreCase = true) &&
+            it.type.equals("Trailer", ignoreCase = true)
+        } ?: videosList?.results?.firstOrNull {
+          it.site.equals("YouTube", ignoreCase = true)
+        }
+
+      val btnTrailer = activityMoviesInfoBinding.secondaryLayout.btnTrailer
+      val downloadContainer =
+        activityMoviesInfoBinding.secondaryLayout.layoutDownloadContainer
+      if (trailer?.key != null) {
+        btnTrailer.visibility = View.VISIBLE
+        (downloadContainer.layoutParams as? LinearLayout.LayoutParams)?.let { params ->
+          params.marginStart = (6 * resources.displayMetrics.density).toInt()
+          downloadContainer.layoutParams = params
+        }
+        btnTrailer.setOnClickListener {
+          openYouTubeTrailer(trailer.key!!)
+        }
+      } else {
+        btnTrailer.visibility = View.GONE
+        (downloadContainer.layoutParams as? LinearLayout.LayoutParams)?.let { params ->
+          params.marginStart = 0
+          downloadContainer.layoutParams = params
+        }
+      }
+    }
+
+    detailViewModel.recommendations.observe(this) { moviesList ->
+      if (!moviesList?.movies.isNullOrEmpty()) {
+        activityMoviesInfoBinding.secondaryLayout.tvRecommendationsTitle.visibility = View.VISIBLE
+        activityMoviesInfoBinding.secondaryLayout.rvRecommendations.visibility = View.VISIBLE
+        recommendationsAdapter.submitList(moviesList.movies)
+      }
+    }
+
+    detailViewModel.watchProviders.observe(this) { response ->
+      val countryCode = Locale.getDefault().country.ifEmpty { "US" }
+      val countryProviders =
+        response?.results?.get(countryCode) ?: response?.results?.get("US")
+      val providersList = mutableListOf<com.sg.moviesindex.data.remote.WatchProvider>()
+      countryProviders?.flatrate?.let { providersList.addAll(it) }
+      countryProviders?.rent?.let { rentList ->
+        rentList.forEach { p ->
+          if (providersList.none { it.providerId == p.providerId }) providersList.add(p)
+        }
+      }
+      countryProviders?.buy?.let { buyList ->
+        buyList.forEach { p ->
+          if (providersList.none { it.providerId == p.providerId }) providersList.add(p)
+        }
+      }
+
+      val tvTitle = activityMoviesInfoBinding.secondaryLayout.tvWatchProvidersTitle
+      val rv = activityMoviesInfoBinding.secondaryLayout.rvWatchProviders
+      if (providersList.isNotEmpty()) {
+        tvTitle.visibility = View.VISIBLE
+        rv.visibility = View.VISIBLE
+        currentWatchProviderLink = countryProviders?.link
+        watchProvidersAdapter.submitList(providersList)
+      } else {
+        tvTitle.visibility = View.GONE
+        rv.visibility = View.GONE
+      }
+    }
   }
 
   /**
@@ -225,8 +343,9 @@ class MovieDetailActivity :
 
     activityMoviesInfoBinding.secondaryLayout.sparkButton.setOnClickListener { v ->
       val sparkButton = v as SparkButton
+      val currentMovie = movie ?: return@setOnClickListener
       if (sparkButton.isChecked) {
-        movie?.let { mainViewModel.deleteMovie(it) }
+        mainViewModel.deleteMovie(currentMovie)
         sparkButton.playAnimation()
         Snackbar
           .make(
@@ -234,43 +353,80 @@ class MovieDetailActivity :
             getString(R.string.unmarked_as_favourite),
             Snackbar.LENGTH_SHORT,
           ).show()
-        sparkButton.setInactiveImage(R.drawable.ic_heart_off)
-        sparkButton.isChecked = false
       } else {
-        movie?.let {
-          it.castsList = ArrayList(castsList.cast ?: ArrayList())
-          it.reviewsList = ArrayList(reviewsList.results ?: ArrayList())
-          mainViewModel.addMovie(it)
-          Snackbar
-            .make(
-              v,
-              getString(R.string.marked_as_favourite),
-              Snackbar.LENGTH_SHORT,
-            ).show()
-          sparkButton.playAnimation()
-          sparkButton.setInactiveImage(R.drawable.ic_heart_on)
-          sparkButton.isChecked = true
-        }
+        currentMovie.castsList = ArrayList(castsList.cast ?: ArrayList())
+        currentMovie.reviewsList = ArrayList(reviewsList.results ?: ArrayList())
+        mainViewModel.addMovie(currentMovie)
+        Snackbar
+          .make(
+            v,
+            getString(R.string.marked_as_favourite),
+            Snackbar.LENGTH_SHORT,
+          ).show()
+        sparkButton.playAnimation()
+      }
+    }
+
+    val btnWatchlist = activityMoviesInfoBinding.secondaryLayout.btnWatchlist
+    btnWatchlist.setOnClickListener { v ->
+      val currentMovie = movie ?: return@setOnClickListener
+      val movieId = currentMovie.id ?: return@setOnClickListener
+      if (isMovieInWatchlist) {
+        mainViewModel.removeWatchlistMovie(movieId)
+        Snackbar
+          .make(
+            v,
+            getString(R.string.removed_from_watchlist),
+            Snackbar.LENGTH_SHORT,
+          ).show()
+      } else {
+        val watchlistMovie =
+          com.sg.moviesindex.data.local.WatchlistMovie
+            .fromMovie(currentMovie)
+        mainViewModel.addWatchlistMovie(watchlistMovie)
+        Snackbar
+          .make(
+            v,
+            getString(R.string.added_to_watchlist),
+            Snackbar.LENGTH_SHORT,
+          ).show()
       }
     }
   }
 
   /**
-   * Checks if the current movie is already marked as a favorite
-   * in the local database and updates the favorite button UI accordingly.
+   * Observes whether the current movie is in the local favorites database
+   * and updates the favorite button UI accordingly without blocking the main thread.
    */
-  private fun checkIsFavourite() {
-    movie?.let {
-      if (mainViewModel.getMovie(it.title!!) != null) {
-        activityMoviesInfoBinding.secondaryLayout.sparkButton.isChecked = true
-        activityMoviesInfoBinding.secondaryLayout.sparkButton.setActiveImage(
-          R.drawable.ic_heart_on,
-        )
+  private fun observeFavoriteStatus() {
+    val movieId = movie?.id ?: return
+    mainViewModel.isFavorite(movieId).observe(this) { isFav ->
+      val isFavorite = isFav == true
+      val sparkButton = activityMoviesInfoBinding.secondaryLayout.sparkButton
+      sparkButton.isChecked = isFavorite
+      if (isFavorite) {
+        sparkButton.setActiveImage(R.drawable.ic_heart_on)
       } else {
-        activityMoviesInfoBinding.secondaryLayout.sparkButton.isChecked = false
-        activityMoviesInfoBinding.secondaryLayout.sparkButton.setInactiveImage(
-          R.drawable.ic_heart_off,
-        )
+        sparkButton.setInactiveImage(R.drawable.ic_heart_off)
+      }
+    }
+  }
+
+  /**
+   * Observes whether the current movie is in the watchlist database
+   * and updates the watchlist button UI accordingly without blocking the main thread.
+   */
+  private fun observeWatchlistStatus() {
+    val movieId = movie?.id ?: return
+    mainViewModel.isWatchlistMovie(movieId).observe(this) { inWatchlist ->
+      isMovieInWatchlist = inWatchlist == true
+      val btnWatchlist = activityMoviesInfoBinding.secondaryLayout.btnWatchlist
+      if (isMovieInWatchlist) {
+        btnWatchlist.setIconResource(R.drawable.ic_bookmark)
+        btnWatchlist.contentDescription = getString(R.string.removed_from_watchlist)
+      } else {
+        btnWatchlist.setIconResource(R.drawable.ic_bookmark_border)
+        btnWatchlist.contentDescription = getString(R.string.add_to_watchlist)
       }
     }
   }
@@ -320,9 +476,9 @@ class MovieDetailActivity :
     torrent: Torrent?,
   ) {
     if (!error && torrent != null) {
-      val intent = Intent(this, TorrentDownloaderService::class.java)
-      intent.putExtra("torrent", torrent as android.os.Parcelable)
-      startService(intent)
+      val title = movie?.title ?: movie?.originalTitle ?: "Movie"
+      com.sg.moviesindex.service.TorrentDownloader
+        .download(this, torrent, title)
     }
   }
 
@@ -367,6 +523,56 @@ class MovieDetailActivity :
       IntentFilter(PROGRESS_UPDATE),
       ContextCompat.RECEIVER_NOT_EXPORTED,
     )
+  }
+
+  private fun openYouTubeTrailer(videoKey: String) {
+    val appIntent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:$videoKey"))
+    val webIntent =
+      Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=$videoKey"))
+    try {
+      startActivity(appIntent)
+    } catch (e: ActivityNotFoundException) {
+      startActivity(webIntent)
+    }
+  }
+
+  override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    menuInflater.inflate(R.menu.menu_movie_detail, menu)
+    return true
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean =
+    when (item.itemId) {
+      android.R.id.home -> {
+        finish()
+        true
+      }
+
+      R.id.action_share -> {
+        shareMovie()
+        true
+      }
+
+      else -> {
+        super.onOptionsItemSelected(item)
+      }
+    }
+
+  private fun shareMovie() {
+    val currentMovie = movie ?: return
+    val movieTitle = currentMovie.title ?: currentMovie.originalTitle ?: ""
+    val rating = currentMovie.voteAverage ?: 0.0
+    val overview = currentMovie.overview ?: ""
+    val tmdbUrl = "https://www.themoviedb.org/movie/${currentMovie.id}"
+    val shareText = getString(R.string.share_movie_format, movieTitle, rating, overview, tmdbUrl)
+
+    ShareCompat
+      .IntentBuilder(this)
+      .setType("text/plain")
+      .setSubject(movieTitle)
+      .setText(shareText)
+      .setChooserTitle(getString(R.string.share_movie))
+      .startChooser()
   }
 
   override fun onDestroy() {

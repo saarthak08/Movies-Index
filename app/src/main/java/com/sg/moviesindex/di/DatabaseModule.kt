@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.sg.moviesindex.data.local.Database
 import com.sg.moviesindex.data.local.FavouriteMoviesDAO
+import com.sg.moviesindex.data.local.WatchlistMoviesDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,11 +22,15 @@ object DatabaseModule {
   ): Database =
     Room
       .databaseBuilder(context, Database::class.java, "TMDB")
-      .allowMainThreadQueries()
       .fallbackToDestructiveMigration(true)
       .build()
 
   @Provides
   @Singleton
   fun provideFavouriteMoviesDAO(database: Database): FavouriteMoviesDAO = database.getFDAO()
+
+  @Provides
+  @Singleton
+  fun provideWatchlistMoviesDAO(database: Database): WatchlistMoviesDAO =
+    database.getWatchlistMoviesDAO()
 }

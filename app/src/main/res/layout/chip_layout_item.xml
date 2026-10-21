@@ -11,10 +11,11 @@
     android:paddingEnd="20dp"
     android:paddingBottom="4dp"
     android:text="@string/hello"
+    android:textColor="@color/chip_text"
     android:textSize="16sp"
-    app:chipBackgroundColor="#F1DDFD"
+    app:chipBackgroundColor="@color/chip_background"
     app:chipMinTouchTargetSize="8dp"
-    app:chipStrokeColor="#9544ed"
+    app:chipStrokeColor="@color/chip_stroke"
     app:chipStrokeWidth="1dp"
     app:textEndPadding="20dp"
     app:textStartPadding="20dp" />

@@ -31,6 +31,9 @@ class MovieDetailViewModel
     val fullMovieInfo = MutableLiveData<Movie>()
     val casts = MutableLiveData<CastsList>()
     val reviews = MutableLiveData<ReviewsList>()
+    val videos = MutableLiveData<com.sg.moviesindex.data.remote.VideosList>()
+    val recommendations = MutableLiveData<com.sg.moviesindex.data.remote.MoviesList>()
+    val watchProviders = MutableLiveData<com.sg.moviesindex.data.remote.WatchProvidersResponse>()
     val isLoading = MutableLiveData(false)
 
     /**
@@ -89,7 +92,7 @@ class MovieDetailViewModel
     }
 
     /**
-     * Fetches the user reviews for a specific movie.
+     * Fetches user reviews for a specific movie.
      *
      * @param movieId The ID of the movie to fetch reviews for.
      * @param page The page number for pagination.
@@ -107,6 +110,81 @@ class MovieDetailViewModel
             object : DisposableObserver<ReviewsList>() {
               override fun onNext(reviewsList: ReviewsList) {
                 reviews.value = reviewsList
+              }
+
+              override fun onError(e: Throwable) {}
+
+              override fun onComplete() {}
+            },
+          ),
+      )
+    }
+
+    /**
+     * Fetches video previews and trailers for a specific movie.
+     *
+     * @param movieId The ID of the movie.
+     */
+    fun fetchVideos(movieId: Long) {
+      compositeDisposable.add(
+        repository
+          .getMovieVideos(movieId, BuildConfigs.API_KEY)
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribeWith(
+            object : DisposableObserver<com.sg.moviesindex.data.remote.VideosList>() {
+              override fun onNext(videosList: com.sg.moviesindex.data.remote.VideosList) {
+                videos.value = videosList
+              }
+
+              override fun onError(e: Throwable) {}
+
+              override fun onComplete() {}
+            },
+          ),
+      )
+    }
+
+    /**
+     * Fetches recommended movies based on the specified movie.
+     *
+     * @param movieId The ID of the movie.
+     */
+    fun fetchRecommendations(movieId: Long) {
+      compositeDisposable.add(
+        repository
+          .getRecommendations(movieId, BuildConfigs.API_KEY, 1)
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribeWith(
+            object : DisposableObserver<com.sg.moviesindex.data.remote.MoviesList>() {
+              override fun onNext(moviesList: com.sg.moviesindex.data.remote.MoviesList) {
+                recommendations.value = moviesList
+              }
+
+              override fun onError(e: Throwable) {}
+
+              override fun onComplete() {}
+            },
+          ),
+      )
+    }
+
+    /**
+     * Fetches streaming, rental, and buy providers for a specific movie.
+     *
+     * @param movieId The ID of the movie.
+     */
+    fun fetchWatchProviders(movieId: Long) {
+      compositeDisposable.add(
+        repository
+          .getWatchProviders(movieId, BuildConfigs.API_KEY)
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribeWith(
+            object : DisposableObserver<com.sg.moviesindex.data.remote.WatchProvidersResponse>() {
+              override fun onNext(response: com.sg.moviesindex.data.remote.WatchProvidersResponse) {
+                watchProviders.value = response
               }
 
               override fun onError(e: Throwable) {}

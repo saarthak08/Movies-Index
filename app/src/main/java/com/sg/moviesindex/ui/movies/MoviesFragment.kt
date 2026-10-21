@@ -1,6 +1,5 @@
 package com.sg.moviesindex.ui.movies
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -122,14 +121,9 @@ class MoviesFragment : Fragment() {
       moviesAdapter.submitList(ArrayList(movies))
     }
 
-    swipeRefreshLayout.setColorSchemeColors(
-      Color.BLUE,
-      Color.DKGRAY,
-      Color.RED,
-      Color.GREEN,
-      Color.MAGENTA,
-      Color.BLACK,
-      Color.CYAN,
+    swipeRefreshLayout.setColorSchemeResources(
+      R.color.colorPrimary,
+      R.color.colorAccent,
     )
     swipeRefreshLayout.setOnRefreshListener {
       requireActivity().supportFragmentManager.popBackStack(

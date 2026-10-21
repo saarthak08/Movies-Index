@@ -93,7 +93,17 @@ class MoviesAdapter(
               Intent(context, MovieDetailActivity::class.java).apply {
                 putExtra("movie", movie)
               }
-            context.startActivity(intent)
+            if (context is android.app.Activity) {
+              val options =
+                androidx.core.app.ActivityOptionsCompat.makeSceneTransitionAnimation(
+                  context,
+                  movieListItemBinding.ivMovie,
+                  "poster_transition",
+                )
+              context.startActivity(intent, options.toBundle())
+            } else {
+              context.startActivity(intent)
+            }
           }
         }
       }

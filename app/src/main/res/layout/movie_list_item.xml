@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
   <data>
@@ -14,53 +14,65 @@
       android:id="@+id/cvMovie"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="4dp"
+      android:layout_margin="6dp"
       android:elevation="4dp"
-      bind:cardCornerRadius="2dp"
-      >
+      app:cardBackgroundColor="?attr/colorSurface"
+      app:cardCornerRadius="8dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
       <ImageView
           android:id="@+id/ivMovie"
-          android:layout_width="match_parent"
-          android:layout_height="200dp"
+          android:layout_width="0dp"
+          android:layout_height="0dp"
           android:background="?attr/selectableItemBackgroundBorderless"
           android:scaleType="fitXY"
-          bind:imageUrl="@{`https://image.tmdb.org/t/p/w500`+ movie.posterPath}"
+          android:transitionName="poster_transition"
+          app:imageUrl="@{`https://image.tmdb.org/t/p/w500`+ movie.posterPath}"
+          app:layout_constraintDimensionRatio="2:3"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
           tools:ignore="contentDescription" />
 
       <TextView
           android:id="@+id/tvTitle"
-          android:layout_width="match_parent"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
+          android:ellipsize="end"
           android:fontFamily="@font/open_sans"
-          android:paddingLeft="12dp"
+          android:maxLines="2"
+          android:paddingStart="10dp"
           android:paddingTop="8dp"
-          android:paddingRight="12dp"
+          android:paddingEnd="10dp"
           android:text="@{movie.originalTitle}"
           android:textColor="@color/colorPrimary"
-          android:textSize="16sp" />
+          android:textSize="14sp"
+          android:textStyle="bold"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/ivMovie" />
 
       <TextView
           android:id="@+id/tvRating"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_gravity="bottom"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
           android:fontFamily="@font/quicksand_medium"
-          android:gravity="bottom"
-          android:paddingLeft="12dp"
-          android:paddingRight="12dp"
-          android:paddingBottom="4dp"
-          android:text="@{String.format(`%.1f`, movie.voteAverage)}"
+          android:paddingStart="10dp"
+          android:paddingTop="2dp"
+          android:paddingEnd="10dp"
+          android:paddingBottom="8dp"
+          android:text="@{String.format(`★ %.1f`, movie.voteAverage)}"
           android:textColor="@color/colorAccent"
-          android:textSize="12sp" />
+          android:textSize="12sp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
-    </LinearLayout>
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
   </androidx.cardview.widget.CardView>
 

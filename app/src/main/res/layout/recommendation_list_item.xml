@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+    <variable
+        name="movie"
+        type="com.sg.moviesindex.data.local.Movie" />
+  </data>
+
+  <com.google.android.material.card.MaterialCardView
+      android:id="@+id/cvMovie"
+      android:layout_width="150dp"
+      android:layout_height="wrap_content"
+      android:layout_margin="6dp"
+      app:cardBackgroundColor="?attr/colorSurface"
+      app:cardCornerRadius="8dp"
+      app:cardElevation="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+      <ImageView
+          android:id="@+id/ivMovie"
+          android:layout_width="match_parent"
+          android:layout_height="185dp"
+          android:scaleType="fitXY"
+          app:imageUrl="@{`https://image.tmdb.org/t/p/w500` + movie.posterPath}"
+          tools:ignore="contentDescription" />
+
+      <TextView
+          android:id="@+id/tvTitle"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:ellipsize="end"
+          android:fontFamily="@font/open_sans"
+          android:lines="2"
+          android:maxLines="2"
+          android:paddingHorizontal="8dp"
+          android:paddingTop="6dp"
+          android:text="@{movie.title ?? movie.originalTitle}"
+          android:textColor="@color/colorPrimary"
+          android:textSize="13sp"
+          android:textStyle="bold" />
+
+      <TextView
+          android:id="@+id/tvRating"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/quicksand_medium"
+          android:lines="1"
+          android:paddingHorizontal="8dp"
+          android:paddingTop="2dp"
+          android:paddingBottom="4dp"
+          android:text="@{String.format(`★ %.1f`, movie.voteAverage)}"
+          android:textColor="@color/colorAccent"
+          android:textSize="11sp" />
+
+    </LinearLayout>
+
+  </com.google.android.material.card.MaterialCardView>
+
+</layout>

@@ -1,36 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-  <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools"
+  <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/colorBackground"
-      tools:context=".view.MainActivity">
+      android:background="?android:attr/colorBackground"
+      android:orientation="vertical"
+      tools:context=".ui.main.MainActivity">
 
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrolleViewF4"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutLibrary"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorBackground">
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        app:tabIndicatorColor="?attr/colorPrimary"
+        app:tabSelectedTextColor="?attr/colorPrimary"
+        app:tabTextColor="?android:attr/textColorSecondary" />
 
-      <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/rvF4"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+      <androidx.core.widget.NestedScrollView
+          android:id="@+id/scrolleViewF4"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content" />
-    </androidx.core.widget.NestedScrollView>
+          android:layout_height="match_parent"
+          android:background="?android:attr/colorBackground">
 
-    <TextView
-        android:id="@+id/tvNoMovies"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/no_favourite_movies"
-        android:textColor="@android:color/white" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvF4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+      </androidx.core.widget.NestedScrollView>
 
-  </FrameLayout>
+      <TextView
+          android:id="@+id/tvNoMovies"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="center"
+          android:gravity="center"
+          android:text="@string/no_favourite_movies"
+          android:textColor="?android:attr/textColorSecondary"
+          android:textSize="16sp" />
 
+    </FrameLayout>
+
+  </LinearLayout>
 
 </layout>

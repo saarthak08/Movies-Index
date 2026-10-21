@@ -10,20 +10,24 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.tabs.TabLayout
 import com.sg.moviesindex.R
+import com.sg.moviesindex.data.local.Movie
 import com.sg.moviesindex.databinding.FragmentFavouriteMoviesBinding
 import com.sg.moviesindex.ui.common.MoviesAdapter
 import com.sg.moviesindex.ui.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * Fragment that displays the user's favourite movies from the local database.
- * Uses a grid layout manager to show movies.
+ * Fragment that displays the user's library: Favourite movies and Watchlist from the local database.
+ * Uses a TabLayout to switch between Favorites and Watchlist, and a grid layout to show movies.
  */
 @AndroidEntryPoint
 class FavouriteMoviesFragment : Fragment() {
   private lateinit var fragmentFavouriteMoviesBinding: FragmentFavouriteMoviesBinding
   private lateinit var moviesAdapter: MoviesAdapter
+  private lateinit var viewModel: MainViewModel
+  private var currentTab = 0
 
   companion object {
     @JvmStatic
@@ -46,7 +50,7 @@ class FavouriteMoviesFragment : Fragment() {
   ) {
     super.onViewCreated(view, savedInstanceState)
     requireActivity().title = getString(R.string.favourite_movies)
-    val viewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+    viewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
     val recyclerView = fragmentFavouriteMoviesBinding.rvF4
     moviesAdapter = MoviesAdapter(requireContext())
@@ -62,13 +66,55 @@ class FavouriteMoviesFragment : Fragment() {
     recyclerView.adapter = moviesAdapter
     recyclerView.itemAnimator = DefaultItemAnimator()
 
-    viewModel.getAllMovies().observe(viewLifecycleOwner) { movies ->
-      if (movies.isNullOrEmpty()) {
-        fragmentFavouriteMoviesBinding.tvNoMovies.visibility = View.VISIBLE
-      } else {
-        fragmentFavouriteMoviesBinding.tvNoMovies.visibility = View.GONE
+    setupTabs()
+    observeCurrentTab()
+  }
+
+  private fun setupTabs() {
+    val tabLayout = fragmentFavouriteMoviesBinding.tabLayoutLibrary
+    tabLayout.removeAllTabs()
+    tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_favorites))
+    tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_watchlist))
+
+    tabLayout.addOnTabSelectedListener(
+      object : TabLayout.OnTabSelectedListener {
+        override fun onTabSelected(tab: TabLayout.Tab?) {
+          currentTab = tab?.position ?: 0
+          observeCurrentTab()
+        }
+
+        override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+        override fun onTabReselected(tab: TabLayout.Tab?) {}
+      },
+    )
+  }
+
+  private fun observeCurrentTab() {
+    if (currentTab == 0) {
+      fragmentFavouriteMoviesBinding.tvNoMovies.setText(R.string.no_favourite_movies)
+      viewModel.getAllMovies().observe(viewLifecycleOwner) { movies ->
+        if (currentTab == 0) {
+          updateMovieList(movies)
+        }
       }
-      moviesAdapter.submitList(movies)
+    } else {
+      fragmentFavouriteMoviesBinding.tvNoMovies.setText(R.string.no_watchlist_movies)
+      viewModel.getAllWatchlistMovies().observe(viewLifecycleOwner) { watchlistMovies ->
+        if (currentTab == 1) {
+          val movies = watchlistMovies?.map { it.toMovie() }
+          updateMovieList(movies)
+        }
+      }
     }
+  }
+
+  private fun updateMovieList(movies: List<Movie>?) {
+    if (movies.isNullOrEmpty()) {
+      fragmentFavouriteMoviesBinding.tvNoMovies.visibility = View.VISIBLE
+    } else {
+      fragmentFavouriteMoviesBinding.tvNoMovies.visibility = View.GONE
+    }
+    moviesAdapter.submitList(movies)
   }
 }

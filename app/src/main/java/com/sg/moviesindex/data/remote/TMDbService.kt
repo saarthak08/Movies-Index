@@ -82,4 +82,35 @@ interface TMDbService {
     @Path("id") id: Long,
     @Query("api_key") apiKey: String,
   ): Observable<Movie>
+
+  @GET("movie/{movieId}/videos")
+  fun getMovieVideos(
+    @Path("movieId") movieId: Long,
+    @Query("api_key") apiKey: String,
+  ): Observable<VideosList>
+
+  @GET("movie/{movieId}/recommendations")
+  fun getRecommendations(
+    @Path("movieId") movieId: Long,
+    @Query("api_key") apiKey: String,
+    @Query("page") page: Int,
+  ): Observable<MoviesList>
+
+  @GET("movie/{movieId}/watch/providers")
+  fun getWatchProviders(
+    @Path("movieId") movieId: Long,
+    @Query("api_key") apiKey: String,
+  ): Observable<WatchProvidersResponse>
+
+  @GET("person/{personId}")
+  fun getPersonDetails(
+    @Path("personId") personId: Long,
+    @Query("api_key") apiKey: String,
+  ): Observable<Person>
+
+  @GET("person/{personId}/movie_credits")
+  fun getPersonMovieCredits(
+    @Path("personId") personId: Long,
+    @Query("api_key") apiKey: String,
+  ): Observable<PersonMovieCredits>
 }

@@ -31,7 +31,7 @@ data class Movie(
   @ColumnInfo(name = "genres")
   @Json(name = "genres")
   var genres: List<Genre> = emptyList(),
-  @PrimaryKey(autoGenerate = true)
+  @PrimaryKey(autoGenerate = false)
   @ColumnInfo(name = "id")
   @Json(name = "id")
   var id: Long? = null,

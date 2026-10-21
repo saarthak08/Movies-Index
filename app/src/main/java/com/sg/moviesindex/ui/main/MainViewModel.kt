@@ -262,6 +262,8 @@ class MainViewModel
 
     fun getMovie(id: String): Movie? = repository.getMovie(id)
 
+    fun isFavorite(movieId: Long): LiveData<Boolean> = repository.isFavorite(movieId)
+
     fun getAllMovies(): LiveData<List<Movie>> = repository.getAllFMovies()
 
     fun addMovie(movie: Movie) {
@@ -270,6 +272,19 @@ class MainViewModel
 
     fun deleteMovie(movie: Movie) {
       repository.deleteMovie(movie)
+    }
+
+    fun getAllWatchlistMovies(): LiveData<List<com.sg.moviesindex.data.local.WatchlistMovie>> =
+      repository.getAllWatchlistMovies()
+
+    fun isWatchlistMovie(movieId: Long): LiveData<Boolean> = repository.isWatchlistMovie(movieId)
+
+    fun addWatchlistMovie(movie: com.sg.moviesindex.data.local.WatchlistMovie) {
+      repository.addWatchlistMovie(movie)
+    }
+
+    fun removeWatchlistMovie(movieId: Long) {
+      repository.removeWatchlistMovie(movieId)
     }
 
     override fun onCleared() {

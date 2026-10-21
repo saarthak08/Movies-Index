@@ -12,7 +12,9 @@ import com.sg.moviesindex.R
 import com.sg.moviesindex.data.remote.Cast
 import com.sg.moviesindex.databinding.CastListItemBinding
 
-class CastsAdapter : ListAdapter<Cast, RecyclerView.ViewHolder>(DiffCallback()) {
+class CastsAdapter(
+  private val onCastClick: ((Cast) -> Unit)? = null,
+) : ListAdapter<Cast, RecyclerView.ViewHolder>(DiffCallback()) {
   companion object {
     private const val VIEW_TYPE_ITEM = 0
     private const val VIEW_TYPE_LOADING = 1
@@ -47,12 +49,6 @@ class CastsAdapter : ListAdapter<Cast, RecyclerView.ViewHolder>(DiffCallback()) 
       val cast = getItem(i)
       if (cast != null) {
         viewHolder.castListItemBinding.cast = cast
-        viewHolder.castListItemBinding.gender =
-          when (cast.gender) {
-            1 -> "Female"
-            2 -> "Male"
-            else -> "Unknown"
-          }
       }
     }
   }
@@ -60,9 +56,21 @@ class CastsAdapter : ListAdapter<Cast, RecyclerView.ViewHolder>(DiffCallback()) 
   override fun getItemViewType(position: Int): Int =
     if (getItem(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
 
-  class CastsViewHolder(
+  inner class CastsViewHolder(
     val castListItemBinding: CastListItemBinding,
-  ) : RecyclerView.ViewHolder(castListItemBinding.root)
+  ) : RecyclerView.ViewHolder(castListItemBinding.root) {
+    init {
+      castListItemBinding.root.setOnClickListener {
+        val position = bindingAdapterPosition
+        if (position != RecyclerView.NO_POSITION) {
+          val cast = getItem(position)
+          if (cast != null) {
+            onCastClick?.invoke(cast)
+          }
+        }
+      }
+    }
+  }
 
   class LoadingViewHolder(
     itemView: View,

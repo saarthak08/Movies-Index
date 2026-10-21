@@ -16,17 +16,19 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:paddingVertical="4dp">
 
       <TextView
           android:id="@+id/tvQuality"
-          android:layout_width="match_parent"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp"
           android:layout_marginTop="4dp"
           android:fontFamily="@font/quicksand_medium"
-          android:textSize="16sp"
+          android:textSize="15sp"
           app:layout_constraintBottom_toTopOf="@+id/tvSize"
+          app:layout_constraintEnd_toStartOf="@+id/llActions"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
           bind:boldText="@{`Quality: `}"
@@ -34,13 +36,14 @@
 
       <TextView
           android:id="@+id/tvSize"
-          android:layout_width="match_parent"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp"
-          android:layout_marginTop="4dp"
+          android:layout_marginTop="2dp"
           android:fontFamily="@font/quicksand_medium"
-          android:textSize="16sp"
+          android:textSize="14sp"
           app:layout_constraintBottom_toTopOf="@+id/tvType"
+          app:layout_constraintEnd_toStartOf="@+id/llActions"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/tvQuality"
           bind:boldText="@{`Size: `}"
@@ -48,13 +51,14 @@
 
       <TextView
           android:id="@+id/tvType"
-          android:layout_width="match_parent"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp"
-          android:layout_marginTop="4dp"
+          android:layout_marginTop="2dp"
           android:fontFamily="@font/quicksand_medium"
-          android:textSize="16sp"
+          android:textSize="14sp"
           app:layout_constraintBottom_toTopOf="@+id/tvLLSP"
+          app:layout_constraintEnd_toStartOf="@+id/llActions"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/tvSize"
           bind:boldText="@{`Type: `}"
@@ -62,15 +66,14 @@
 
       <LinearLayout
           android:id="@+id/tvLLSP"
-          android:layout_width="match_parent"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp"
-
-          android:layout_marginTop="4dp"
+          android:layout_marginTop="2dp"
           android:layout_marginBottom="4dp"
           android:orientation="horizontal"
           app:layout_constraintBottom_toTopOf="@+id/divider"
-          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintEnd_toStartOf="@+id/llActions"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/tvType">
 
@@ -80,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@font/quicksand_medium"
-            android:textSize="14sp"
+            android:textSize="13sp"
             bind:boldText="@{`Seeds: `}"
             bind:normalText="@{torrent.getSeeds().toString()}" />
 
@@ -89,35 +92,64 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="14sp"
+            android:fontFamily="@font/quicksand_medium"
+            android:textSize="13sp"
             bind:boldText="@{`Peers: `}"
             bind:normalText="@{torrent.getPeers().toString()}" />
 
       </LinearLayout>
 
-      <ImageButton
-          android:id="@+id/ivDownloadButton"
-          android:layout_width="64dp"
-          android:layout_height="64dp"
-          android:layout_marginEnd="16dp"
-          android:background="@drawable/rounded_button_background"
-          android:contentDescription="@string/download"
-          android:elevation="4dp"
-
-          android:padding="4dp"
+      <LinearLayout
+          android:id="@+id/llActions"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="8dp"
+          android:gravity="center_vertical"
+          android:orientation="horizontal"
           app:layout_constraintBottom_toTopOf="@+id/divider"
           app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintVertical_bias="0.463"
-          app:srcCompat="@drawable/ic_cloud_download_black_48dp"
-           />
+          app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnMagnet"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/open_magnet_link"
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_magnet"
+            app:tint="@color/colorPrimary" />
+
+        <ImageButton
+            android:id="@+id/btnCopyMagnet"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/copy_magnet_link"
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_content_copy"
+            app:tint="@color/colorAccent" />
+
+        <ImageButton
+            android:id="@+id/ivDownloadButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/download"
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_file_download"
+            app:tint="@color/colorPrimary" />
+
+      </LinearLayout>
 
       <View
           android:id="@+id/divider"
           android:layout_width="0dp"
           android:layout_height="1dp"
           android:layout_marginTop="8dp"
-          android:background="#E0E0E0"
+          android:background="?android:attr/listDivider"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintBottom_toBottomOf="parent" />

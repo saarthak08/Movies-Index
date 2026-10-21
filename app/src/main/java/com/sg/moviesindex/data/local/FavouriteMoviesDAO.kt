@@ -44,4 +44,22 @@ interface FavouriteMoviesDAO {
    */
   @Query("select * from favourite_movies where title==:title")
   fun getMovie(title: String): Movie?
+
+  /**
+   * Checks whether a movie is marked as a favourite using its ID.
+   *
+   * @param id The ID of the movie.
+   * @return A LiveData boolean indicating if the movie is a favourite.
+   */
+  @Query("SELECT EXISTS(SELECT 1 FROM favourite_movies WHERE id = :id)")
+  fun isFavoriteMovie(id: Long): LiveData<Boolean>
+
+  /**
+   * Retrieves a specific favourite movie by its ID.
+   *
+   * @param id The ID of the movie.
+   * @return The [Movie] object if found, null otherwise.
+   */
+  @Query("SELECT * FROM favourite_movies WHERE id = :id")
+  fun getMovieById(id: Long): Movie?
 }

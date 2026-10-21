@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+      android:id="@+id/nav_popular"
+      android:icon="@drawable/ic_nav_popular"
+      android:title="@string/nav_popular" />
+
+  <item
+      android:id="@+id/nav_now_playing"
+      android:icon="@drawable/ic_nav_now_playing"
+      android:title="@string/nav_now_playing" />
+
+  <item
+      android:id="@+id/nav_top_rated"
+      android:icon="@drawable/ic_nav_top_rated"
+      android:title="@string/nav_top_rated" />
+
+  <item
+      android:id="@+id/nav_genres"
+      android:icon="@drawable/ic_nav_genres"
+      android:title="@string/nav_genres" />
+
+  <item
+      android:id="@+id/nav_favorites"
+      android:icon="@drawable/ic_nav_favorites"
+      android:title="@string/nav_library" />
+</menu>
