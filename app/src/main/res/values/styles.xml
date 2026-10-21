@@ -38,7 +38,11 @@
 
   <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-  <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+  <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat">
+    <item name="android:colorBackground">@color/colorSurface</item>
+    <item name="colorSurface">@color/colorSurface</item>
+    <item name="android:textColorPrimary">@color/colorTextPrimary</item>
+  </style>
 
 
   <style name="MaterialAlertDialog.App" parent="MaterialAlertDialog.MaterialComponents">
