@@ -21,7 +21,7 @@
   <androidx.core.widget.NestedScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@android:color/white"
+      android:background="?android:attr/colorBackground"
       app:layout_behavior="@string/appbar_scrolling_view_behavior"
       tools:context="com.sg.moviesindex.ui.details.MovieDetailActivity"
       tools:ignore="PrivateResource"
@@ -44,7 +44,7 @@
           android:fontFamily="@font/montserrat"
           android:padding="16dp"
           android:text="@{`Original Title:\n`+(contentMovie.title ?? ``)}"
-          android:textColor="@android:color/black"
+          android:textColor="?android:attr/textColorPrimary"
           android:textSize="20sp"
           android:textStyle="bold"
           app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +75,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/rating"
-            android:textColor="@android:color/black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -101,7 +101,7 @@
             app:progressColor="?colorPrimary"
             app:progressStrokeWidth="8dp"
             app:startAngle="270"
-            app:textColor="@color/design_default_color_on_secondary"
+            app:textColor="?android:attr/textColorPrimary"
             app:textSize="18sp" />
 
       </LinearLayout>
@@ -118,7 +118,8 @@
           android:paddingEnd="16dp"
           android:paddingBottom="4dp"
           android:text="@{`Status: `+(contentMovie.status ?? ``)}"
-          android:textSize="20sp"
+          android:textColor="?android:attr/textColorSecondary"
+          android:textSize="16sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/tvMovieTitle" />
 
@@ -133,7 +134,8 @@
           android:paddingEnd="16dp"
           android:paddingBottom="4dp"
           android:text="@{`Release Date: `+(contentMovie.releaseDate ?? ``)}"
-          android:textSize="20sp"
+          android:textColor="?android:attr/textColorSecondary"
+          android:textSize="16sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/tvStatus" />
 
@@ -147,7 +149,8 @@
           android:paddingEnd="16dp"
           android:paddingBottom="4dp"
           android:text="@{`Runtime: `+(contentMovie.runtime/60)+`Hrs `+ (contentMovie.runtime%60) +`Mins`}"
-          android:textSize="20sp"
+          android:textColor="?android:attr/textColorSecondary"
+          android:textSize="16sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate" />
 
@@ -161,43 +164,138 @@
           android:paddingEnd="16dp"
           android:paddingBottom="4dp"
           android:text="@{`Original Language: `+ (locale ?? ``) }"
-          android:textSize="20sp"
+          android:textColor="?android:attr/textColorSecondary"
+          android:textSize="16sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/tvPopularity" />
 
-      <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
-          android:id="@+id/btn_id"
-          android:layout_width="wrap_content"
+      <LinearLayout
+          android:id="@+id/layoutMainActions"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_marginEnd="16dp"
-          android:fontFamily="@font/open_sans"
+          android:layout_marginTop="16dp"
+          android:orientation="horizontal"
           android:paddingHorizontal="16dp"
-          android:paddingVertical="12dp"
-          android:text="@string/download_torrent"
-          android:textColor="@android:color/white"
-          android:textSize="12sp"
-          app:initialCornerAngle="50dp"
-          app:layout_constraintBottom_toBottomOf="@+id/spark_button"
           app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintTop_toTopOf="@+id/spark_button"
-          app:spinning_bar_color="#FFF"
-          app:spinning_bar_padding="6dp"
-          app:spinning_bar_width="4dp" />
-
-      <com.varunest.sparkbutton.SparkButton
-          android:id="@+id/spark_button"
-          android:layout_width="48dp"
-          android:layout_height="48dp"
-          android:layout_marginStart="24dp"
-          android:layout_marginTop="24dp"
-          android:layout_marginBottom="8dp"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/tvLanguage"
-          app:sparkbutton_activeImage="@drawable/ic_heart_on"
-          app:sparkbutton_iconSize="48dp"
-          app:sparkbutton_inActiveImage="@drawable/ic_heart_off"
-          app:sparkbutton_primaryColor="@color/heart_primary_color"
-          app:sparkbutton_secondaryColor="@color/heart_secondary_color" />
+          app:layout_constraintTop_toBottomOf="@+id/tvLanguage">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTrailer"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/open_sans"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:minHeight="48dp"
+            android:text="@string/watch_trailer"
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            android:visibility="gone"
+            app:backgroundTint="?attr/colorPrimary"
+            app:cornerRadius="8dp"
+            app:icon="@drawable/ic_play_arrow"
+            app:iconGravity="textStart"
+            app:iconPadding="6dp"
+            app:iconSize="20dp"
+            app:iconTint="@android:color/white" />
+
+        <FrameLayout
+            android:id="@+id/layoutDownloadContainer"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1">
+
+          <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
+              android:id="@+id/btn_id"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_gravity="center"
+              android:background="@drawable/rounded_button_background"
+              android:fontFamily="@font/open_sans"
+              android:text="@string/download_torrent"
+              android:textColor="@android:color/white"
+              android:textSize="13sp"
+              app:finalCornerAngle="24dp"
+              app:initialCornerAngle="8dp"
+              app:spinning_bar_color="@android:color/white"
+              app:spinning_bar_padding="8dp"
+              app:spinning_bar_width="3dp" />
+
+        </FrameLayout>
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:id="@+id/layoutSecondaryActions"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="12dp"
+          android:gravity="center_vertical"
+          android:orientation="horizontal"
+          android:paddingHorizontal="16dp"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/layoutMainActions">
+
+        <com.varunest.sparkbutton.SparkButton
+            android:id="@+id/spark_button"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            app:sparkbutton_activeImage="@drawable/ic_heart_on"
+            app:sparkbutton_iconSize="36dp"
+            app:sparkbutton_inActiveImage="@drawable/ic_heart_off"
+            app:sparkbutton_primaryColor="@color/heart_primary_color"
+            app:sparkbutton_secondaryColor="@color/heart_secondary_color" />
+
+        <TextView
+            android:id="@+id/tvFavoriteLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:fontFamily="@font/quicksand_medium"
+            android:text="@string/favourite_movies"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnWatchlist"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:contentDescription="@string/add_to_watchlist"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            app:cornerRadius="22dp"
+            app:icon="@drawable/ic_bookmark_border"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="22dp"
+            app:iconTint="?attr/colorPrimary"
+            app:strokeColor="?attr/colorPrimary"
+            app:strokeWidth="1.5dp" />
+
+        <TextView
+            android:id="@+id/tvWatchlistLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:fontFamily="@font/quicksand_medium"
+            android:text="@string/watchlist"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="14sp" />
+
+      </LinearLayout>
 
       <TextView
           android:id="@+id/tvOverview"
@@ -208,11 +306,11 @@
           android:paddingHorizontal="16dp"
           android:paddingTop="16dp"
           android:text="@string/overview"
-          android:textColor="@android:color/black"
+          android:textColor="?android:attr/textColorPrimary"
           android:textSize="20sp"
           android:textStyle="bold"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/spark_button" />
+          app:layout_constraintTop_toBottomOf="@+id/layoutSecondaryActions" />
 
       <TextView
           android:id="@+id/tvPlotsynopsis"
@@ -222,8 +320,8 @@
           android:paddingHorizontal="16dp"
           android:paddingBottom="16dp"
           android:text="@{contentMovie.overview}"
-          android:textColor="@android:color/black"
-          android:textSize="20sp"
+          android:textColor="?android:attr/textColorSecondary"
+          android:textSize="16sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/tvOverview" />
 
@@ -236,7 +334,7 @@
           android:paddingHorizontal="16dp"
           android:paddingTop="16dp"
           android:text="@string/genre"
-          android:textColor="@android:color/black"
+          android:textColor="?android:attr/textColorPrimary"
           android:textSize="20sp"
           android:textStyle="bold"
           app:layout_constraintStart_toStartOf="parent"
@@ -253,6 +351,34 @@
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/tvGenre" />
 
+      <TextView
+          android:id="@+id/tvWatchProvidersTitle"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:fontFamily="@font/open_sans"
+          android:paddingHorizontal="16dp"
+          android:paddingTop="16dp"
+          android:text="@string/where_to_watch"
+          android:textColor="?android:attr/textColorPrimary"
+          android:textSize="20sp"
+          android:textStyle="bold"
+          android:visibility="gone"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/chip_group" />
+
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/rvWatchProviders"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="10dp"
+          android:paddingHorizontal="16dp"
+          android:paddingTop="8dp"
+          android:paddingBottom="8dp"
+          android:visibility="gone"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/tvWatchProvidersTitle" />
+
       <LinearLayout
           android:id="@+id/castsLayout"
           android:layout_width="match_parent"
@@ -263,31 +389,17 @@
           android:paddingTop="8dp"
           app:layout_constraintBottom_toTopOf="@id/rvCasts"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/chip_group">
+          app:layout_constraintTop_toBottomOf="@+id/rvWatchProviders">
 
         <TextView
             android:id="@+id/casts"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_weight="1"
             android:fontFamily="@font/open_sans"
-            android:gravity="start"
             android:text="@string/casts"
-            android:textColor="@android:color/black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="20sp"
             android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/button1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:contentDescription='@string/scroll_left'
-            android:src="@drawable/ic_arrow_back"
-            android:text="@string/button" />
 
       </LinearLayout>
 
@@ -301,9 +413,38 @@
           android:paddingTop="8dp"
           android:paddingEnd="16dp"
           android:paddingBottom="16dp"
-          android:textColor="@android:color/black"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/castsLayout"
+          tools:ignore="RtlSymmetry" />
+
+      <TextView
+          android:id="@+id/tvRecommendationsTitle"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:fontFamily="@font/open_sans"
+          android:paddingHorizontal="16dp"
+          android:paddingTop="16dp"
+          android:text="@string/recommendations"
+          android:textColor="?android:attr/textColorPrimary"
+          android:textSize="20sp"
+          android:textStyle="bold"
+          android:visibility="gone"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/rvCasts" />
+
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/rvRecommendations"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="10dp"
+          android:layout_marginBottom="16dp"
+          android:paddingTop="8dp"
+          android:paddingEnd="16dp"
+          android:paddingBottom="16dp"
+          android:visibility="gone"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/tvRecommendationsTitle"
           tools:ignore="RtlSymmetry" />
 
       <TextView
@@ -315,21 +456,21 @@
           android:paddingHorizontal="16dp"
           android:paddingTop="16dp"
           android:text="@string/reviews"
-          android:textColor="@android:color/black"
+          android:textColor="?android:attr/textColorPrimary"
           android:textSize="20sp"
           android:textStyle="bold"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/rvCasts" />
+          app:layout_constraintTop_toBottomOf="@+id/rvRecommendations" />
 
       <androidx.recyclerview.widget.RecyclerView
           android:id="@+id/rvReviews"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="10dp"
-          android:layout_marginBottom="16dp"
+          android:layout_marginBottom="40dp"
           android:paddingHorizontal="16dp"
           android:paddingBottom="16dp"
-          android:textColor="@android:color/black"
+          app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/reviews" />
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="colorPrimary">#9D4EDD</color>
+  <color name="colorPrimaryDark">#0A0810</color>
+  <color name="colorAccent">#C77DFF</color>
+  <color name="colorBackground">#0D0B14</color>
+  <color name="colorSurface">#191624</color>
+  <color name="colorOnSurface">#F5EEFD</color>
+  <color name="colorTextPrimary">#F5EEFD</color>
+  <color name="colorTextSecondary">#A59EB5</color>
+  <color name="heart_primary_color">#F43F5E</color>
+  <color name="heart_secondary_color">#C084FC</color>
+  <color name="tmdb_text_color">#34D399</color>
+  <color name="rating_gold">#FBBF24</color>
+  <color name="toolbar_color">#191624</color>
+  <color name="chip_background">#261E38</color>
+  <color name="chip_stroke">#7C4DFF</color>
+  <color name="chip_text">#E0C8FE</color>
+</resources>

@@ -10,10 +10,12 @@ import com.sg.moviesindex.data.remote.DiscoversList
 import com.sg.moviesindex.ui.main.MainViewModel
 import com.sg.moviesindex.ui.movies.MoviesFragment
 import com.sg.moviesindex.util.DiscoverToMovie
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 /**
@@ -26,6 +28,53 @@ class SearchUtil(
   private val context: Context,
   private val viewModel: MainViewModel,
 ) {
+  val searchSubject: PublishSubject<String> = PublishSubject.create()
+
+  /**
+   * Sets up the reactive stream that debounces typing input and fetches search suggestions.
+   */
+  fun setupSuggestionPipeline(searchView: SearchView?) {
+    compositeDisposable.add(
+      searchSubject
+        .debounce(350, TimeUnit.MILLISECONDS)
+        .map { it.trim() }
+        .distinctUntilChanged()
+        .switchMap { query ->
+          if (query.isEmpty()) {
+            Observable.empty()
+          } else {
+            viewModel
+              .getSearchSuggestions(query)
+              .subscribeOn(Schedulers.io())
+              .onErrorResumeNext(Observable.empty())
+          }
+        }.observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(
+          object : DisposableObserver<DiscoversList>() {
+            override fun onNext(discoversList: DiscoversList) {
+              if (discoversList.results != null) {
+                val searchResults = ArrayList(discoversList.results ?: emptyList())
+                val movies = DiscoverToMovie(searchResults).movies
+
+                val columnNames = arrayOf("_id", "text")
+                val cursor = MatrixCursor(columnNames)
+                movies.forEachIndexed { index, movie ->
+                  cursor.addRow(arrayOf(index.toString(), movie.title))
+                }
+
+                searchView?.suggestionsAdapter =
+                  SearchAdapter(context, cursor, true, movies)
+              }
+            }
+
+            override fun onError(e: Throwable) {}
+
+            override fun onComplete() {}
+          },
+        ),
+    )
+  }
+
   /**
    * Sets up the search query listener on the provided [SearchView].
    * Submits search queries to fetch results and provides autocomplete suggestions while typing.
@@ -33,6 +82,8 @@ class SearchUtil(
    * @param searchView The view instance used for searching movies.
    */
   fun search(searchView: SearchView) {
+    setupSuggestionPipeline(searchView)
+
     searchView.setOnQueryTextListener(
       object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
@@ -55,38 +106,7 @@ class SearchUtil(
         }
 
         override fun onQueryTextChange(newText: String): Boolean {
-          if (newText.isEmpty()) return true
-
-          compositeDisposable.add(
-            viewModel
-              .getSearchSuggestions(newText)
-              .debounce(400, TimeUnit.MILLISECONDS)
-              .subscribeOn(Schedulers.io())
-              .observeOn(AndroidSchedulers.mainThread())
-              .subscribeWith(
-                object : DisposableObserver<DiscoversList>() {
-                  override fun onNext(discoversList: DiscoversList) {
-                    if (discoversList.results != null) {
-                      val searchResults = discoversList.results as ArrayList<Discover>
-                      val movies = DiscoverToMovie(searchResults).movies
-
-                      val columnNames = arrayOf("_id", "text")
-                      val cursor = MatrixCursor(columnNames)
-                      movies.forEachIndexed { index, movie ->
-                        cursor.addRow(arrayOf(index.toString(), movie.title))
-                      }
-
-                      searchView.suggestionsAdapter =
-                        SearchAdapter(context, cursor, true, movies)
-                    }
-                  }
-
-                  override fun onError(e: Throwable) {}
-
-                  override fun onComplete() {}
-                },
-              ),
-          )
+          searchSubject.onNext(newText.orEmpty())
           return true
         }
       },

@@ -3,6 +3,8 @@ package com.sg.moviesindex.data.repository
 import androidx.lifecycle.LiveData
 import com.sg.moviesindex.data.local.FavouriteMoviesDAO
 import com.sg.moviesindex.data.local.Movie
+import com.sg.moviesindex.data.local.WatchlistMovie
+import com.sg.moviesindex.data.local.WatchlistMoviesDAO
 import com.sg.moviesindex.data.remote.CastsList
 import com.sg.moviesindex.data.remote.DiscoversList
 import com.sg.moviesindex.data.remote.GenresList
@@ -17,7 +19,7 @@ import javax.inject.Singleton
 
 /**
  * Repository class that acts as a single source of truth for all data operations.
- * It coordinates data fetching between the local database ([FavouriteMoviesDAO])
+ * It coordinates data fetching between the local database ([FavouriteMoviesDAO], [WatchlistMoviesDAO])
  * and the remote network APIs ([TMDbService]).
  */
 @Singleton
@@ -26,6 +28,7 @@ class Repository
   constructor(
     private val favouriteMoviesDAO: FavouriteMoviesDAO,
     private val tmDbService: TMDbService,
+    private val watchlistMoviesDAO: WatchlistMoviesDAO,
   ) {
     /**
      * Retrieves all favourite movies from the local database.
@@ -36,6 +39,11 @@ class Repository
      * Retrieves a specific favourite movie by title/id from the local database.
      */
     fun getMovie(id: String): Movie? = favouriteMoviesDAO.getMovie(id)
+
+    /**
+     * Checks whether a movie is marked as favourite by its ID.
+     */
+    fun isFavorite(movieId: Long): LiveData<Boolean> = favouriteMoviesDAO.isFavoriteMovie(movieId)
 
     /**
      * Adds a movie to the local favourite movies database asynchronously.
@@ -53,6 +61,38 @@ class Repository
     fun deleteMovie(movie: Movie) {
       Completable
         .fromAction { favouriteMoviesDAO.deleteFMovie(movie) }
+        .subscribeOn(Schedulers.io())
+        .subscribe()
+    }
+
+    /**
+     * Retrieves all watchlist movies from the local database.
+     */
+    fun getAllWatchlistMovies(): LiveData<List<WatchlistMovie>> =
+      watchlistMoviesDAO.getAllWatchlistMovies()
+
+    /**
+     * Checks whether a movie is in the watchlist by its ID.
+     */
+    fun isWatchlistMovie(movieId: Long): LiveData<Boolean> =
+      watchlistMoviesDAO.isWatchlistMovie(movieId)
+
+    /**
+     * Adds a movie to the local watchlist asynchronously.
+     */
+    fun addWatchlistMovie(movie: WatchlistMovie) {
+      Completable
+        .fromAction { watchlistMoviesDAO.insertWatchlistMovie(movie) }
+        .subscribeOn(Schedulers.io())
+        .subscribe()
+    }
+
+    /**
+     * Deletes a movie from the watchlist by its ID asynchronously.
+     */
+    fun removeWatchlistMovie(movieId: Long) {
+      Completable
+        .fromAction { watchlistMoviesDAO.deleteWatchlistMovieById(movieId) }
         .subscribeOn(Schedulers.io())
         .subscribe()
     }
@@ -150,4 +190,49 @@ class Repository
       apiKey: String,
       page: Int,
     ): Observable<ReviewsList> = tmDbService.getReviews(movieId, apiKey, page)
+
+    /**
+     * Fetches video previews and trailers for a specific movie by its ID.
+     */
+    fun getMovieVideos(
+      movieId: Long,
+      apiKey: String,
+    ): Observable<com.sg.moviesindex.data.remote.VideosList> =
+      tmDbService.getMovieVideos(movieId, apiKey)
+
+    /**
+     * Fetches recommended movies for a specific movie by its ID.
+     */
+    fun getRecommendations(
+      movieId: Long,
+      apiKey: String,
+      page: Int,
+    ): Observable<MoviesList> = tmDbService.getRecommendations(movieId, apiKey, page)
+
+    /**
+     * Fetches streaming, rental, and purchase providers for a specific movie by its ID.
+     */
+    fun getWatchProviders(
+      movieId: Long,
+      apiKey: String,
+    ): Observable<com.sg.moviesindex.data.remote.WatchProvidersResponse> =
+      tmDbService.getWatchProviders(movieId, apiKey)
+
+    /**
+     * Fetches biography and detail information for a person/actor by their ID.
+     */
+    fun getPersonDetails(
+      personId: Long,
+      apiKey: String,
+    ): Observable<com.sg.moviesindex.data.remote.Person> =
+      tmDbService.getPersonDetails(personId, apiKey)
+
+    /**
+     * Fetches movie credits (filmography) for a person/actor by their ID.
+     */
+    fun getPersonMovieCredits(
+      personId: Long,
+      apiKey: String,
+    ): Observable<com.sg.moviesindex.data.remote.PersonMovieCredits> =
+      tmDbService.getPersonMovieCredits(personId, apiKey)
   }

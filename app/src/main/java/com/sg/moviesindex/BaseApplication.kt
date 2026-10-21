@@ -1,6 +1,7 @@
 package com.sg.moviesindex
 
 import android.app.Application
+import com.sg.moviesindex.util.ThemeManager
 import dagger.hilt.android.HiltAndroidApp
 
 /**
@@ -10,4 +11,9 @@ import dagger.hilt.android.HiltAndroidApp
  * application-level dependency container.
  */
 @HiltAndroidApp
-class BaseApplication : Application()
+class BaseApplication : Application() {
+  override fun onCreate() {
+    super.onCreate()
+    ThemeManager.applyTheme(this)
+  }
+}

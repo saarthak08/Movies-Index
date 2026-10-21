@@ -247,4 +247,116 @@ class MovieDetailViewModelTest {
         ?.isEmpty() == true,
     )
   }
+
+  // --- fetchVideos tests ---
+
+  @Test
+  fun `fetchVideos success - updates videos LiveData`() {
+    val video =
+      com.sg.moviesindex.data.remote.Video(
+        id = "v1",
+        key = "abc123xyz",
+        site = "YouTube",
+        type = "Trailer",
+      )
+    val videosList =
+      com.sg.moviesindex.data.remote.VideosList(
+        id = 1L,
+        results = mutableListOf(video),
+      )
+    every { repository.getMovieVideos(1L, any()) } returns Observable.just(videosList)
+
+    viewModel.fetchVideos(1L)
+
+    assertEquals(videosList, viewModel.videos.value)
+    assertEquals(
+      "abc123xyz",
+      viewModel.videos.value
+        ?.results
+        ?.first()
+        ?.key,
+    )
+    verify { repository.getMovieVideos(1L, any()) }
+  }
+
+  @Test
+  fun `fetchVideos error - does not crash and leaves videos value unchanged`() {
+    every { repository.getMovieVideos(1L, any()) } returns
+      Observable.error(RuntimeException("Network error"))
+
+    viewModel.fetchVideos(1L)
+
+    assertNull(viewModel.videos.value)
+  }
+
+  // --- fetchRecommendations tests ---
+
+  @Test
+  fun `fetchRecommendations success - updates recommendations LiveData`() {
+    val recMovie = Movie(id = 2L, title = "Recommended Movie")
+    val moviesList =
+      com.sg.moviesindex.data.remote.MoviesList(
+        page = 1,
+        movies = mutableListOf(recMovie),
+      )
+    every { repository.getRecommendations(1L, any(), 1) } returns Observable.just(moviesList)
+
+    viewModel.fetchRecommendations(1L)
+
+    assertEquals(moviesList, viewModel.recommendations.value)
+    assertEquals(
+      1,
+      viewModel.recommendations.value
+        ?.movies
+        ?.size,
+    )
+    verify { repository.getRecommendations(1L, any(), 1) }
+  }
+
+  // --- fetchWatchProviders tests ---
+
+  @Test
+  fun `fetchWatchProviders success - updates watchProviders LiveData`() {
+    val provider =
+      com.sg.moviesindex.data.remote.WatchProvider(
+        providerId = 8,
+        providerName = "Netflix",
+        logoPath = "/netflix.png",
+      )
+    val countryProviders =
+      com.sg.moviesindex.data.remote.CountryWatchProviders(
+        link = "https://tmdb.org/watch",
+        flatrate = listOf(provider),
+      )
+    val response =
+      com.sg.moviesindex.data.remote.WatchProvidersResponse(
+        id = 1L,
+        results = mapOf("US" to countryProviders),
+      )
+    every { repository.getWatchProviders(1L, any()) } returns Observable.just(response)
+
+    viewModel.fetchWatchProviders(1L)
+
+    assertEquals(response, viewModel.watchProviders.value)
+    assertEquals(
+      "Netflix",
+      viewModel.watchProviders.value
+        ?.results
+        ?.get("US")
+        ?.flatrate
+        ?.first()
+        ?.providerName,
+    )
+    verify { repository.getWatchProviders(1L, any()) }
+  }
+
+  @Test
+  fun `fetchWatchProviders error - leaves watchProviders unchanged`() {
+    every { repository.getWatchProviders(1L, any()) } returns
+      Observable.error(RuntimeException("Watch providers error"))
+
+    viewModel.fetchWatchProviders(1L)
+
+    assertNull(viewModel.watchProviders.value)
+  }
 }

@@ -304,6 +304,19 @@ class MainViewModelTest {
     assertNull(result)
   }
 
+  // --- isFavorite tests ---
+
+  @Test
+  fun `isFavorite delegates to repository`() {
+    val liveData = MutableLiveData(true)
+    every { repository.isFavorite(100L) } returns liveData
+
+    val result = viewModel.isFavorite(100L)
+
+    assertEquals(true, result.value)
+    verify { repository.isFavorite(100L) }
+  }
+
   // --- getAllMovies test ---
 
   @Test
@@ -350,5 +363,50 @@ class MainViewModelTest {
     assertTrue(
       viewModel.movieList.value?.isEmpty() == true || viewModel.movieList.value == initialList,
     )
+  }
+
+  // --- Watchlist tests ---
+
+  @Test
+  fun `getAllWatchlistMovies delegates to repository`() {
+    val watchlistMovie =
+      com.sg.moviesindex.data.local
+        .WatchlistMovie(id = 1L, title = "Watchlist Movie")
+    val liveData = MutableLiveData(listOf(watchlistMovie))
+    every { repository.getAllWatchlistMovies() } returns liveData
+
+    val result = viewModel.getAllWatchlistMovies()
+
+    assertEquals(liveData, result)
+    verify { repository.getAllWatchlistMovies() }
+  }
+
+  @Test
+  fun `isWatchlistMovie delegates to repository`() {
+    val liveData = MutableLiveData(true)
+    every { repository.isWatchlistMovie(10L) } returns liveData
+
+    val result = viewModel.isWatchlistMovie(10L)
+
+    assertEquals(true, result.value)
+    verify { repository.isWatchlistMovie(10L) }
+  }
+
+  @Test
+  fun `addWatchlistMovie delegates to repository`() {
+    val watchlistMovie =
+      com.sg.moviesindex.data.local
+        .WatchlistMovie(id = 1L, title = "Test")
+
+    viewModel.addWatchlistMovie(watchlistMovie)
+
+    verify { repository.addWatchlistMovie(watchlistMovie) }
+  }
+
+  @Test
+  fun `removeWatchlistMovie delegates to repository`() {
+    viewModel.removeWatchlistMovie(1L)
+
+    verify { repository.removeWatchlistMovie(1L) }
   }
 }

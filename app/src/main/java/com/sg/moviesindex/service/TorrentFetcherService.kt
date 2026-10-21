@@ -30,6 +30,7 @@ class TorrentFetcherService(
   private val compositeDisposable = CompositeDisposable()
   private var response = APIResponse()
   private var resultantMovie: com.sg.moviesindex.data.remote.Movie? = null
+  private var currentMovieTitle: String = ""
 
   /**
    * Starts fetching torrents for the specified movie.
@@ -42,6 +43,7 @@ class TorrentFetcherService(
     button: CircularProgressButton,
     movieTMDb: Movie,
   ) {
+    currentMovieTitle = movieTMDb.title ?: movieTMDb.originalTitle ?: ""
     button.startAnimation()
     val movieId = movieTMDb.imdbId
     if (movieId.isNullOrEmpty()) {
@@ -52,7 +54,14 @@ class TorrentFetcherService(
           Toast.LENGTH_SHORT,
         ).show()
       mListener.onComplete(true, null)
-      button.revertAnimation()
+      button.revertAnimation {
+        button.layoutParams =
+          android.widget.FrameLayout.LayoutParams(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            android.view.Gravity.CENTER,
+          )
+      }
       return
     }
 
@@ -77,11 +86,25 @@ class TorrentFetcherService(
                   Toast.LENGTH_SHORT,
                 ).show()
               mListener.onComplete(true, null)
-              button.revertAnimation()
+              button.revertAnimation {
+                button.layoutParams =
+                  android.widget.FrameLayout.LayoutParams(
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                    android.view.Gravity.CENTER,
+                  )
+              }
             }
 
             override fun onComplete() {
-              button.revertAnimation()
+              button.revertAnimation {
+                button.layoutParams =
+                  android.widget.FrameLayout.LayoutParams(
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                    android.view.Gravity.CENTER,
+                  )
+              }
               if (response.data != null) {
                 if (response.data!!.movieCount == 0L) {
                   Toast
@@ -115,7 +138,7 @@ class TorrentFetcherService(
         dialog.title(res = R.string.torrent_files_dialog_title)
         dialog.message(res = R.string.torrent_dialog_message)
 
-        val adapter = TorrentsListItemAdapter(movie.torrents, button, mListener)
+        val adapter = TorrentsListItemAdapter(movie.torrents, button, mListener, currentMovieTitle)
         dialog.customListAdapter(adapter, LinearLayoutManager(context))
 
         dialog.show()

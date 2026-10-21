@@ -33,11 +33,14 @@ class RepositoryTest {
   @MockK
   private lateinit var tmDbService: TMDbService
 
+  @MockK
+  private lateinit var watchlistMoviesDAO: com.sg.moviesindex.data.local.WatchlistMoviesDAO
+
   private lateinit var repository: Repository
 
   @BeforeEach
   fun setUp() {
-    repository = Repository(favouriteMoviesDAO, tmDbService)
+    repository = Repository(favouriteMoviesDAO, tmDbService, watchlistMoviesDAO)
   }
 
   @Test
@@ -73,6 +76,17 @@ class RepositoryTest {
     assertNull(result)
     val verificationResult = verify { favouriteMoviesDAO.getMovie("99") }
     assertNotNull(verificationResult)
+  }
+
+  @Test
+  fun `isFavorite delegates to favouriteMoviesDAO`() {
+    val liveData = MutableLiveData(true)
+    every { favouriteMoviesDAO.isFavoriteMovie(42L) } returns liveData
+
+    val result = repository.isFavorite(42L)
+
+    assertEquals(liveData, result)
+    verify { favouriteMoviesDAO.isFavoriteMovie(42L) }
   }
 
   @Test
@@ -256,5 +270,113 @@ class RepositoryTest {
     observer.assertValue(response)
     val verificationResult = verify { tmDbService.getReviews(1L, "key", 1) }
     assertNotNull(verificationResult)
+  }
+
+  @Test
+  fun `getMovieVideos delegates to service`() {
+    val response =
+      com.sg.moviesindex.data.remote
+        .VideosList(id = 1L)
+    every { tmDbService.getMovieVideos(1L, "key") } returns Observable.just(response)
+
+    val observer = repository.getMovieVideos(1L, "key").test()
+
+    observer.assertValue(response)
+    verify { tmDbService.getMovieVideos(1L, "key") }
+  }
+
+  @Test
+  fun `getRecommendations delegates to service`() {
+    val response =
+      com.sg.moviesindex.data.remote
+        .MoviesList(page = 1)
+    every { tmDbService.getRecommendations(1L, "key", 1) } returns Observable.just(response)
+
+    val observer = repository.getRecommendations(1L, "key", 1).test()
+
+    observer.assertValue(response)
+    verify { tmDbService.getRecommendations(1L, "key", 1) }
+  }
+
+  @Test
+  fun `getWatchProviders delegates to service`() {
+    val response =
+      com.sg.moviesindex.data.remote
+        .WatchProvidersResponse(id = 1L)
+    every { tmDbService.getWatchProviders(1L, "key") } returns Observable.just(response)
+
+    val observer = repository.getWatchProviders(1L, "key").test()
+
+    observer.assertValue(response)
+    verify { tmDbService.getWatchProviders(1L, "key") }
+  }
+
+  @Test
+  fun `getPersonDetails delegates to service`() {
+    val response =
+      com.sg.moviesindex.data.remote
+        .Person(id = 10L, name = "Actor Name")
+    every { tmDbService.getPersonDetails(10L, "key") } returns Observable.just(response)
+
+    val observer = repository.getPersonDetails(10L, "key").test()
+
+    observer.assertValue(response)
+    verify { tmDbService.getPersonDetails(10L, "key") }
+  }
+
+  @Test
+  fun `getPersonMovieCredits delegates to service`() {
+    val response =
+      com.sg.moviesindex.data.remote
+        .PersonMovieCredits(id = 10L)
+    every { tmDbService.getPersonMovieCredits(10L, "key") } returns Observable.just(response)
+
+    val observer = repository.getPersonMovieCredits(10L, "key").test()
+
+    observer.assertValue(response)
+    verify { tmDbService.getPersonMovieCredits(10L, "key") }
+  }
+
+  @Test
+  fun `getAllWatchlistMovies delegates to watchlistMoviesDAO`() {
+    val liveData = MutableLiveData<List<com.sg.moviesindex.data.local.WatchlistMovie>>()
+    every { watchlistMoviesDAO.getAllWatchlistMovies() } returns liveData
+
+    val result = repository.getAllWatchlistMovies()
+
+    assertEquals(liveData, result)
+    verify { watchlistMoviesDAO.getAllWatchlistMovies() }
+  }
+
+  @Test
+  fun `isWatchlistMovie delegates to watchlistMoviesDAO`() {
+    val liveData = MutableLiveData(true)
+    every { watchlistMoviesDAO.isWatchlistMovie(100L) } returns liveData
+
+    val result = repository.isWatchlistMovie(100L)
+
+    assertEquals(liveData, result)
+    verify { watchlistMoviesDAO.isWatchlistMovie(100L) }
+  }
+
+  @Test
+  fun `addWatchlistMovie delegates to watchlistMoviesDAO`() {
+    val watchlistMovie =
+      com.sg.moviesindex.data.local
+        .WatchlistMovie(id = 100L, title = "Watchlist Movie")
+    every { watchlistMoviesDAO.insertWatchlistMovie(watchlistMovie) } returns 1L
+
+    repository.addWatchlistMovie(watchlistMovie)
+
+    verify { watchlistMoviesDAO.insertWatchlistMovie(watchlistMovie) }
+  }
+
+  @Test
+  fun `removeWatchlistMovie delegates to watchlistMoviesDAO`() {
+    every { watchlistMoviesDAO.deleteWatchlistMovieById(100L) } returns 1
+
+    repository.removeWatchlistMovie(100L)
+
+    verify { watchlistMoviesDAO.deleteWatchlistMovieById(100L) }
   }
 }

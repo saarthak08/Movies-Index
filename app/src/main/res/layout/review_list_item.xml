@@ -13,52 +13,43 @@
   <androidx.cardview.widget.CardView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:elevation="4dp"
-      android:orientation="vertical"
-      >
+      android:layout_marginVertical="4dp"
+      android:elevation="3dp"
+      app:cardBackgroundColor="?attr/colorSurface"
+      app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
+        android:layout_height="wrap_content"
+        android:padding="8dp">
 
       <TextView
           android:id="@+id/tvReviewName"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:gravity="center|start"
-          android:paddingStart="8dp"
-
-          android:paddingTop="8dp"
           android:text="@{review.author}"
-          android:textColor="@android:color/black"
-          android:textSize="18sp"
+          android:textColor="?android:attr/textColorPrimary"
+          android:textSize="16sp"
           android:textStyle="bold"
           app:layout_constraintBottom_toTopOf="@id/tvReviewContent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent"
-          tools:ignore="RtlSymmetry" />
+          app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
           android:id="@+id/tvReviewContent"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:fontFamily="@font/roboto"
-          android:paddingStart="8dp"
-          android:paddingLeft="8dp"
-          android:paddingTop="2dp"
-          android:paddingEnd="8dp"
-          android:paddingRight="8dp"
+          android:paddingTop="4dp"
           android:text="@{review.content}"
+          android:textColor="?android:attr/textColorSecondary"
           android:textSize="14sp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="@+id/tvReviewName"
-          app:layout_constraintVertical_weight="1"
-          tools:ignore="RtlSymmetry" />
+          app:layout_constraintTop_toBottomOf="@+id/tvReviewName" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.cardview.widget.CardView>

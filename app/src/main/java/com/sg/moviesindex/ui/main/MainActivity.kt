@@ -10,34 +10,29 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.core.view.get
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.navigation.NavigationView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.sg.moviesindex.R
 import com.sg.moviesindex.ui.favorites.FavouriteMoviesFragment
 import com.sg.moviesindex.ui.movies.MoviesFragment
 import com.sg.moviesindex.ui.search.SearchUtil
+import com.sg.moviesindex.util.ThemeManager
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
 
 /**
  * The main entry point and primary UI container for the Movies Index app.
- * Handles the navigation drawer, fragment transactions for different movie categories,
+ * Handles the bottom navigation bar, fragment transactions for different movie categories,
  * and delegates business logic to [MainViewModel].
  */
 @AndroidEntryPoint
-class MainActivity :
-  AppCompatActivity(),
-  NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
   companion object {
     private const val MY_PERMISSIONS_REQUESTS_NOTIFICATION_PERMISSIONS = 4
   }
@@ -48,7 +43,8 @@ class MainActivity :
   private lateinit var fragmentManager: FragmentManager
   private lateinit var linearLayoutError: View
   private lateinit var refreshButtonError: View
-  private lateinit var navigationView: NavigationView
+  private lateinit var bottomNavigationView: BottomNavigationView
+  private var searchMenuItem: MenuItem? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -56,51 +52,58 @@ class MainActivity :
 
     viewModel = ViewModelProvider(this)[MainViewModel::class.java]
     fragmentManager = supportFragmentManager
-    navigationView = findViewById(R.id.nav_view)
+    bottomNavigationView = findViewById(R.id.bottom_navigation)
     progressBar = findViewById(R.id.progressBar)
     val toolbar: Toolbar = findViewById(R.id.toolbar)
     setSupportActionBar(toolbar)
 
-    val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-    val toggle =
-      ActionBarDrawerToggle(
-        this,
-        drawerLayout,
-        toolbar,
-        R.string.navigation_drawer_open,
-        R.string.navigation_drawer_close,
-      )
-    drawerLayout.addDrawerListener(toggle)
-    toggle.syncState()
+    window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
+    androidx.core.view.WindowCompat
+      .getInsetsController(
+        window,
+        window.decorView,
+      ).isAppearanceLightStatusBars =
+      false
 
-    navigationView.setNavigationItemSelectedListener(this)
+    bottomNavigationView.setOnItemSelectedListener { item ->
+      val newDrawer =
+        when (item.itemId) {
+          R.id.nav_popular -> 0
+          R.id.nav_now_playing -> 1
+          R.id.nav_top_rated -> 3
+          R.id.nav_genres -> 4
+          R.id.nav_favorites -> 5
+          else -> 0
+        }
+      if (viewModel.drawer.value != newDrawer) {
+        viewModel.drawer.value = newDrawer
+        handleNavigation(newDrawer)
+      }
+      true
+    }
+
     progressBar.animate().alpha(1f).duration = 500
     progressBar.isIndeterminate = true
     linearLayoutError = findViewById(R.id.llError)
     refreshButtonError = findViewById(R.id.buttonllError)
-    navigationView.menu[0].isChecked = true
 
     onBackPressedDispatcher.addCallback(
       this,
       object : OnBackPressedCallback(enabled = true) {
         override fun handleOnBackPressed() {
-          val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
-          if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
+          val currentDrawer = viewModel.drawer.value
+          if (currentDrawer != null && currentDrawer != 0) {
+            viewModel.drawer.value = 0
+            searchMenuItem?.isVisible = true
+            supportFragmentManager.popBackStack(
+              null,
+              FragmentManager.POP_BACK_STACK_INCLUSIVE,
+            )
+            bottomNavigationView.selectedItemId = R.id.nav_popular
+            viewModel.fetchMovies(0, 1)
           } else {
-            val currentDrawer = viewModel.drawer.value
-            if (currentDrawer != null && currentDrawer != 0) {
-              viewModel.drawer.value = 0
-              supportFragmentManager.popBackStack(
-                null,
-                FragmentManager.POP_BACK_STACK_INCLUSIVE,
-              )
-              navigationView.menu[0].isChecked = true
-              viewModel.fetchMovies(0, 1)
-            } else {
-              isEnabled = false
-              onBackPressedDispatcher.onBackPressed()
-            }
+            isEnabled = false
+            onBackPressedDispatcher.onBackPressed()
           }
         }
       },
@@ -108,7 +111,12 @@ class MainActivity :
 
     observeViewModel()
 
-    viewModel.fetchMovies(0, 1)
+    if (savedInstanceState == null) {
+      viewModel.fetchMovies(0, 1)
+    } else {
+      val currentDrawer = viewModel.drawer.value ?: 0
+      handleNavigation(currentDrawer)
+    }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       requestNotificationPermissions()
     }
@@ -174,44 +182,25 @@ class MainActivity :
   }
 
   /**
-   * Handles item clicks in the navigation drawer.
-   *
-   * @param item The selected menu item.
-   * @return true if the event was handled.
-   */
-  override fun onNavigationItemSelected(item: MenuItem): Boolean {
-    progressBar.isIndeterminate = true
-    progressBar.visibility = View.VISIBLE
-    linearLayoutError.visibility = View.GONE
-
-    val id = item.itemId
-    var newDrawer = -1
-
-    when (id) {
-      R.id.movies -> newDrawer = 0
-      R.id.favmovies -> newDrawer = 5
-      R.id.toprated -> newDrawer = 3
-      R.id.genres -> newDrawer = 4
-      R.id.upcoming_movies -> newDrawer = 2
-      R.id.now_playing -> newDrawer = 1
-    }
-
-    if (newDrawer != -1) {
-      viewModel.drawer.value = newDrawer
-      handleNavigation(newDrawer)
-    }
-
-    val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-    drawerLayout.closeDrawer(GravityCompat.START)
-    return true
-  }
-
-  /**
    * Handles the navigation logic and fragment replacement based on the selected drawer item.
    *
    * @param drawer The integer code representing the selected drawer item.
    */
   private fun handleNavigation(drawer: Int) {
+    searchMenuItem?.isVisible = (drawer != 4 && drawer != 5)
+    val bottomId =
+      when (drawer) {
+        0 -> R.id.nav_popular
+        1 -> R.id.nav_now_playing
+        3 -> R.id.nav_top_rated
+        4 -> R.id.nav_genres
+        5 -> R.id.nav_favorites
+        else -> null
+      }
+    if (bottomId != null && bottomNavigationView.selectedItemId != bottomId) {
+      bottomNavigationView.selectedItemId = bottomId
+    }
+
     when (drawer) {
       5 -> {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
@@ -287,12 +276,38 @@ class MainActivity :
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     menuInflater.inflate(R.menu.search_view, menu)
+
+    val themeItem = menu.findItem(R.id.action_theme_toggle)
+    val isDark = ThemeManager.isDarkMode(this)
+    if (isDark) {
+      themeItem.setIcon(R.drawable.ic_light_mode)
+      themeItem.setTitle(R.string.switch_to_light_mode)
+    } else {
+      themeItem.setIcon(R.drawable.ic_dark_mode)
+      themeItem.setTitle(R.string.switch_to_dark_mode)
+    }
+
     val menuItem = menu.findItem(R.id.app_bar_search)
+    searchMenuItem = menuItem
+    val currentDrawer = viewModel.drawer.value ?: 0
+    menuItem.isVisible = (currentDrawer != 4 && currentDrawer != 5)
     val searchView = menuItem.actionView as SearchView
     val searchUtil = SearchUtil(compositeDisposable, supportFragmentManager, this, viewModel)
     searchUtil.search(searchView)
     return true
   }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean =
+    when (item.itemId) {
+      R.id.action_theme_toggle -> {
+        ThemeManager.toggleTheme(this)
+        true
+      }
+
+      else -> {
+        super.onOptionsItemSelected(item)
+      }
+    }
 
   override fun onDestroy() {
     super.onDestroy()

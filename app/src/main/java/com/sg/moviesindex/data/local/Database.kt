@@ -14,8 +14,8 @@ import com.sg.moviesindex.data.local.typeconverters.ReviewTypeConverter
  * Contains the [Movie] entity and provides access to [FavouriteMoviesDAO].
  */
 @Database(
-  entities = [Movie::class],
-  version = 3,
+  entities = [Movie::class, WatchlistMovie::class],
+  version = 5,
 )
 @TypeConverters(CastTypeConverter::class, ReviewTypeConverter::class, GenreTypeConverter::class)
 abstract class Database : RoomDatabase() {
@@ -25,6 +25,13 @@ abstract class Database : RoomDatabase() {
    * @return The [FavouriteMoviesDAO] instance.
    */
   abstract fun getFDAO(): FavouriteMoviesDAO
+
+  /**
+   * Retrieves the DAO for watchlist movies.
+   *
+   * @return The [WatchlistMoviesDAO] instance.
+   */
+  abstract fun getWatchlistMoviesDAO(): WatchlistMoviesDAO
 
   companion object {
     private val callback =
@@ -50,7 +57,6 @@ abstract class Database : RoomDatabase() {
             "TMDB",
           ).addCallback(callback)
           .fallbackToDestructiveMigration(true)
-          .allowMainThreadQueries()
           .build()
           .also { instance = it }
       }
